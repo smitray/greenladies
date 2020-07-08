@@ -1,0 +1,13 @@
+version: "3"
+services:
+  magento2:
+    build:
+      context: .
+      args:
+        - MAGENTO_PUBLIC_KEY=${MAGENTO_PUBLIC_KEY}
+        - MAGENTO_PRIVATE_KEY=${MAGENTO_PRIVATE_KEY}
+    image: magento2:latest-dev
+    ports:
+      - 80:80
+    volumes:
+      - ./magento2:/var/www/html
