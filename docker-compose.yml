@@ -15,4 +15,4 @@ services:
       - PMA_USER=${MAGENTO_MYSQL_USERNAME}
       - PMA_PASSWORD=${MAGENTO_MYSQL_PASSWORD}
     ports:
-      - 8080:80
+      - ${MAGENTO_PHPMYADMIN_PORT}:80
