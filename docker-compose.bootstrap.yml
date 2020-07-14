@@ -1,0 +1,19 @@
+version: "3"
+services:
+  magento2-installer:
+    build: magento2-installer
+    image: magento2-installer:latest
+    environment:
+      - MAGENTO_PUBLIC_KEY
+      - MAGENTO_PRIVATE_KEY
+      - MYSQL_DATABASE=${MAGENTO_MYSQL_DATABASE}
+      - MYSQL_USERNAME=${MAGENTO_MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MAGENTO_MYSQL_PASSWORD}
+      - MAGENTO_ADMIN_FIRSTNAME
+      - MAGENTO_ADMIN_LASTNAME
+      - MAGENTO_ADMIN_EMAIL
+      - MAGENTO_ADMIN_USERNAME
+      - MAGENTO_ADMIN_PASSWORD
+      - MAGENTO_BASE_URL
+    volumes:
+      - ${MAGENTO_DATA_FOLDER}:/var/www/html

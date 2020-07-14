@@ -1,0 +1,14 @@
+version: "3"
+services:
+  magento2-db:
+    image: mariadb:10.4
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MAGENTO_MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MAGENTO_MYSQL_DATABASE}
+      - MYSQL_USER=${MAGENTO_MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MAGENTO_MYSQL_PASSWORD}
+    volumes:
+      - magento2-dbdata:/var/lib/mysql
+
+volumes:
+  magento2-dbdata:
