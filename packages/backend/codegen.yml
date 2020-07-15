@@ -1,0 +1,10 @@
+schema: src/__generated__/schema.gql
+generates:
+  ./src/__generated__/types.d.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      typesPrefix: GQL
+      mappers:
+        Test: ./../types#Node

@@ -1,5 +1,21 @@
-version: "3"
+version: '3'
 services:
+  # frontend:
+  #   build: frontend
+  #   ports:
+  #     - ${FRONTEND_PORT}:3000
+  #   volumes:
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    ports:
+      - ${BACKEND_PORT}:3000
+    volumes:
+      - /usr/src/app/packages/backend/node_modules
+      - ./packages/backend:/usr/src/app/packages/backend
+
   magento2:
     build: magento2
     image: magento2:latest

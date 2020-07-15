@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"module": "commonjs",
+		"outDir": "dist",
+		"strictPropertyInitialization": false,
+		"target": "es2019",
+		"types": ["node", "jest"]
+	},
+	"extends": "../../tsconfig.base.json",
+	"include": ["src"]
+}
