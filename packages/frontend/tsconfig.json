@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"module": "commonjs",
+		"sourceMap": true,
+		"target": "es6",
+		"types": ["node", "jest"]
+	},
+	"extends": "../../tsconfig.base.json",
+	"include": ["src", "index.ts"],
+	"exclude": ["src/server.tsx"]
+}
