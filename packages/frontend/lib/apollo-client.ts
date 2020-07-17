@@ -1,6 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 
-let apolloClient;
+let apolloClient: ApolloClient<any> | null = null;
 
 function createApolloClient(initialState: NormalizedCacheObject) {
 	const isServer = typeof window === 'undefined';

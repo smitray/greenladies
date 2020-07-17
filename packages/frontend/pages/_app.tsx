@@ -1,15 +1,24 @@
 import React, { useMemo } from 'react';
 
 import { ApolloProvider } from '@apollo/client';
-import { getDataFromTree } from '@apollo/client/react/ssr';
-import { NextPage } from 'next';
-import App, { AppProps } from 'next/app';
-import Head from 'next/head';
+import { NextComponentType } from 'next';
+import { AppContextType, AppInitialProps, AppPropsType } from 'next/dist/next-server/lib/utils';
 
 import { initializeApollo } from '../lib/apollo-client';
 
-const MyApp: NextPage<AppProps> = ({ Component, pageProps, serverState }) => {
+interface MyAppInitialProps extends AppInitialProps {
+	serverState: any;
+}
+
+interface MyAppPropsType extends AppPropsType {
+	serverState: any;
+}
+
+export declare type MyAppType = NextComponentType<AppContextType, MyAppInitialProps, MyAppPropsType>;
+
+const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 	const apolloClient = useMemo(() => initializeApollo(serverState), [serverState]);
+	console.log('hahaa');
 	return (
 		<ApolloProvider client={apolloClient}>
 			<Component {...pageProps} />
@@ -18,18 +27,13 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps, serverState }) => {
 };
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
-	let pageProps = {};
-	let serverState = {};
-
 	const apolloClient = initializeApollo({});
 
-	if (Component.getInitialProps) {
-		pageProps = await Component.getInitialProps({ ...ctx, apolloClient });
-	}
+	const pageProps = await (Component as any).getInitialProps({ ...ctx, apolloClient });
 
-	serverState = apolloClient.cache.extract();
+	const serverState = apolloClient.cache.extract();
 
-	return { serverState, pageProps };
+	return { pageProps, serverState };
 };
 
 export default MyApp;

@@ -1,24 +1,37 @@
 import React from 'react';
 
-import { ApolloClient, gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import Link from 'next/link';
+import styled from 'styled-components';
 
-const IndexPage = ({ test }) => {
+import { MyNextPage } from '../lib/types';
+
+const Hmm = styled.div`
+	font-size: 25px;
+	background: blue;
+`;
+
+interface Props {
+	test: {
+		id: string;
+		name: number;
+	};
+}
+
+const IndexPage: MyNextPage<Props> = ({ test }) => {
 	return (
 		<div>
 			<Link href="/another">
 				<a>To another</a>
 			</Link>
-			{test.id}: {test.name}
+			<Hmm>
+				{test.id}: {test.name}
+			</Hmm>
 		</div>
 	);
 };
 
-IndexPage.getInitialProps = async context => {
-	// console.log('index', context);
-
-	const apolloClient: ApolloClient<any> = context.apolloClient;
-
+IndexPage.getInitialProps = async ({ apolloClient }) => {
 	const { data } = await apolloClient.query({
 		query: gql`
 			query T {
@@ -29,8 +42,6 @@ IndexPage.getInitialProps = async context => {
 			}
 		`,
 	});
-
-	console.log('object', data);
 
 	return {
 		test: data.test,
