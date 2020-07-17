@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const baseConfig = require('../../.eslintrc');
 
 module.exports = {
@@ -17,6 +18,8 @@ module.exports = {
 		'react-hooks/rules-of-hooks': 'error',
 		'react-hooks/exhaustive-deps': 'warn',
 		'@typescript-eslint/camelcase': 'off',
+		'@typescript-eslint/explicit-module-boundary-types': 'off',
+		'@typescript-eslint/naming-convention': 'off',
 	},
 	settings: {
 		...baseConfig.settings,

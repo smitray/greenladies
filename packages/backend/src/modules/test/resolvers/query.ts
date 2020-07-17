@@ -7,6 +7,7 @@ const resolvers: TestModuleResolversType = {
 				id: 'testid',
 			};
 		},
+		test2: () => 'hahaa',
 	},
 };
 

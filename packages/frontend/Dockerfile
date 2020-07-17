@@ -1,16 +1,5 @@
 FROM node:12.18.2
 
-RUN apt update -y
-RUN apt install -y python-dev
-
-WORKDIR /tmp
-RUN git clone https://github.com/facebook/watchman.git -b v4.9.0 --depth 1
-WORKDIR /tmp/watchman
-RUN ./autogen.sh
-RUN ./configure
-RUN make
-RUN make install
-
 WORKDIR /usr/src/app
 
 ENV NODE_ENV=development
