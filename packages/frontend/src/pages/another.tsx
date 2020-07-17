@@ -3,7 +3,18 @@ import React from 'react';
 import { ApolloClient, gql } from '@apollo/client';
 import Link from 'next/link';
 
-const AnotherPage = ({ test }) => {
+import { MyNextPage } from '../lib/types';
+
+import { anotherQuery } from './__generated__/anotherQuery';
+
+interface Props {
+	test: {
+		id: string;
+		name: string;
+	};
+}
+
+const AnotherPage: MyNextPage<Props> = ({ test }) => {
 	return (
 		<div>
 			<Link href="/">
@@ -17,10 +28,10 @@ const AnotherPage = ({ test }) => {
 AnotherPage.getInitialProps = async context => {
 	const apolloClient: ApolloClient<any> = context.apolloClient;
 
-	const { data } = await apolloClient.query({
+	const { data } = await apolloClient.query<anotherQuery>({
 		query: gql`
-			query T {
-				test {
+			query anotherQuery {
+				test(name: "hehee") {
 					id
 					name
 				}
@@ -28,7 +39,9 @@ AnotherPage.getInitialProps = async context => {
 		`,
 	});
 
-	console.log('object', data);
+	if (!data) {
+		throw new Error("Couln't fetch data");
+	}
 
 	return {
 		test: data.test,

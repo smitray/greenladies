@@ -5,7 +5,6 @@ import { ServerStyleSheet } from 'styled-components';
 
 class MyDocument extends Document {
 	static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
-		console.log(Object.keys(ctx));
 		const sheet = new ServerStyleSheet();
 		const originalRenderPage = ctx.renderPage;
 
@@ -14,8 +13,6 @@ class MyDocument extends Document {
 				originalRenderPage({
 					enhanceApp: App => props => sheet.collectStyles(<App {...props} />),
 				});
-
-			console.log(sheet.getStyleElement());
 
 			const initialProps = await Document.getInitialProps(ctx);
 

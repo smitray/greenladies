@@ -6,6 +6,8 @@ import styled from 'styled-components';
 
 import { MyNextPage } from '../lib/types';
 
+import { indexQuery } from './__generated__/indexQuery';
+
 const Hmm = styled.div`
 	font-size: 25px;
 	background: blue;
@@ -14,7 +16,7 @@ const Hmm = styled.div`
 interface Props {
 	test: {
 		id: string;
-		name: number;
+		name: string;
 	};
 }
 
@@ -32,9 +34,9 @@ const IndexPage: MyNextPage<Props> = ({ test }) => {
 };
 
 IndexPage.getInitialProps = async ({ apolloClient }) => {
-	const { data } = await apolloClient.query({
+	const { data } = await apolloClient.query<indexQuery>({
 		query: gql`
-			query T {
+			query indexQuery {
 				test {
 					id
 					name
@@ -42,6 +44,10 @@ IndexPage.getInitialProps = async ({ apolloClient }) => {
 			}
 		`,
 	});
+
+	if (!data) {
+		throw new Error("Couldn't fetch data");
+	}
 
 	return {
 		test: data.test,

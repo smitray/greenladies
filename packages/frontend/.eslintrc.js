@@ -20,6 +20,7 @@ module.exports = {
 		'@typescript-eslint/camelcase': 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
 		'@typescript-eslint/naming-convention': 'off',
+		'no-console': 'error',
 	},
 	settings: {
 		...baseConfig.settings,

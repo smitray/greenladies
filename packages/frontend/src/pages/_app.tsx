@@ -18,7 +18,7 @@ export declare type MyAppType = NextComponentType<AppContextType, MyAppInitialPr
 
 const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 	const apolloClient = useMemo(() => initializeApollo(serverState), [serverState]);
-	console.log('hahaa');
+
 	return (
 		<ApolloProvider client={apolloClient}>
 			<Component {...pageProps} />

@@ -10,7 +10,7 @@ export interface TestModuleContext {}
 
 export type TestModuleResolversType = GQLResolvers<ModuleContext<TestModuleContext>>;
 
-export const TestModule = new GraphQLModule<{}, ApolloContext, TestModuleContext>({
+export const TestModule = new GraphQLModule<any, ApolloContext, TestModuleContext>({
 	imports: [RelayModule],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
