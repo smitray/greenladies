@@ -19,11 +19,11 @@ interface Props {
 	};
 }
 
-const IndexPage: MyNextPage<Props> = ({ test }) => {
+const Page: MyNextPage<Props> = ({ test }) => {
 	return (
 		<div>
-			<Link href="/another">
-				<a>To another</a>
+			<Link href="/">
+				<a>To index</a>
 			</Link>
 			<Hmm>
 				{test.id}: {test.name}
@@ -32,7 +32,7 @@ const IndexPage: MyNextPage<Props> = ({ test }) => {
 	);
 };
 
-IndexPage.getInitialProps = async ({ apolloClient }) => {
+Page.getInitialProps = async ({ apolloClient }) => {
 	const { data } = await apolloClient.query<PageQuery>({
 		query: PAGE_QUERY,
 	});
@@ -46,4 +46,4 @@ IndexPage.getInitialProps = async ({ apolloClient }) => {
 	};
 };
 
-export default IndexPage;
+export default Page;

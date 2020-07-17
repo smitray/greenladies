@@ -4,8 +4,7 @@
 	"repository": "greenladies/frontend",
 	"private": true,
 	"scripts": {
-		"build": "yarn build:check && next build",
-		"build:check": "yarn --cwd ../backend generate-graphql-schema && yarn generate-graphql-types && tsc --noEmit",
+		"build": "yarn --cwd ../backend generate-graphql-schema && yarn generate-graphql-types && next build",
 		"clean": "rimraf dist **/__generated__",
 		"dev": "concurrently \"yarn generate-graphql-types:watch\" \"next\"",
 		"generate-graphql-types": "apollo client:codegen --target typescript",
