@@ -31,7 +31,7 @@ AnotherPage.getInitialProps = async context => {
 	const { data } = await apolloClient.query<anotherQuery>({
 		query: gql`
 			query anotherQuery {
-				test(name: "hehee") {
+				test {
 					id
 					name
 				}
