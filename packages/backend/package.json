@@ -1,9 +1,8 @@
 {
-	"name": "@inventorit/backend",
-	"version": "0.0.0",
-	"repository": "inventorit/backdown",
+	"name": "@greenladies/backend",
+	"version": "0.0.1",
+	"repository": "greenladies/backend",
 	"main": "lib/index.js",
-	"license": "MIT",
 	"private": true,
 	"scripts": {
 		"build": "yarn generate-graphql-schema && yarn generate-graphql-ts-types && tsc",
@@ -17,7 +16,7 @@
 		"prettier:check": "prettier --list-different --ignore-path ../../.gitignore \"**/*.{js,jsx,json,yml,yaml,gql}\"",
 		"prettier:format": "prettier --write --ignore-path ../../.gitignore --loglevel error \"**/*.{js,jsx,json,yml,yaml,gql}\"",
 		"start": "node dist/index.js",
-		"test": "jest --passWithNoTests"
+		"test": "jest \".*\\.test\\.(ts|js)\" --passWithNoTests"
 	},
 	"dependencies": {
 		"@graphql-modules/core": "^0.7.17",
