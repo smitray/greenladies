@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   magento2-installer:
     build: magento2-installer
