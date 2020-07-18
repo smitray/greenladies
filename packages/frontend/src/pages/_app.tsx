@@ -6,6 +6,7 @@ import { AppContextType, AppInitialProps, AppPropsType } from 'next/dist/next-se
 import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
+import { Navbar } from '../components/Navbar';
 import { initializeApollo } from '../lib/apollo-client';
 
 interface MyAppInitialProps extends AppInitialProps {
@@ -37,6 +38,7 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 			<React.Fragment>
 				<GlobalStyles />
 				<MessageBar />
+				<Navbar />
 				<Component {...pageProps} />
 			</React.Fragment>
 		</ApolloProvider>

@@ -12,6 +12,7 @@ export const CenterWrapper = styled.div`
 
 export const MessageList = styled.ul`
 	margin: 0;
+	padding: 0;
 	list-style: none;
 	display: flex;
 `;
