@@ -6,12 +6,15 @@ import { GQLResolvers } from '../../__generated__/types';
 import { ApolloContext } from '../../create-apollo-server';
 import { RelayModule } from '../relay';
 
-export interface TestModuleContext {}
+import { CategoryProvider } from './category.provider';
 
-export type TestModuleResolversType = GQLResolvers<ModuleContext<TestModuleContext>>;
+export interface CategoryModuleContext {}
 
-export const TestModule = new GraphQLModule<any, ApolloContext, TestModuleContext>({
+export type CategoryModuleResolversType = GQLResolvers<ModuleContext<CategoryModuleContext>>;
+
+export const CategoryModule = new GraphQLModule<any, ApolloContext, CategoryModuleContext>({
 	imports: [RelayModule],
+	providers: [CategoryProvider],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
 });

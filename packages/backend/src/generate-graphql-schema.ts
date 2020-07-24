@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { buildServiceDefinition } from '@apollographql/apollo-tools';
 import fs from 'fs';
 import { printSchema } from 'graphql/utilities';

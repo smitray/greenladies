@@ -1,0 +1,3 @@
+type Viewer {
+	categories: [Category!]!
+}

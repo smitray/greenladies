@@ -66,7 +66,7 @@ const ItemWrapper = styled.a`
 const MegaMenu = styled.div`
 	width: 100%;
 	background: green;
-	height: 400px;
+	height: 0;
 	position: absolute;
 `;
 

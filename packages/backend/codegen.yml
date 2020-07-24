@@ -7,4 +7,5 @@ generates:
     config:
       typesPrefix: GQL
       mappers:
-        Test: ./../types#Node
+        Viewer: ./../types#Empty
+        Category: ./../types#Node
