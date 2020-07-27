@@ -2,14 +2,14 @@ import React from 'react';
 
 import { NextComponentType } from 'next';
 import { AppContextType, AppInitialProps, AppPropsType } from 'next/dist/next-server/lib/utils';
-import { Record } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { Record as RelayRecord } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
-import { createRelayEnvironment, initRelayEnvironment } from '../lib/relay-environment';
+import { createRelayEnvironment } from '../lib/relay-environment';
 
-type ServerState = { [key: string]: Record };
+type ServerState = { [key: string]: RelayRecord };
 
 interface MyAppInitialProps extends AppInitialProps {
 	serverState: ServerState;
@@ -46,9 +46,12 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 };
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
-	const relayEnvironment = initRelayEnvironment();
+	const relayEnvironment = createRelayEnvironment();
 
-	const pageProps = await (Component as any).getInitialProps({ ...ctx, relayEnvironment });
+	let pageProps: Record<string, any> = {};
+	if ((Component as any).getInitialProps) {
+		pageProps = await (Component as any).getInitialProps({ ...ctx, relayEnvironment });
+	}
 
 	const serverState = relayEnvironment.getStore().getSource().toJSON();
 

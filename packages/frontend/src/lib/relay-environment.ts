@@ -1,15 +1,17 @@
-import { Environment, Network, RecordSource, RequestParameters, Store, Variables } from 'relay-runtime';
+import {
+	CacheConfig,
+	Environment,
+	Network,
+	QueryResponseCache,
+	RecordSource,
+	RequestParameters,
+	Store,
+	Variables,
+} from 'relay-runtime';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
-async function fetchQuery(operation: RequestParameters, variables: Variables) {
-	let url: string;
-	if (typeof window === 'undefined') {
-		url = 'http://backend:3000/graphql';
-	} else {
-		url = String(process.env.GRAPHQL_API_ENDPOINT);
-	}
-
-	const response = await fetch(url, {
+async function fetchQueryServer(operation: RequestParameters, variables: Variables) {
+	const response = await fetch('http://backend:3000/graphql', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -19,26 +21,53 @@ async function fetchQuery(operation: RequestParameters, variables: Variables) {
 			variables,
 		}),
 	});
-
 	return response.json();
+}
+
+const FIVE_MINUTES = 60 * 1000;
+const cache = new QueryResponseCache({ size: 500, ttl: FIVE_MINUTES });
+
+async function fetchQueryClient(operation: RequestParameters, variables: Variables, cacheConfig: CacheConfig) {
+	const queryID = operation.text;
+	const isMutation = operation.operationKind === 'mutation';
+	const isQuery = operation.operationKind === 'query';
+	const forceFetch = cacheConfig && cacheConfig.force;
+
+	if (!queryID) {
+		throw new Error('queryID must not be null or undefined');
+	}
+
+	// Try to get data from cache on queries
+	const fromCache = cache.get(queryID, variables);
+	if (isQuery && fromCache !== null && !forceFetch) {
+		return fromCache;
+	}
+
+	const response = await fetch(String(process.env.GRAPHQL_API_ENDPOINT), {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			query: operation.text,
+			variables,
+		}),
+	});
+	const json = await response.json();
+
+	if (isQuery && json) {
+		cache.set(queryID, variables, json);
+	}
+	// Clear cache on mutations
+	if (isMutation) {
+		cache.clear();
+	}
+
+	return json;
 }
 
 let relayEnvironment: Environment | null = null;
 let store: Store | null = null;
-
-export function initRelayEnvironment() {
-	if (typeof window !== 'undefined') {
-		throw new Error('This function should only be called on the server');
-	}
-
-	const source = new RecordSource();
-	const store = new Store(source);
-
-	return new Environment({
-		store,
-		network: Network.create(fetchQuery),
-	});
-}
 
 export function createRelayEnvironment(records?: RecordMap) {
 	if (relayEnvironment) {
@@ -52,7 +81,7 @@ export function createRelayEnvironment(records?: RecordMap) {
 
 	relayEnvironment = new Environment({
 		store,
-		network: Network.create(fetchQuery),
+		network: Network.create(typeof window === 'undefined' ? fetchQueryServer : fetchQueryClient),
 	});
 
 	return relayEnvironment;
