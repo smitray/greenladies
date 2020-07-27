@@ -1,8 +1,8 @@
-import { ApolloClient } from '@apollo/client';
 import { NextComponentType, NextPageContext } from 'next';
+import { Environment } from 'relay-runtime';
 
 interface MyNextPageContext extends NextPageContext {
-	apolloClient: ApolloClient<any>;
+	relayEnvironment: Environment;
 }
 
 export type MyNextPage<P = any, IP = P> = NextComponentType<MyNextPageContext, IP, P>;

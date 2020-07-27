@@ -1,3 +1,9 @@
+input CategoryWhereUniqueInput {
+	id: String
+	key: String
+}
+
 type Query {
-	viewer: Viewer!
+	categories: [Category!]!
+	category(where: CategoryWhereUniqueInput!): Category!
 }

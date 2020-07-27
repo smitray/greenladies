@@ -1,6 +1,8 @@
+import { stringify } from 'query-string';
+
 import { instance } from './util';
 
-interface MagentoSimpleCategory {
+export interface MagentoSimpleCategory {
 	id: number;
 	parent_id: number;
 	name: string;
@@ -17,7 +19,7 @@ export async function getCategories() {
 	return data['children_data'] as MagentoSimpleCategory[];
 }
 
-interface MagentoFullCategory {
+export interface MagentoFullCategory {
 	id: number;
 	parent_id: number;
 	name: string;
@@ -41,4 +43,19 @@ export async function getCategory(id: string | number) {
 	const { data } = await instance.get('/rest/default/V1/categories/' + id);
 
 	return data as MagentoFullCategory;
+}
+
+export async function getCategoryByKey(key: string) {
+	const query = {
+		'searchCriteria[filterGroups][0][filters][0][field]': 'url_key',
+		'searchCriteria[filterGroups][0][filters][0][value]': key,
+		'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
+	};
+	const { data } = await instance.get('/rest/default/V1/categories/list?' + stringify(query));
+
+	if (data.items.length === 0) {
+		throw new Error('Category not found');
+	}
+
+	return data.items[0] as MagentoFullCategory;
 }
