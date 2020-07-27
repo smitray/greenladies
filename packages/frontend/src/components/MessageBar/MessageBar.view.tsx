@@ -1,12 +1,13 @@
 import React from 'react';
+
 import {
-	Wrapper,
 	CenterWrapper,
 	MessageAnchor,
 	MessageLeft,
 	MessageList,
 	MessageMiddle,
 	MessageRight,
+	Wrapper,
 } from './MessageBar.styles';
 
 const MessageBarView = () => {
