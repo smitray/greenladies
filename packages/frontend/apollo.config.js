@@ -1,8 +1,3 @@
-module.exports = {
-	client: {
-		service: {
-			name: 'greenladies',
-			localSchemaFile: '../backend/src/__generated__/schema.gql',
-		},
-	},
-};
+const { config } = require('vscode-apollo-relay').generateConfig();
+
+module.exports = config;
