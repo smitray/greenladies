@@ -15,6 +15,10 @@ const resolvers: CategoryModuleResolversType = {
 			if (key) {
 				category = await injector.get(CategoryProvider).getCategoryByKey(key);
 			} else if (id) {
+				if (parseInt(id, 10) <= 2) {
+					throw new Error('Category not found');
+				}
+
 				category = await injector.get(CategoryProvider).getCategory(id);
 			} else {
 				throw new Error('At least one identifier must be provided');

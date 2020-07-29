@@ -1,17 +1,14 @@
-import { Environment, fetchQuery, graphql } from 'relay-runtime';
+import { graphql } from 'relay-runtime';
 
-import { categoryQuery, categoryQueryResponse, categoryQueryVariables } from './__generated__/categoryQuery.graphql';
+import { categoryQuery } from './__generated__/categoryQuery.graphql';
 
-const QUERY = graphql`
+export const CATEGORY_QUERY = graphql`
 	query categoryQuery($where: CategoryWhereUniqueInput!) {
 		category(where: $where) {
 			id
+			...CategorySidebar_category
 		}
 	}
 `;
 
-export function fetchCategoryQuery(relayEnvironment: Environment, variables: categoryQueryVariables) {
-	return fetchQuery<categoryQuery>(relayEnvironment, QUERY, variables);
-}
-
-export type { categoryQueryResponse };
+export type { categoryQuery as CategoryQuery };

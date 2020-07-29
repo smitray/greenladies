@@ -7,7 +7,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
-import { createRelayEnvironment } from '../lib/relay-environment';
+import { createRelayEnvironment, RelayProvider } from '../lib/relay-environment';
 
 type ServerState = { [key: string]: RelayRecord };
 
@@ -33,15 +33,17 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
-	createRelayEnvironment(serverState);
+	const environment = createRelayEnvironment(serverState);
 
 	return (
-		<React.Fragment>
-			<GlobalStyles />
-			<MessageBar />
-			<Navbar />
-			<Component {...pageProps} />
-		</React.Fragment>
+		<RelayProvider environment={environment}>
+			<React.Fragment>
+				<GlobalStyles />
+				<MessageBar />
+				<Navbar />
+				<Component {...pageProps} />
+			</React.Fragment>
+		</RelayProvider>
 	);
 };
 

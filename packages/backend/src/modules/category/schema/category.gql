@@ -1,10 +1,7 @@
 type Category implements Node {
 	id: ID!
+	key: String!
 	name: String!
-	isActive: Boolean!
-	# position: Int!
-	# level: Int!
-	# path: String!
 	# availableSortBy: [String!]!
 	includeInMenu: Boolean!
 	children: [Category!]!
