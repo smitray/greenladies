@@ -4,9 +4,12 @@ import 'reflect-metadata';
 import express from 'express';
 
 import { createApolloServer } from './create-apollo-server';
+import { syncMagentoProductsAndCategories } from './magento-sync';
 
 (async function () {
 	const app = express();
+
+	syncMagentoProductsAndCategories();
 
 	const server = await createApolloServer();
 	server.applyMiddleware({

@@ -1,0 +1,15 @@
+{
+    "update": "2020-07-30T13:36:30.853Z",
+    "list": [
+        {
+            "awsElastiCache": false,
+            "azure": false,
+            "name": "Redis cache",
+            "host": "redis-cache",
+            "port": 6379,
+            "id": "P3Xid28640ff937101000090baa9ba9e236",
+            "cluster": false,
+            "nodes": []
+        }
+    ]
+}

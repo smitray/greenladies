@@ -1,0 +1,167 @@
+import 'dotenv/config';
+
+import redis from 'redis';
+
+import { getCategories, MagentoFullCategory } from './api/category';
+import { getProducts, getProductsByCategoryId, MagentoFullProduct } from './api/product';
+
+const client = redis.createClient({ host: 'redis-cache' });
+
+interface Product {
+	id: string;
+	sku: string;
+	name: string;
+	price: number;
+	visibility: 'none' | 'catalog' | 'search' | 'catalog+search';
+	type: string;
+	urlKey: string | null;
+}
+
+function transformVisibility(visibility: number) {
+	switch (visibility) {
+		case 1:
+			return 'none';
+		case 2:
+			return 'catalog';
+		case 3:
+			return 'search';
+		case 4:
+			return 'catalog+search';
+		default:
+			throw new Error('Invalid visibilty value');
+	}
+}
+
+function transformProduct(product: MagentoFullProduct): Product {
+	return {
+		id: String(product.id),
+		sku: product.sku,
+		name: product.name,
+		price: product.price,
+		visibility: transformVisibility(product.visibility),
+		type: product.type_id,
+		urlKey: product.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || null,
+	};
+}
+
+async function saveProductsInCache(products: Product[]) {
+	// Save product id => product
+	const saveProducts = new Promise((resolve, reject) => {
+		client.mset(
+			products.reduce<string[]>((prev, current) => {
+				return [...prev, 'Product:id:' + current.id, JSON.stringify(current)];
+			}, []),
+			(err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(reply);
+			},
+		);
+	});
+
+	// Save product urlKey => product id
+	const mapUrlKeyToId = new Promise((resolve, reject) => {
+		client.mset(
+			products.reduce<string[]>((prev, current) => {
+				if (current.type !== 'virtual' && current.urlKey) {
+					return [...prev, 'Product:urlKey:' + current.urlKey, 'Product:id:' + current.id];
+				}
+
+				return prev;
+			}, []),
+			(err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(reply);
+			},
+		);
+	});
+
+	return Promise.all([saveProducts, mapUrlKeyToId]);
+}
+
+async function syncMagnetoProducts() {
+	const magentoProducts = await getProducts({ pageSize: 1000000 });
+
+	const products = magentoProducts.map(transformProduct);
+
+	await saveProductsInCache(products);
+}
+
+interface Category {
+	id: string;
+	parentId: string;
+	name: string;
+	childrenIds: string[];
+	includeInMenu: boolean;
+	urlKey: string | null;
+	productIds: string[];
+}
+
+async function transformCategory(category: MagentoFullCategory): Promise<Category> {
+	return {
+		id: String(category.id),
+		parentId: String(category.parent_id),
+		name: category.name,
+		childrenIds: category.children === '' ? [] : category.children.split(','),
+		includeInMenu: category.include_in_menu,
+		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || null,
+		productIds: (await getProductsByCategoryId(category.id)).map(category => String(category.id)),
+	};
+}
+
+async function saveCategoriesInCache(categories: Category[]) {
+	// Save category id => category
+	const saveCategories = new Promise((resolve, reject) => {
+		client.mset(
+			categories.reduce<string[]>((prev, current) => {
+				return [...prev, 'Category:id:' + current.id, JSON.stringify(current)];
+			}, []),
+			(err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(reply);
+			},
+		);
+	});
+
+	// Save product urlKey => product id
+	const mapUrlKeyToId = new Promise((resolve, reject) => {
+		client.mset(
+			categories.reduce<string[]>((prev, current) => {
+				if (current.urlKey) {
+					return [...prev, 'Category:urlKey:' + current.urlKey, 'Category:id:' + current.id];
+				}
+
+				return prev;
+			}, []),
+			(err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(reply);
+			},
+		);
+	});
+
+	return Promise.all([saveCategories, mapUrlKeyToId]);
+}
+
+async function syncMagnetoCategories() {
+	const magentoCategories = await getCategories();
+
+	const categories = await Promise.all(magentoCategories.map(transformCategory));
+
+	await saveCategoriesInCache(categories);
+}
+
+export async function syncMagentoProductsAndCategories() {
+	await Promise.all([syncMagnetoProducts(), syncMagnetoCategories()]);
+}
