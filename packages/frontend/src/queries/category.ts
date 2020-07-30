@@ -7,6 +7,7 @@ export const CATEGORY_QUERY = graphql`
 		category(where: $where) {
 			id
 			...CategorySidebar_category
+			...ProductList_category
 		}
 	}
 `;

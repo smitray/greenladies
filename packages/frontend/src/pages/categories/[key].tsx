@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Link from 'next/link';
 import { fetchQuery, QueryRenderer } from 'react-relay';
 
 import { CategorySidebar } from '../../components/CategorySidebar';
+import { ProductList } from '../../components/ProductList';
 import { useRelayEnvironment } from '../../lib/relay-environment';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
@@ -23,24 +23,16 @@ const Category: MyNextPage<Props> = ({ categoryKey }) => {
 			variables={{ where: { key: categoryKey } }}
 			render={({ error, props }) => {
 				if (error) {
+					// TODO: error page
 					return <div>{error.message}</div>;
 				}
 
 				if (props) {
 					return (
-						<div>
+						<React.Fragment>
 							<CategorySidebar category={props.category} />
-							{props.category.id}
-							<Link href="/categories/[key]" as="/categories/heh">
-								<a>To heh</a>
-							</Link>
-							<Link href="/categories/[key]" as="/categories/meh">
-								<a>To meh</a>
-							</Link>
-							<Link href="/">
-								<a>To home</a>
-							</Link>
-						</div>
+							<ProductList category={props.category} />
+						</React.Fragment>
 					);
 				}
 

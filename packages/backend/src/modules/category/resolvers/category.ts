@@ -10,8 +10,6 @@ const resolvers: CategoryModuleResolversType = {
 		key: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			console.log(category.custom_attributes);
-
 			return category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '';
 		},
 		name: async ({ id }, _args, { injector }) => {

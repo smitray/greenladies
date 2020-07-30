@@ -1,0 +1,7 @@
+input ProductWhereUniqueInput {
+	sku: String!
+}
+
+type Query {
+	product(where: ProductWhereUniqueInput!): Product!
+}

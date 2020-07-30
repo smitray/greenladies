@@ -39,7 +39,7 @@ export interface MagentoFullCategory {
 	}[];
 }
 
-export async function getCategory(id: string | number) {
+export async function getCategory(id: string) {
 	const { data } = await instance.get('/rest/default/V1/categories/' + id);
 
 	return data as MagentoFullCategory;
