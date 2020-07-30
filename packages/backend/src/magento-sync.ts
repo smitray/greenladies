@@ -1,20 +1,15 @@
-import 'dotenv/config';
-
-import redis from 'redis';
-
 import { getCategories, MagentoFullCategory } from './api/category';
 import { getProducts, getProductsByCategoryId, MagentoFullProduct } from './api/product';
+import { redisCacheConnection } from './redis-connection';
 
-const client = redis.createClient({ host: 'redis-cache' });
-
-interface Product {
+export interface Product {
 	id: string;
 	sku: string;
 	name: string;
 	price: number;
 	visibility: 'none' | 'catalog' | 'search' | 'catalog+search';
 	type: string;
-	urlKey: string | null;
+	urlKey: string;
 }
 
 function transformVisibility(visibility: number) {
@@ -40,14 +35,15 @@ function transformProduct(product: MagentoFullProduct): Product {
 		price: product.price,
 		visibility: transformVisibility(product.visibility),
 		type: product.type_id,
-		urlKey: product.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || null,
+		// TODO: throw error if not set
+		urlKey: product.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
 	};
 }
 
 async function saveProductsInCache(products: Product[]) {
 	// Save product id => product
 	const saveProducts = new Promise((resolve, reject) => {
-		client.mset(
+		redisCacheConnection.mset(
 			products.reduce<string[]>((prev, current) => {
 				return [...prev, 'Product:id:' + current.id, JSON.stringify(current)];
 			}, []),
@@ -63,7 +59,7 @@ async function saveProductsInCache(products: Product[]) {
 
 	// Save product urlKey => product id
 	const mapUrlKeyToId = new Promise((resolve, reject) => {
-		client.mset(
+		redisCacheConnection.mset(
 			products.reduce<string[]>((prev, current) => {
 				if (current.type !== 'virtual' && current.urlKey) {
 					return [...prev, 'Product:urlKey:' + current.urlKey, 'Product:id:' + current.id];
@@ -81,7 +77,17 @@ async function saveProductsInCache(products: Product[]) {
 		);
 	});
 
-	return Promise.all([saveProducts, mapUrlKeyToId]);
+	const saveProductIds = new Promise((resolve, reject) => {
+		redisCacheConnection.set('productIds', JSON.stringify(products.map(product => product.id)), (err, reply) => {
+			if (err) {
+				reject(err);
+			}
+
+			resolve(reply);
+		});
+	});
+
+	return Promise.all([saveProducts, mapUrlKeyToId, saveProductIds]);
 }
 
 async function syncMagnetoProducts() {
@@ -92,13 +98,13 @@ async function syncMagnetoProducts() {
 	await saveProductsInCache(products);
 }
 
-interface Category {
+export interface Category {
 	id: string;
 	parentId: string;
 	name: string;
 	childrenIds: string[];
 	includeInMenu: boolean;
-	urlKey: string | null;
+	urlKey: string;
 	productIds: string[];
 }
 
@@ -109,7 +115,8 @@ async function transformCategory(category: MagentoFullCategory): Promise<Categor
 		name: category.name,
 		childrenIds: category.children === '' ? [] : category.children.split(','),
 		includeInMenu: category.include_in_menu,
-		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || null,
+		// TODO: throw error if not set
+		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
 		productIds: (await getProductsByCategoryId(category.id)).map(category => String(category.id)),
 	};
 }
@@ -117,7 +124,7 @@ async function transformCategory(category: MagentoFullCategory): Promise<Categor
 async function saveCategoriesInCache(categories: Category[]) {
 	// Save category id => category
 	const saveCategories = new Promise((resolve, reject) => {
-		client.mset(
+		redisCacheConnection.mset(
 			categories.reduce<string[]>((prev, current) => {
 				return [...prev, 'Category:id:' + current.id, JSON.stringify(current)];
 			}, []),
@@ -133,10 +140,10 @@ async function saveCategoriesInCache(categories: Category[]) {
 
 	// Save product urlKey => product id
 	const mapUrlKeyToId = new Promise((resolve, reject) => {
-		client.mset(
+		redisCacheConnection.mset(
 			categories.reduce<string[]>((prev, current) => {
 				if (current.urlKey) {
-					return [...prev, 'Category:urlKey:' + current.urlKey, 'Category:id:' + current.id];
+					return [...prev, 'Category:urlKey:' + current.urlKey, current.id];
 				}
 
 				return prev;

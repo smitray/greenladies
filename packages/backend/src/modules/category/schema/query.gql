@@ -1,9 +1,8 @@
 input CategoryWhereUniqueInput {
 	id: String
-	key: String
+	urlKey: String
 }
 
 type Query {
-	categories: [Category!]!
 	category(where: CategoryWhereUniqueInput!): Category!
 }

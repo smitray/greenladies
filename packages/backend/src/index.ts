@@ -9,7 +9,7 @@ import { syncMagentoProductsAndCategories } from './magento-sync';
 (async function () {
 	const app = express();
 
-	syncMagentoProductsAndCategories();
+	await syncMagentoProductsAndCategories();
 
 	const server = await createApolloServer();
 	server.applyMiddleware({

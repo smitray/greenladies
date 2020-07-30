@@ -1,22 +1,67 @@
 import { Injectable } from '@graphql-modules/di';
 
-import { getProduct, getProductBySku, getProducts, getProductsByCategoryId } from '../../api/product';
+import { Product } from '../../magento-sync';
+import { redisCacheConnection } from '../../redis-connection';
 
 @Injectable()
 export class ProductProvider {
-	getProducts() {
-		return getProducts();
+	async getProducts() {
+		const productIds = await new Promise<string[]>((resolve, reject) => {
+			redisCacheConnection.get('productIds', (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (reply === null) {
+					return reject('Products not found, reload cache');
+				}
+
+				return resolve(JSON.parse(reply));
+			});
+		});
+
+		return new Promise<Product[]>((resolve, reject) => {
+			redisCacheConnection.mget(productIds, (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
+
+				resolve(reply.map(jsonProduct => JSON.parse(jsonProduct)));
+			});
+		});
 	}
 
-	getProduct(id: string | number) {
-		return getProduct(id);
+	getProduct(id: string) {
+		return new Promise<Product>((resolve, reject) => {
+			redisCacheConnection.get('Product:id:' + id, (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (reply === null) {
+					return reject(new Error('Product not found'));
+				}
+
+				return resolve(JSON.parse(reply));
+			});
+		});
 	}
 
-	getProductBySku(sku: string) {
-		return getProductBySku(sku);
-	}
+	async getProductByUrlKey(urlKey: string) {
+		const id = await new Promise<string>((resolve, reject) => {
+			redisCacheConnection.get('Product:urlKey:' + urlKey, (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
 
-	getProductsByCategoryId(categoryId: string) {
-		return getProductsByCategoryId(categoryId);
+				if (reply === null) {
+					return reject(new Error('Product not found'));
+				}
+
+				return resolve(JSON.parse(reply));
+			});
+		});
+
+		return this.getProduct(id);
 	}
 }

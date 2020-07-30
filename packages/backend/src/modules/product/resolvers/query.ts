@@ -4,8 +4,8 @@ import { ProductProvider } from '../product.provider';
 const resolvers: ProductModuleResolversType = {
 	Query: {
 		product: async (_parent, { where }, { injector }) => {
-			const { sku } = where;
-			const product = await injector.get(ProductProvider).getProductBySku(sku);
+			const { urlKey } = where;
+			const product = await injector.get(ProductProvider).getProductByUrlKey(urlKey);
 
 			return { id: String(product.id) };
 		},

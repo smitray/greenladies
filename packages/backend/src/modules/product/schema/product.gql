@@ -2,4 +2,5 @@ type Product implements Node {
 	id: ID!
 	sku: String!
 	name: String!
+	urlKey: String!
 }

@@ -7,10 +7,10 @@ const resolvers: CategoryModuleResolversType = {
 		id: ({ id }) => {
 			return toGlobalId('Category', id);
 		},
-		key: async ({ id }, _args, { injector }) => {
+		urlKey: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			return category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '';
+			return category.urlKey;
 		},
 		name: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
@@ -20,26 +20,26 @@ const resolvers: CategoryModuleResolversType = {
 		includeInMenu: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			return category.include_in_menu;
+			return category.includeInMenu;
 		},
 		children: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			if (category.children.length === 0) {
+			if (category.childrenIds.length === 0) {
 				return [];
 			}
 
-			return category.children.split(',').map(id => ({ id }));
+			return category.childrenIds.map(id => ({ id }));
 		},
 		parent: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
 			// The category with id=2 is the default category (root)
-			if (category.parent_id === 2) {
+			if (category.parentId === '2') {
 				return null;
 			}
 
-			return { id: String(category.parent_id) };
+			return { id: String(category.parentId) };
 		},
 	},
 };

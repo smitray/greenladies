@@ -1,6 +1,6 @@
 type Category implements Node {
 	id: ID!
-	key: String!
+	urlKey: String!
 	name: String!
 	# availableSortBy: [String!]!
 	includeInMenu: Boolean!

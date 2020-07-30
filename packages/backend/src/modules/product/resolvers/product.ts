@@ -17,6 +17,11 @@ const resolvers: ProductModuleResolversType = {
 
 			return product.name;
 		},
+		urlKey: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct(id);
+
+			return product.urlKey;
+		},
 	},
 };
 

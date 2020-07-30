@@ -9,10 +9,10 @@ import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
 
 interface Props {
-	categoryKey: string;
+	categoryUrlKey: string;
 }
 
-const Category: MyNextPage<Props> = ({ categoryKey }) => {
+const Category: MyNextPage<Props> = ({ categoryUrlKey }) => {
 	const environment = useRelayEnvironment();
 
 	return (
@@ -20,7 +20,7 @@ const Category: MyNextPage<Props> = ({ categoryKey }) => {
 			fetchPolicy="store-and-network"
 			environment={environment}
 			query={CATEGORY_QUERY}
-			variables={{ where: { key: categoryKey } }}
+			variables={{ where: { urlKey: categoryUrlKey } }}
 			render={({ error, props }) => {
 				if (error) {
 					// TODO: error page
@@ -44,14 +44,14 @@ const Category: MyNextPage<Props> = ({ categoryKey }) => {
 
 Category.getInitialProps = async ({ relayEnvironment, query }) => {
 	const { key } = query;
-	const categoryKey = typeof key === 'string' ? key : '';
+	const categoryUrlKey = typeof key === 'string' ? key : '';
 	await fetchQuery<CategoryQuery>(relayEnvironment, CATEGORY_QUERY, {
 		where: {
-			key: categoryKey,
+			urlKey: categoryUrlKey,
 		},
 	});
 
-	return { categoryKey };
+	return { categoryUrlKey };
 };
 
 export default Category;

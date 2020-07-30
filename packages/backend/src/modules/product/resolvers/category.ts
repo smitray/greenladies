@@ -1,18 +1,14 @@
 import { ProductModuleResolversType } from '..';
 import { connectionFromArray } from '../../../utils/relay';
-import { ProductProvider } from '../product.provider';
+import { CategoryProvider } from '../../category/category.provider';
 
 const resolvers: ProductModuleResolversType = {
 	Category: {
 		products: async ({ id }, args, { injector }) => {
-			const simpleProducts = await injector.get(ProductProvider).getProductsByCategoryId(id);
-
-			const products = await Promise.all(
-				simpleProducts.map(({ sku }) => injector.get(ProductProvider).getProductBySku(sku)),
-			);
+			const category = await injector.get(CategoryProvider).getCategory(id);
 
 			return connectionFromArray(
-				products.map(product => ({ ...product, id: String(product.id) })),
+				category.productIds.map(id => ({ id })),
 				args,
 			);
 		},
