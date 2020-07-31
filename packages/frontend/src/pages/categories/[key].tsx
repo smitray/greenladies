@@ -1,12 +1,20 @@
 import React from 'react';
 
 import { fetchQuery, QueryRenderer } from 'react-relay';
+import styled from 'styled-components';
 
 import { CategorySidebar } from '../../components/CategorySidebar';
 import { ProductList } from '../../components/ProductList';
 import { useRelayEnvironment } from '../../lib/relay-environment';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
+
+const CenterWrapper = styled.div`
+	max-width: 1240px;
+	padding: 0 40px;
+	margin: 0 auto;
+	display: flex;
+`;
 
 interface Props {
 	categoryUrlKey: string;
@@ -29,10 +37,14 @@ const Category: MyNextPage<Props> = ({ categoryUrlKey }) => {
 
 				if (props) {
 					return (
-						<React.Fragment>
-							<CategorySidebar category={props.category} />
-							<ProductList category={props.category} />
-						</React.Fragment>
+						<CenterWrapper>
+							<div style={{ width: '200px', paddingRight: '20px' }}>
+								<CategorySidebar category={props.category} />
+							</div>
+							<div style={{ flexGrow: 1 }}>
+								<ProductList category={props.category} />
+							</div>
+						</CenterWrapper>
 					);
 				}
 

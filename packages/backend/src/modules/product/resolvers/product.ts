@@ -7,11 +7,6 @@ const resolvers: ProductModuleResolversType = {
 		id: ({ id }) => {
 			return toGlobalId('Product', id);
 		},
-		sku: async ({ id }, _args, { injector }) => {
-			const product = await injector.get(ProductProvider).getProduct(id);
-
-			return product.sku;
-		},
 		name: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct(id);
 
@@ -21,6 +16,11 @@ const resolvers: ProductModuleResolversType = {
 			const product = await injector.get(ProductProvider).getProduct(id);
 
 			return product.urlKey;
+		},
+		price: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct(id);
+
+			return product.price;
 		},
 	},
 };

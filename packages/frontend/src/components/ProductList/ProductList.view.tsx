@@ -2,6 +2,8 @@ import React from 'react';
 
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { ProductCard } from '../ProductCard';
+
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
 
 interface Props {
@@ -14,9 +16,15 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	}
 
 	return (
-		<div>
-			{category.products.edges.map(product => (
-				<div key={product.node.id}>{product.node.name}</div>
+		<div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
+			{category.products.edges.map(edge => (
+				<ProductCard key={edge.node.id} product={edge.node} />
+			))}
+			{category.products.edges.map(edge => (
+				<ProductCard key={edge.node.id} product={edge.node} />
+			))}
+			{category.products.edges.map(edge => (
+				<ProductCard key={edge.node.id} product={edge.node} />
 			))}
 		</div>
 	);
@@ -29,8 +37,7 @@ export default createFragmentContainer(ProductListView, {
 				edges {
 					node {
 						id
-						sku
-						name
+						...ProductCard_product
 					}
 				}
 			}

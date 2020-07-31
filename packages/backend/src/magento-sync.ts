@@ -100,23 +100,23 @@ async function syncMagnetoProducts() {
 
 export interface Category {
 	id: string;
-	parentId: string;
 	name: string;
-	childrenIds: string[];
 	includeInMenu: boolean;
 	urlKey: string;
+	parentId: string;
+	childrenIds: string[];
 	productIds: string[];
 }
 
 async function transformCategory(category: MagentoFullCategory): Promise<Category> {
 	return {
 		id: String(category.id),
-		parentId: String(category.parent_id),
 		name: category.name,
-		childrenIds: category.children === '' ? [] : category.children.split(','),
 		includeInMenu: category.include_in_menu,
 		// TODO: throw error if not set
 		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
+		parentId: String(category.parent_id),
+		childrenIds: category.children === '' ? [] : category.children.split(','),
 		productIds: (await getProductsByCategoryId(category.id)).map(category => String(category.id)),
 	};
 }
