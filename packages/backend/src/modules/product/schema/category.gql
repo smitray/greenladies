@@ -1,3 +1,11 @@
+enum OrderProducts {
+	popularity_DESC
+	created_DESC
+	price_ASC
+	price_DESC
+	discount_DESC
+}
+
 extend type Category {
-	products(first: Int, after: String, last: Int, before: String): ProductConnection
+	products(first: Int, after: String, last: Int, before: String, orderBy: OrderProducts): ProductConnection
 }
