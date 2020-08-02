@@ -26,12 +26,6 @@ const resolvers: ProductModuleResolversType = {
 							// TODO: filter by size
 						}
 
-						if (filter.price_between) {
-							if (product.price < filter.price_between.min || product.price > filter.price_between.max) {
-								return false;
-							}
-						}
-
 						return true;
 					});
 				}
@@ -47,9 +41,6 @@ const resolvers: ProductModuleResolversType = {
 				}
 			}
 
-			const brands: string[] = []; // [...new Set(products.map(product => product.brand))]
-			const colours: string[] = []; // [...new Set(products.map(product => product.colour))]
-			const sizes: string[] = []; // [...new Set(products.map(product => product.size))]
 			const price = products.reduce(
 				(prev, current) => {
 					return {
@@ -59,6 +50,20 @@ const resolvers: ProductModuleResolversType = {
 				},
 				{ min: 1000000000, max: -1000000000 },
 			);
+
+			if (filter && filter.price_between) {
+				products = products.filter(product => {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					if (product.price < filter.price_between!.min || product.price > filter.price_between!.max) {
+						return false;
+					}
+
+					return true;
+				});
+			}
+			const brands: string[] = []; // [...new Set(products.map(product => product.brand))]
+			const colours: string[] = []; // [...new Set(products.map(product => product.colour))]
+			const sizes: string[] = []; // [...new Set(products.map(product => product.size))]
 
 			return {
 				...connectionFromArray(
