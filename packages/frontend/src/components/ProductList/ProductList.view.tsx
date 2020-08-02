@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
 import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
+import styled from 'styled-components';
 
 import { useRelayEnvironment } from '../../lib/relay-environment';
+import { CategoryFilter } from '../CategoryFilter';
 import { ProductCard } from '../ProductCard';
 
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
@@ -23,25 +25,145 @@ const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
 	}
 `;
 
+const FiltersContainer = styled.div`
+	display: flex;
+`;
+
 interface Props {
 	category: ProductList_category;
 }
 
 const ProductListView: React.FC<Props> = ({ category }) => {
 	const [products, setProducts] = useState(category.products?.edges.map(edge => edge.node) || []);
+	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
+	const [orderBy, setOrderBy] = useState('popularity_DESC');
 
 	if (products.length === 0) {
 		return <div>No products found</div>;
 	}
 
+	const categoryFilterOnClick = (id: string) => () => {
+		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : id));
+	};
+
+	const categoryFilterOnClickOutside = (id: string) => () => {
+		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : currentlyOpenedFilter));
+	};
+
+	const orderByChange = async (orderBy: string) => {
+		if (
+			orderBy === 'popularity_DESC' ||
+			orderBy === 'created_DESC' ||
+			orderBy === 'price_ASC' ||
+			orderBy === 'price_DESC' ||
+			orderBy === 'discount_DESC'
+		) {
+			setOrderBy(orderBy);
+			fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
+				where: {
+					id: category.id,
+				},
+				orderBy,
+			}).then(response => {
+				const products = response.category.products?.edges.map(edge => edge.node) || [];
+				setProducts(products);
+			});
+		}
+	};
+
 	return (
 		<div>
+			<FiltersContainer>
+				<CategoryFilter
+					title="Sortera på"
+					open={currentlyOpenedFilter === 'sort'}
+					onClick={categoryFilterOnClick('sort')}
+					onClickOutside={categoryFilterOnClickOutside('sort')}
+				>
+					<div
+						style={{
+							textDecoration: orderBy === 'popularity_DESC' ? 'underline' : 'none',
+							fontWeight: orderBy === 'popularity_DESC' ? 'bold' : 'normal',
+						}}
+						onClick={() => orderByChange('popularity_DESC')}
+					>
+						Popularitet
+					</div>
+					<div
+						style={{
+							textDecoration: orderBy === 'created_DESC' ? 'underline' : 'none',
+							fontWeight: orderBy === 'created_DESC' ? 'bold' : 'normal',
+						}}
+						onClick={() => orderByChange('created_DESC')}
+					>
+						Nyheter
+					</div>
+					<div
+						style={{
+							textDecoration: orderBy === 'price_ASC' ? 'underline' : 'none',
+							fontWeight: orderBy === 'price_ASC' ? 'bold' : 'normal',
+						}}
+						onClick={() => orderByChange('price_ASC')}
+					>
+						Lägst pris
+					</div>
+					<div
+						style={{
+							textDecoration: orderBy === 'price_DESC' ? 'underline' : 'none',
+							fontWeight: orderBy === 'price_DESC' ? 'bold' : 'normal',
+						}}
+						onClick={() => orderByChange('price_DESC')}
+					>
+						Högst pris
+					</div>
+					<div
+						style={{
+							textDecoration: orderBy === 'discount_DESC' ? 'underline' : 'none',
+							fontWeight: orderBy === 'discount_DESC' ? 'bold' : 'normal',
+						}}
+						onClick={() => orderByChange('discount_DESC')}
+					>
+						Högst rabatt
+					</div>
+				</CategoryFilter>
+				<CategoryFilter
+					title="Storlek"
+					open={currentlyOpenedFilter === 'size'}
+					onClick={categoryFilterOnClick('size')}
+					onClickOutside={categoryFilterOnClickOutside('size')}
+				>
+					<div>size</div>
+				</CategoryFilter>
+				<CategoryFilter
+					title="Märke"
+					open={currentlyOpenedFilter === 'brand'}
+					onClick={categoryFilterOnClick('brand')}
+					onClickOutside={categoryFilterOnClickOutside('brand')}
+				>
+					<div>brand</div>
+				</CategoryFilter>
+				<CategoryFilter
+					title="Färg"
+					open={currentlyOpenedFilter === 'colour'}
+					onClick={categoryFilterOnClick('colour')}
+					onClickOutside={categoryFilterOnClickOutside('colour')}
+				>
+					<div>colour</div>
+				</CategoryFilter>
+				<CategoryFilter
+					title="Pris"
+					open={currentlyOpenedFilter === 'price'}
+					onClick={categoryFilterOnClick('price')}
+					onClickOutside={categoryFilterOnClickOutside('price')}
+				>
+					<div>price</div>
+				</CategoryFilter>
+			</FiltersContainer>
 			<select
 				name="sort"
 				id="sort"
 				onChange={e => {
-					console.log(e.target.value);
 					if (
 						e.target.value === 'popularity_DESC' ||
 						e.target.value === 'created_DESC' ||
