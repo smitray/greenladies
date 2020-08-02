@@ -1,3 +1,3 @@
 import { createConnectionTypes } from '../../relay/connection';
 
-export default createConnectionTypes('Product');
+export default createConnectionTypes('Product', ['filterValues: ProductsFilterValues!']);

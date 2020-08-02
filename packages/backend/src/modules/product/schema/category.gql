@@ -6,6 +6,25 @@ enum OrderProducts {
 	discount_DESC
 }
 
+input RangeInput {
+	min: Float!
+	max: Float!
+}
+
+input FilterProducts {
+	size_in: [String!]
+	brand_in: [String!]
+	colour_in: [String!]
+	price_between: RangeInput
+}
+
 extend type Category {
-	products(first: Int, after: String, last: Int, before: String, orderBy: OrderProducts): ProductConnection
+	products(
+		first: Int
+		after: String
+		last: Int
+		before: String
+		orderBy: OrderProducts
+		filter: FilterProducts
+	): ProductConnection
 }

@@ -1,0 +1,11 @@
+type Range {
+	min: Float!
+	max: Float!
+}
+
+type ProductsFilterValues {
+	sizes: [String!]!
+	brands: [String!]!
+	colours: [String!]!
+	price: Range!
+}
