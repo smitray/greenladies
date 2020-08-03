@@ -14,15 +14,15 @@ const resolvers: ProductModuleResolversType = {
 			if (orderBy || filter) {
 				if (filter) {
 					products = products.filter(product => {
-						if (filter.brand_in) {
+						if (filter.brand_in && filter.brand_in.length > 0) {
 							// TODO: filter by brand
 						}
 
-						if (filter.colour_in) {
+						if (filter.colour_in && filter.colour_in.length > 0) {
 							// TODO: filter by brand
 						}
 
-						if (filter.size_in) {
+						if (filter.size_in && filter.size_in.length > 0) {
 							// TODO: filter by size
 						}
 

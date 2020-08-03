@@ -25,8 +25,11 @@ const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
 	}
 `;
 
-const FiltersContainer = styled.div`
+const FiltersContainer = styled.ul`
 	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 `;
 
 interface Props {
@@ -43,11 +46,11 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 		return <div>No products found</div>;
 	}
 
-	const categoryFilterOnClick = (id: string) => () => {
+	const handleCategoryFilterClick = (id: string) => () => {
 		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : id));
 	};
 
-	const categoryFilterOnClickOutside = (id: string) => () => {
+	const handleCategoryClickOutside = (id: string) => () => {
 		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : currentlyOpenedFilter));
 	};
 
@@ -75,12 +78,13 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	return (
 		<div>
 			<FiltersContainer>
-				<CategoryFilter
+				{/*<CategoryFilter
 					title="Sortera på"
 					open={currentlyOpenedFilter === 'sort'}
-					onClick={categoryFilterOnClick('sort')}
-					onClickOutside={categoryFilterOnClickOutside('sort')}
+					onClick={handleCategoryFilterClick('sort')}
+					onClickOutside={handleCategoryClickOutside('sort')}
 				>
+					<SingleSelectList />
 					<div
 						style={{
 							textDecoration: orderBy === 'popularity_DESC' ? 'underline' : 'none',
@@ -130,35 +134,39 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 				<CategoryFilter
 					title="Storlek"
 					open={currentlyOpenedFilter === 'size'}
-					onClick={categoryFilterOnClick('size')}
-					onClickOutside={categoryFilterOnClickOutside('size')}
+					onClick={handleCategoryFilterClick('size')}
+					onClickOutside={handleCategoryClickOutside('size')}
 				>
+					<MultiSelectList />
 					<div>size</div>
 				</CategoryFilter>
 				<CategoryFilter
 					title="Märke"
 					open={currentlyOpenedFilter === 'brand'}
-					onClick={categoryFilterOnClick('brand')}
-					onClickOutside={categoryFilterOnClickOutside('brand')}
+					onClick={handleCategoryFilterClick('brand')}
+					onClickOutside={handleCategoryClickOutside('brand')}
 				>
+					<MultiSelectList />
 					<div>brand</div>
 				</CategoryFilter>
 				<CategoryFilter
 					title="Färg"
 					open={currentlyOpenedFilter === 'colour'}
-					onClick={categoryFilterOnClick('colour')}
-					onClickOutside={categoryFilterOnClickOutside('colour')}
+					onClick={handleCategoryFilterClick('colour')}
+					onClickOutside={handleCategoryClickOutside('colour')}
 				>
+					<MultiSelectList />
 					<div>colour</div>
 				</CategoryFilter>
 				<CategoryFilter
 					title="Pris"
 					open={currentlyOpenedFilter === 'price'}
-					onClick={categoryFilterOnClick('price')}
-					onClickOutside={categoryFilterOnClickOutside('price')}
+					onClick={handleCategoryFilterClick('price')}
+					onClickOutside={handleCategoryClickOutside('price')}
 				>
+					<RangeSelect />
 					<div>price</div>
-				</CategoryFilter>
+				</CategoryFilter>*/}
 			</FiltersContainer>
 			<select
 				name="sort"
