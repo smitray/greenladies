@@ -1,3 +1,5 @@
+import 'rc-slider/assets/index.css';
+
 import React from 'react';
 
 import { NextComponentType } from 'next';

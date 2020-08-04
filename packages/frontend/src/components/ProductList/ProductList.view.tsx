@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { useRelayEnvironment } from '../../lib/relay-environment';
 import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
+import { CategoryFilterRangeSelect } from '../CategoryFilterRangeSelect';
 import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
 import { ProductCard } from '../ProductCard';
 
@@ -46,6 +47,9 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	const [selectedItem, setSelectedItem] = useState('popularity_DESC');
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const [open2, setOpen2] = useState(false);
+	const [open3, setOpen3] = useState(false);
+	const [from, setFrom] = useState(0);
+	const [to, setTo] = useState(5000);
 
 	if (products.length === 0) {
 		return <div>No products found</div>;
@@ -121,7 +125,21 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onOpenRequest={() => setOpen2(true)}
 					onCloseRequest={() => setOpen2(false)}
 				/>
-
+				<CategoryFilterRangeSelect
+					open={open3}
+					title="Pris"
+					onOpenRequest={() => setOpen3(true)}
+					onCloseRequest={() => setOpen3(false)}
+					min={117}
+					max={1746}
+					from={from}
+					to={to}
+					onFromChange={newFrom => {
+						setFrom(newFrom);
+						console.log('new from', newFrom);
+					}}
+					onToChange={newTo => setTo(newTo)}
+				/>
 				{/*<CategoryFilter
 					title="Sortera på"
 					open={currentlyOpenedFilter === 'sort'}
