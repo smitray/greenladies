@@ -43,11 +43,7 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
-	const [open, setOpen] = useState(false);
-	const [selectedItem, setSelectedItem] = useState('popularity_DESC');
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const [open2, setOpen2] = useState(false);
-	const [open3, setOpen3] = useState(false);
 	const [lowerValue, setLowerValue] = useState(0);
 	const [upperValue, setUpperValue] = useState(5000);
 
@@ -55,11 +51,11 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 		return <div>No products found</div>;
 	}
 
-	const handleCategoryFilterClick = (id: string) => () => {
-		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : id));
+	const handleCategoryFilterOpen = (id: string) => () => {
+		setCurrentlyOpenedFilter(id);
 	};
 
-	const handleCategoryClickOutside = (id: string) => () => {
+	const handleCategoryFilterClose = (id: string) => () => {
 		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : currentlyOpenedFilter));
 	};
 
@@ -88,7 +84,6 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 		<div>
 			<FiltersContainer>
 				<CategoryFilterSingleSelect
-					open={open}
 					title="Sortera på"
 					items={[
 						{ id: 'popularity_DESC', node: 'Popularitet' },
@@ -97,15 +92,16 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 						{ id: 'price_DESC', node: 'Hösta pris' },
 						{ id: 'discount_DESC', node: 'Högsta rabatt' },
 					]}
-					selectedItemId={selectedItem}
+					selectedItemId={orderBy}
 					onItemSelected={itemId => {
-						setSelectedItem(itemId);
+						setOrderBy(itemId);
+						orderByChange(itemId);
 					}}
-					onOpenRequest={() => setOpen(true)}
-					onCloseRequest={() => setOpen(false)}
+					open={currentlyOpenedFilter === 'order'}
+					onOpenRequest={handleCategoryFilterOpen('order')}
+					onCloseRequest={handleCategoryFilterClose('order')}
 				/>
 				<CategoryFilterMultiSelect
-					open={open2}
 					title="Märke"
 					items={[
 						{ id: '0', node: 'Adidas' },
@@ -122,146 +118,27 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onItemUnselected={itemId => {
 						setSelectedItems(items => items.filter(item => item !== itemId));
 					}}
-					onOpenRequest={() => setOpen2(true)}
-					onCloseRequest={() => setOpen2(false)}
+					open={currentlyOpenedFilter === 'brand'}
+					onOpenRequest={handleCategoryFilterOpen('brand')}
+					onCloseRequest={handleCategoryFilterClose('brand')}
 				/>
 				<CategoryFilterRangeSelect
-					open={open3}
 					title="Pris"
-					onOpenRequest={() => setOpen3(true)}
-					onCloseRequest={() => setOpen3(false)}
 					min={117}
 					max={1746}
 					lowerValue={lowerValue}
 					upperValue={upperValue}
 					onLowerValueChange={newFrom => {
 						setLowerValue(newFrom);
-						console.log('new from', newFrom);
 					}}
 					onUpperValueChange={newTo => {
 						setUpperValue(newTo);
-						console.log('new to', newTo);
 					}}
-				/>
-				{/*<CategoryFilter
-					title="Sortera på"
-					open={currentlyOpenedFilter === 'sort'}
-					onClick={handleCategoryFilterClick('sort')}
-					onClickOutside={handleCategoryClickOutside('sort')}
-				>
-					<SingleSelectList />
-					<div
-						style={{
-							textDecoration: orderBy === 'popularity_DESC' ? 'underline' : 'none',
-							fontWeight: orderBy === 'popularity_DESC' ? 'bold' : 'normal',
-						}}
-						onClick={() => orderByChange('popularity_DESC')}
-					>
-						Popularitet
-					</div>
-					<div
-						style={{
-							textDecoration: orderBy === 'created_DESC' ? 'underline' : 'none',
-							fontWeight: orderBy === 'created_DESC' ? 'bold' : 'normal',
-						}}
-						onClick={() => orderByChange('created_DESC')}
-					>
-						Nyheter
-					</div>
-					<div
-						style={{
-							textDecoration: orderBy === 'price_ASC' ? 'underline' : 'none',
-							fontWeight: orderBy === 'price_ASC' ? 'bold' : 'normal',
-						}}
-						onClick={() => orderByChange('price_ASC')}
-					>
-						Lägst pris
-					</div>
-					<div
-						style={{
-							textDecoration: orderBy === 'price_DESC' ? 'underline' : 'none',
-							fontWeight: orderBy === 'price_DESC' ? 'bold' : 'normal',
-						}}
-						onClick={() => orderByChange('price_DESC')}
-					>
-						Högst pris
-					</div>
-					<div
-						style={{
-							textDecoration: orderBy === 'discount_DESC' ? 'underline' : 'none',
-							fontWeight: orderBy === 'discount_DESC' ? 'bold' : 'normal',
-						}}
-						onClick={() => orderByChange('discount_DESC')}
-					>
-						Högst rabatt
-					</div>
-				</CategoryFilter>
-				<CategoryFilter
-					title="Storlek"
-					open={currentlyOpenedFilter === 'size'}
-					onClick={handleCategoryFilterClick('size')}
-					onClickOutside={handleCategoryClickOutside('size')}
-				>
-					<MultiSelectList />
-					<div>size</div>
-				</CategoryFilter>
-				<CategoryFilter
-					title="Märke"
-					open={currentlyOpenedFilter === 'brand'}
-					onClick={handleCategoryFilterClick('brand')}
-					onClickOutside={handleCategoryClickOutside('brand')}
-				>
-					<MultiSelectList />
-					<div>brand</div>
-				</CategoryFilter>
-				<CategoryFilter
-					title="Färg"
-					open={currentlyOpenedFilter === 'colour'}
-					onClick={handleCategoryFilterClick('colour')}
-					onClickOutside={handleCategoryClickOutside('colour')}
-				>
-					<MultiSelectList />
-					<div>colour</div>
-				</CategoryFilter>
-				<CategoryFilter
-					title="Pris"
 					open={currentlyOpenedFilter === 'price'}
-					onClick={handleCategoryFilterClick('price')}
-					onClickOutside={handleCategoryClickOutside('price')}
-				>
-					<RangeSelect />
-					<div>price</div>
-				</CategoryFilter>*/}
+					onOpenRequest={handleCategoryFilterOpen('price')}
+					onCloseRequest={handleCategoryFilterClose('price')}
+				/>
 			</FiltersContainer>
-			<select
-				name="sort"
-				id="sort"
-				onChange={e => {
-					if (
-						e.target.value === 'popularity_DESC' ||
-						e.target.value === 'created_DESC' ||
-						e.target.value === 'price_ASC' ||
-						e.target.value === 'price_DESC' ||
-						e.target.value === 'discount_DESC'
-					) {
-						fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
-							where: {
-								id: category.id,
-							},
-							orderBy: e.target.value,
-						}).then(response => {
-							const products = response.category.products?.edges.map(edge => edge.node) || [];
-							setProducts(products);
-						});
-					}
-				}}
-			>
-				<option value="popularity_DESC">Popularitet</option>
-				<option value="created_DESC">Nyheter</option>
-				<option value="price_ASC">Lägsta pris</option>
-				<option value="price_DESC">Högsta pris</option>
-				<option value="discount_DESC">Högst rabatt</option>
-			</select>
 			<div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
 				{products.map(product => (
 					<ProductCard key={product.id} product={product} />
