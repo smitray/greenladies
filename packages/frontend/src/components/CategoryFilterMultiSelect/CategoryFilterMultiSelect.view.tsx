@@ -9,22 +9,24 @@ interface Props {
 	onOpenRequest?: () => void;
 	onCloseRequest?: () => void;
 	title: string;
-	selectedItemId: string;
+	selectedItemIds: string[];
 	items: {
 		id: string;
 		node: React.ReactNode;
 	}[];
 	onItemSelected?: (itemId: string) => void;
+	onItemUnselected?: (itemId: string) => void;
 }
 
-export const CategoryFilterSingleSelectView: React.FC<Props> = ({
+export const CategoryFilterMultiSelectView: React.FC<Props> = ({
 	open,
 	onOpenRequest,
 	onCloseRequest,
 	title,
-	selectedItemId,
+	selectedItemIds,
 	items,
 	onItemSelected,
+	onItemUnselected,
 }) => {
 	const itemChunks = useMemo(() => chunkifyArray(items), [items]);
 
@@ -39,23 +41,26 @@ export const CategoryFilterSingleSelectView: React.FC<Props> = ({
 					onCloseRequest={onCloseRequest}
 					columns={itemChunks.map((chunk, index) => (
 						<React.Fragment key={index}>
-							{chunk.map(item => (
-								<CategoryFilterColumnListItem
-									key={item.id}
-									selected={item.id === selectedItemId}
-									onClick={() => {
-										if (onItemSelected) {
-											onItemSelected(item.id);
-										}
+							{chunk.map(item => {
+								const selected = selectedItemIds.findIndex(itemId => itemId === item.id) !== -1;
+								return (
+									<CategoryFilterColumnListItem
+										key={item.id}
+										selected={selected}
+										onClick={() => {
+											if (selected && onItemUnselected) {
+												onItemUnselected(item.id);
+											}
 
-										if (onCloseRequest) {
-											onCloseRequest();
-										}
-									}}
-								>
-									{item.node}
-								</CategoryFilterColumnListItem>
-							))}
+											if (!selected && onItemSelected) {
+												onItemSelected(item.id);
+											}
+										}}
+									>
+										{item.node}
+									</CategoryFilterColumnListItem>
+								);
+							})}
 						</React.Fragment>
 					))}
 				/>

@@ -4,6 +4,7 @@ import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import styled from 'styled-components';
 
 import { useRelayEnvironment } from '../../lib/relay-environment';
+import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
 import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
 import { ProductCard } from '../ProductCard';
 
@@ -43,6 +44,8 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
 	const [open, setOpen] = useState(false);
 	const [selectedItem, setSelectedItem] = useState('popularity_DESC');
+	const [selectedItems, setSelectedItems] = useState<string[]>([]);
+	const [open2, setOpen2] = useState(false);
 
 	if (products.length === 0) {
 		return <div>No products found</div>;
@@ -97,6 +100,28 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onOpenRequest={() => setOpen(true)}
 					onCloseRequest={() => setOpen(false)}
 				/>
+				<CategoryFilterMultiSelect
+					open={open2}
+					title="Märke"
+					items={[
+						{ id: '0', node: 'Adidas' },
+						{ id: '1', node: 'Nike' },
+						{ id: '2', node: 'Whatever' },
+						{ id: '3', node: 'Floats' },
+						{ id: '4', node: 'Your' },
+						{ id: '5', node: 'Boat' },
+					]}
+					selectedItemIds={selectedItems}
+					onItemSelected={itemId => {
+						setSelectedItems(items => [...items, itemId]);
+					}}
+					onItemUnselected={itemId => {
+						setSelectedItems(items => items.filter(item => item !== itemId));
+					}}
+					onOpenRequest={() => setOpen2(true)}
+					onCloseRequest={() => setOpen2(false)}
+				/>
+
 				{/*<CategoryFilter
 					title="Sortera på"
 					open={currentlyOpenedFilter === 'sort'}
