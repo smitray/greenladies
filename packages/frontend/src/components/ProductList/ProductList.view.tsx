@@ -4,7 +4,7 @@ import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import styled from 'styled-components';
 
 import { useRelayEnvironment } from '../../lib/relay-environment';
-import { CategoryFilter } from '../CategoryFilter';
+import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
 import { ProductCard } from '../ProductCard';
 
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
@@ -41,6 +41,8 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
+	const [open, setOpen] = useState(false);
+	const [selectedItem, setSelectedItem] = useState('popularity_DESC');
 
 	if (products.length === 0) {
 		return <div>No products found</div>;
@@ -78,6 +80,23 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	return (
 		<div>
 			<FiltersContainer>
+				<CategoryFilterSingleSelect
+					open={open}
+					title="Sortera på"
+					items={[
+						{ id: 'popularity_DESC', node: 'Popularitet' },
+						{ id: 'created_DESC', node: 'Nyheter' },
+						{ id: 'price_ASC', node: 'Lägsta pris' },
+						{ id: 'price_DESC', node: 'Hösta pris' },
+						{ id: 'discount_DESC', node: 'Högsta rabatt' },
+					]}
+					selectedItemId={selectedItem}
+					onItemSelected={itemId => {
+						setSelectedItem(itemId);
+					}}
+					onOpenRequest={() => setOpen(true)}
+					onCloseRequest={() => setOpen(false)}
+				/>
 				{/*<CategoryFilter
 					title="Sortera på"
 					open={currentlyOpenedFilter === 'sort'}

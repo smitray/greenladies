@@ -9,6 +9,7 @@ export const FilterBoxWrapper = styled.li<FilterBoxWrapperProps>`
 	margin-right: 4px;
 	border: 1px solid ${({ open }) => (open ? '#eaeaea' : 'white')};
 	background: ${({ open }) => (open ? '#eaeaea' : 'white')};
+	z-index: 20;
 
 	&:hover {
 		border: 1px solid #eaeaea;
@@ -31,4 +32,12 @@ export const FilterColumnWrapper = styled.div`
 	width: auto;
 	min-width: 180px;
 	margin-top: 10px;
+
+	> *:first-child {
+		border-left: 1px solid #eaeaea;
+	}
+
+	> *:last-child {
+		border-right: 1px solid #eaeaea;
+	}
 `;

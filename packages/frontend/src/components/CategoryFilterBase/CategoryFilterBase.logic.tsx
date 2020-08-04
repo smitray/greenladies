@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
+
+import { useClickOutside } from '../../hooks/use-click-outside';
 
 import { CategoryFilterBaseView } from './CategoryFilterBase.view';
 
@@ -12,24 +14,21 @@ interface Props {
 
 export const CategoryFilterBaseLogic: React.FC<Props> = ({ open, onOpenRequest, onCloseRequest, title, content }) => {
 	const wrapperRef = useRef<HTMLLIElement>(null);
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (onCloseRequest && wrapperRef.current && !(wrapperRef.current as any).contains(event.target)) {
-				onCloseRequest();
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [onCloseRequest]);
+	useClickOutside(wrapperRef, () => {
+		if (onCloseRequest) {
+			onCloseRequest();
+		}
+	});
 
 	const handleTitleClick = useCallback(() => {
-		if (onOpenRequest) {
+		if (open && onCloseRequest) {
+			onCloseRequest();
+		}
+
+		if (!open && onOpenRequest) {
 			onOpenRequest();
 		}
-	}, [onOpenRequest]);
+	}, [open, onOpenRequest, onCloseRequest]);
 
 	return (
 		<CategoryFilterBaseView
