@@ -5,7 +5,14 @@ import { Range } from 'rc-slider';
 import { CategoryFilterBase } from '../CategoryFilterBase';
 import { CategoryFilterColumns } from '../CategoryFilterColumns';
 
-import { RangeInput, RangeInputSeparator, RangeInputWrapper, RangeWrapper } from './CategoryFilterRangeSelect.styles';
+import {
+	RangeInput,
+	RangeInputContainer,
+	RangeInputPostfix,
+	RangeInputSeparator,
+	RangeInputWrapper,
+	RangeWrapper,
+} from './CategoryFilterRangeSelect.styles';
 
 interface SliderHandleProps {
 	index: number;
@@ -113,55 +120,61 @@ export const CategoryFilterRangeSelectView: React.FC<Props> = ({
 					onCloseRequest={onCloseRequest}
 					columns={[
 						<li key="0">
-							<RangeInputWrapper>
-								<RangeInput
-									maxLength={5}
-									value={lowerValueInput}
-									onChange={event => {
-										const parsedInput = parseInput(event.target.value);
-										const isNum = /^\d+$/.test(parsedInput);
-										if (isNum) {
-											const newLowerValue = Math.max(Math.min(parseInt(parsedInput, 10), upperValue), min);
-											setLowerValueInternal(newLowerValue);
-										} else {
-											setLowerValueInternal(min);
-										}
+							<RangeInputContainer>
+								<RangeInputWrapper>
+									<RangeInput
+										maxLength={5}
+										value={lowerValueInput}
+										onChange={event => {
+											const parsedInput = parseInput(event.target.value);
+											const isNum = /^\d+$/.test(parsedInput);
+											if (isNum) {
+												const newLowerValue = Math.max(Math.min(parseInt(parsedInput, 10), upperValue), min);
+												setLowerValueInternal(newLowerValue);
+											} else {
+												setLowerValueInternal(min);
+											}
 
-										setLowerValueInput(parsedInput);
-									}}
-									onFocus={() => setLowerValueInputFocused(true)}
-									onBlur={() => {
-										setLowerValueInputFocused(false);
-										if (onLowerValueChange && lowerValueInternal !== lowerValue) {
-											onLowerValueChange(lowerValueInternal);
-										}
-									}}
-								/>
+											setLowerValueInput(parsedInput);
+										}}
+										onFocus={() => setLowerValueInputFocused(true)}
+										onBlur={() => {
+											setLowerValueInputFocused(false);
+											if (onLowerValueChange && lowerValueInternal !== lowerValue) {
+												onLowerValueChange(lowerValueInternal);
+											}
+										}}
+									/>
+									<RangeInputPostfix>kr</RangeInputPostfix>
+								</RangeInputWrapper>
 								<RangeInputSeparator />
-								<RangeInput
-									maxLength={5}
-									value={upperValueInput}
-									onChange={event => {
-										const parsedInput = parseInput(event.target.value);
-										const isNum = /^\d+$/.test(parsedInput);
-										if (isNum) {
-											const newUpperValue = Math.min(Math.max(parseInt(parsedInput, 10), lowerValue), max);
-											setUpperValueInternal(newUpperValue);
-										} else {
-											setUpperValueInternal(min);
-										}
+								<RangeInputWrapper>
+									<RangeInput
+										maxLength={5}
+										value={upperValueInput}
+										onChange={event => {
+											const parsedInput = parseInput(event.target.value);
+											const isNum = /^\d+$/.test(parsedInput);
+											if (isNum) {
+												const newUpperValue = Math.min(Math.max(parseInt(parsedInput, 10), lowerValue), max);
+												setUpperValueInternal(newUpperValue);
+											} else {
+												setUpperValueInternal(min);
+											}
 
-										setUpperValueInput(parsedInput);
-									}}
-									onFocus={() => setUpperValueInputFocused(true)}
-									onBlur={() => {
-										setUpperValueInputFocused(false);
-										if (onUpperValueChange && upperValueInternal !== upperValue) {
-											onUpperValueChange(upperValueInternal);
-										}
-									}}
-								/>
-							</RangeInputWrapper>
+											setUpperValueInput(parsedInput);
+										}}
+										onFocus={() => setUpperValueInputFocused(true)}
+										onBlur={() => {
+											setUpperValueInputFocused(false);
+											if (onUpperValueChange && upperValueInternal !== upperValue) {
+												onUpperValueChange(upperValueInternal);
+											}
+										}}
+									/>
+									<RangeInputPostfix>kr</RangeInputPostfix>
+								</RangeInputWrapper>
+							</RangeInputContainer>
 							<RangeWrapper>
 								<Range
 									min={min}
