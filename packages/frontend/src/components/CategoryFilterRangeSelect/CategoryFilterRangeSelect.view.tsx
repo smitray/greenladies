@@ -8,6 +8,7 @@ import { CategoryFilterColumns } from '../CategoryFilterColumns';
 import { RangeInput, RangeInputSeparator, RangeInputWrapper, RangeWrapper } from './CategoryFilterRangeSelect.styles';
 
 interface SliderHandleProps {
+	index: number;
 	offset: number;
 	dragging: boolean;
 }
@@ -15,9 +16,10 @@ interface SliderHandleProps {
 const KNOB_SIZE = 24;
 const GROW_FACTOR = 1.15;
 
-const SliderHandle: React.FC<SliderHandleProps> = ({ offset, dragging }) => {
+const SliderHandle: React.FC<SliderHandleProps> = ({ index, dragging, offset }) => {
 	return (
 		<div
+			key={index}
 			style={{
 				width: `${dragging ? KNOB_SIZE * GROW_FACTOR : KNOB_SIZE}px`,
 				height: `${dragging ? KNOB_SIZE * GROW_FACTOR : KNOB_SIZE}px`,
@@ -53,10 +55,10 @@ interface Props {
 	title: string;
 	min: number;
 	max: number;
-	from: number;
-	to: number;
-	onFromChange?: (from: number) => void;
-	onToChange?: (to: number) => void;
+	lowerValue: number;
+	upperValue: number;
+	onLowerValueChange?: (lowerValue: number) => void;
+	onUpperValueChange?: (upperValue: number) => void;
 }
 
 export const CategoryFilterRangeSelectView: React.FC<Props> = ({
@@ -66,27 +68,39 @@ export const CategoryFilterRangeSelectView: React.FC<Props> = ({
 	title,
 	min,
 	max,
-	from,
-	to,
-	onFromChange,
-	onToChange,
+	lowerValue,
+	upperValue,
+	onLowerValueChange,
+	onUpperValueChange,
 }) => {
-	const [fromInput, setFromInput] = useState(from.toString());
-	const [fromInputFocused, setFromInputFocused] = useState(false);
-	const [toInput, setToInput] = useState(to.toString());
-	const [toInputFocused, setToInputFocused] = useState(false);
+	const [lowerValueInput, setLowerValueInput] = useState(lowerValue.toString());
+	const [lowerValueInputFocused, setLowerValueInputFocused] = useState(false);
+	const [upperValueInput, setUpperValueInput] = useState(upperValue.toString());
+	const [upperValueInputFocused, setUpperValueInputFocused] = useState(false);
+	const [lowerValueInternal, setLowerValueInternal] = useState(lowerValue);
+	const [upperValueInternal, setUpperValueInternal] = useState(upperValue);
 
 	useEffect(() => {
-		if (!fromInputFocused) {
-			setFromInput(from.toString());
-		}
-	}, [from, fromInputFocused]);
+		setLowerValueInternal(lowerValue);
+	}, [lowerValue]);
 
 	useEffect(() => {
-		if (!toInputFocused) {
-			setToInput(to.toString());
+		setUpperValueInternal(upperValue);
+	}, [upperValue]);
+
+	// Update from input field when changing slider
+	useEffect(() => {
+		if (!lowerValueInputFocused) {
+			setLowerValueInput(lowerValueInternal.toString());
 		}
-	}, [to, toInputFocused]);
+	}, [lowerValueInternal, lowerValueInputFocused]);
+
+	// Update to input field when changing slider
+	useEffect(() => {
+		if (!upperValueInputFocused) {
+			setUpperValueInput(upperValueInternal.toString());
+		}
+	}, [upperValueInternal, upperValueInputFocused]);
 
 	return (
 		<CategoryFilterBase
@@ -102,59 +116,70 @@ export const CategoryFilterRangeSelectView: React.FC<Props> = ({
 							<RangeInputWrapper>
 								<RangeInput
 									maxLength={5}
-									value={fromInput}
+									value={lowerValueInput}
 									onChange={event => {
-										const input = parseInput(event.target.value);
-										const isNum = /^\d+$/.test(input);
-										if (onFromChange) {
-											if (isNum) {
-												const newFrom = parseInt(input, 10);
-												onFromChange(Math.max(Math.min(newFrom, to), min));
-											} else {
-												onFromChange(min);
-											}
+										const parsedInput = parseInput(event.target.value);
+										const isNum = /^\d+$/.test(parsedInput);
+										if (isNum) {
+											const newLowerValue = Math.max(Math.min(parseInt(parsedInput, 10), upperValue), min);
+											setLowerValueInternal(newLowerValue);
+										} else {
+											setLowerValueInternal(min);
 										}
 
-										setFromInput(input);
+										setLowerValueInput(parsedInput);
 									}}
-									onFocus={() => setFromInputFocused(true)}
-									onBlur={() => setFromInputFocused(false)}
+									onFocus={() => setLowerValueInputFocused(true)}
+									onBlur={() => {
+										setLowerValueInputFocused(false);
+										if (onLowerValueChange && lowerValueInternal !== lowerValue) {
+											onLowerValueChange(lowerValueInternal);
+										}
+									}}
 								/>
 								<RangeInputSeparator />
 								<RangeInput
 									maxLength={5}
-									value={toInput}
+									value={upperValueInput}
 									onChange={event => {
-										const input = parseInput(event.target.value);
-										const isNum = /^\d+$/.test(input);
-										if (onToChange) {
-											if (isNum) {
-												const newTo = parseInt(input, 10);
-												onToChange(Math.min(Math.max(newTo, from), max));
-											} else {
-												onToChange(max);
-											}
+										const parsedInput = parseInput(event.target.value);
+										const isNum = /^\d+$/.test(parsedInput);
+										if (isNum) {
+											const newUpperValue = Math.min(Math.max(parseInt(parsedInput, 10), lowerValue), max);
+											setUpperValueInternal(newUpperValue);
+										} else {
+											setUpperValueInternal(min);
 										}
 
-										setToInput(input);
+										setUpperValueInput(parsedInput);
 									}}
-									onFocus={() => setToInputFocused(true)}
-									onBlur={() => setToInputFocused(false)}
+									onFocus={() => setUpperValueInputFocused(true)}
+									onBlur={() => {
+										setUpperValueInputFocused(false);
+										if (onUpperValueChange && upperValueInternal !== upperValue) {
+											onUpperValueChange(upperValueInternal);
+										}
+									}}
 								/>
 							</RangeInputWrapper>
 							<RangeWrapper>
 								<Range
 									min={min}
 									max={max}
-									value={[from, to]}
+									value={[lowerValueInternal, upperValueInternal]}
 									onChange={values => {
-										const [newFrom, newTo] = values;
-										if (newFrom !== from && onFromChange) {
-											onFromChange(newFrom);
+										const [newLowerValue, newUpperValue] = values;
+										setLowerValueInternal(newLowerValue);
+										setUpperValueInternal(newUpperValue);
+									}}
+									onAfterChange={values => {
+										const [newLowerValue, newUpperValue] = values;
+										if (onLowerValueChange && newLowerValue !== lowerValue) {
+											onLowerValueChange(newLowerValue);
 										}
 
-										if (newTo !== to && onToChange) {
-											onToChange(newTo);
+										if (onUpperValueChange && newUpperValue !== upperValue) {
+											onUpperValueChange(newUpperValue);
 										}
 									}}
 									pushable

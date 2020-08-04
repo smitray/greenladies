@@ -48,8 +48,8 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const [open2, setOpen2] = useState(false);
 	const [open3, setOpen3] = useState(false);
-	const [from, setFrom] = useState(0);
-	const [to, setTo] = useState(5000);
+	const [lowerValue, setLowerValue] = useState(0);
+	const [upperValue, setUpperValue] = useState(5000);
 
 	if (products.length === 0) {
 		return <div>No products found</div>;
@@ -132,13 +132,16 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onCloseRequest={() => setOpen3(false)}
 					min={117}
 					max={1746}
-					from={from}
-					to={to}
-					onFromChange={newFrom => {
-						setFrom(newFrom);
+					lowerValue={lowerValue}
+					upperValue={upperValue}
+					onLowerValueChange={newFrom => {
+						setLowerValue(newFrom);
 						console.log('new from', newFrom);
 					}}
-					onToChange={newTo => setTo(newTo)}
+					onUpperValueChange={newTo => {
+						setUpperValue(newTo);
+						console.log('new to', newTo);
+					}}
 				/>
 				{/*<CategoryFilter
 					title="Sortera på"
