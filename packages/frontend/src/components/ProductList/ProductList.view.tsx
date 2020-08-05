@@ -10,16 +10,26 @@ import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
 import { ProductCard } from '../ProductCard';
 
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
-import { ProductListProductsQuery } from './__generated__/ProductListProductsQuery.graphql';
+import {
+	ProductListProductsQuery,
+	ProductListProductsQueryResponse,
+} from './__generated__/ProductListProductsQuery.graphql';
 
 const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
-	query ProductListProductsQuery($where: CategoryWhereUniqueInput!, $orderBy: OrderProducts) {
+	query ProductListProductsQuery($where: CategoryWhereUniqueInput!, $orderBy: OrderProducts, $filter: FilterProducts) {
 		category(where: $where) {
-			products(orderBy: $orderBy) {
+			id
+			products(orderBy: $orderBy, filter: $filter) {
 				edges {
 					node {
 						id
 						...ProductCard_product
+					}
+				}
+				filterValues {
+					price {
+						min
+						max
 					}
 				}
 			}
@@ -38,18 +48,15 @@ interface Props {
 	category: ProductList_category;
 }
 
-const ProductListView: React.FC<Props> = ({ category }) => {
-	const [products, setProducts] = useState(category.products?.edges.map(edge => edge.node) || []);
+const ProductListView: React.FC<Props> = ({ category: c }) => {
+	const [category, setCategory] = useState<ProductListProductsQueryResponse['category']>(c);
 	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
+
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const [lowerValue, setLowerValue] = useState(0);
-	const [upperValue, setUpperValue] = useState(5000);
-
-	if (products.length === 0) {
-		return <div>No products found</div>;
-	}
+	const [lowerValue, setLowerValue] = useState(category.products?.filterValues.price.min || 0);
+	const [upperValue, setUpperValue] = useState(category.products?.filterValues.price.max || 100);
 
 	const handleCategoryFilterOpen = (id: string) => () => {
 		setCurrentlyOpenedFilter(id);
@@ -59,24 +66,40 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : currentlyOpenedFilter));
 	};
 
-	const orderByChange = async (orderBy: string) => {
+	const handleFilterUpdate = async (orderBy: string, lowerPrice: number, upperPrice: number) => {
 		if (
-			orderBy === 'popularity_DESC' ||
-			orderBy === 'created_DESC' ||
-			orderBy === 'price_ASC' ||
-			orderBy === 'price_DESC' ||
-			orderBy === 'discount_DESC'
+			orderBy !== 'popularity_DESC' &&
+			orderBy !== 'created_DESC' &&
+			orderBy !== 'price_ASC' &&
+			orderBy !== 'price_DESC' &&
+			orderBy !== 'discount_DESC'
 		) {
-			setOrderBy(orderBy);
-			fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
-				where: {
-					id: category.id,
+			return;
+		}
+
+		const response = await fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
+			where: {
+				id: category.id,
+			},
+			orderBy,
+			filter: {
+				price_between: {
+					min: lowerPrice,
+					max: upperPrice,
 				},
-				orderBy,
-			}).then(response => {
-				const products = response.category.products?.edges.map(edge => edge.node) || [];
-				setProducts(products);
-			});
+			},
+		});
+
+		setCategory(response.category);
+		const { products } = response.category;
+		if (products) {
+			if (products.filterValues.price.min > lowerValue) {
+				setLowerValue(products.filterValues.price.min);
+			}
+
+			if (products.filterValues.price.max < upperValue) {
+				setUpperValue(products.filterValues.price.max);
+			}
 		}
 	};
 
@@ -95,7 +118,7 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					selectedItemId={orderBy}
 					onItemSelected={itemId => {
 						setOrderBy(itemId);
-						orderByChange(itemId);
+						handleFilterUpdate(itemId, lowerValue, upperValue);
 					}}
 					open={currentlyOpenedFilter === 'order'}
 					onOpenRequest={handleCategoryFilterOpen('order')}
@@ -124,26 +147,30 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 				/>
 				<CategoryFilterRangeSelect
 					title="Pris"
-					min={117}
-					max={1746}
+					min={category.products.filterValues.price.min}
+					max={category.products.filterValues.price.max}
 					lowerValue={lowerValue}
 					upperValue={upperValue}
-					onLowerValueChange={newFrom => {
-						setLowerValue(newFrom);
+					onLowerValueChange={newLowerValue => {
+						setLowerValue(newLowerValue);
+						handleFilterUpdate(orderBy, newLowerValue, upperValue);
 					}}
-					onUpperValueChange={newTo => {
-						setUpperValue(newTo);
+					onUpperValueChange={newUpperValue => {
+						setUpperValue(newUpperValue);
+						handleFilterUpdate(orderBy, lowerValue, newUpperValue);
 					}}
 					open={currentlyOpenedFilter === 'price'}
 					onOpenRequest={handleCategoryFilterOpen('price')}
 					onCloseRequest={handleCategoryFilterClose('price')}
 				/>
 			</FiltersContainer>
-			<div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-				{products.map(product => (
-					<ProductCard key={product.id} product={product} />
-				))}
-			</div>
+			{category.products.edges.length > 0 && (
+				<div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
+					{category.products.edges.map(({ node: product }) => (
+						<ProductCard key={product.id} product={product} />
+					))}
+				</div>
+			)}
 		</div>
 	);
 };
@@ -157,6 +184,12 @@ export default createFragmentContainer(ProductListView, {
 					node {
 						id
 						...ProductCard_product
+					}
+				}
+				filterValues {
+					price {
+						min
+						max
 					}
 				}
 			}

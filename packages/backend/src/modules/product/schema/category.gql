@@ -26,5 +26,5 @@ extend type Category {
 		before: String
 		orderBy: OrderProducts
 		filter: FilterProducts
-	): ProductConnection
+	): ProductConnection!
 }

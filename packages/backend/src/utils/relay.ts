@@ -92,7 +92,16 @@ export function connectionFromArray(allNodes: Node[], { first, after, last, befo
 	const nodes = allNodes.slice(start, end);
 
 	if (nodes.length === 0) {
-		throw new Error('No edges');
+		return {
+			totalCount: 0,
+			edges: [],
+			pageInfo: {
+				startCursor: '',
+				endCursor: '',
+				hasNextPage,
+				hasPreviousPage,
+			},
+		};
 	}
 
 	const edges = nodes.map<Edge<Node>>((node, index) => ({
@@ -102,6 +111,7 @@ export function connectionFromArray(allNodes: Node[], { first, after, last, befo
 
 	const firstEdge = edges[0];
 	const lastEdge = edges.slice(-1)[0];
+
 	return {
 		totalCount: allNodes.length,
 		edges,
