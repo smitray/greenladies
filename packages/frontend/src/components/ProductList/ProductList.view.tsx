@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import styled from 'styled-components';
@@ -11,25 +11,42 @@ import { ProductCard } from '../ProductCard';
 
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
 import {
+	ProductFilterInput,
 	ProductListProductsQuery,
 	ProductListProductsQueryResponse,
 } from './__generated__/ProductListProductsQuery.graphql';
 
 const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
-	query ProductListProductsQuery($where: CategoryWhereUniqueInput!, $orderBy: OrderProducts, $filter: FilterProducts) {
+	query ProductListProductsQuery(
+		$where: CategoryWhereUniqueInput!
+		$orderBy: OrderProductsInput
+		$filters: [ProductFilterInput!]
+	) {
 		category(where: $where) {
 			id
-			products(orderBy: $orderBy, filter: $filter) {
+			products(orderBy: $orderBy, filters: $filters) {
 				edges {
 					node {
 						id
 						...ProductCard_product
 					}
 				}
-				filterValues {
-					price {
+				availableFilters {
+					__typename
+					... on ProductFilterRange {
+						field
+						label
 						min
 						max
+						unit
+					}
+					... on ProductFilterSelect {
+						field
+						label
+						values {
+							name
+							amount
+						}
 					}
 				}
 			}
@@ -44,19 +61,165 @@ const FiltersContainer = styled.ul`
 	list-style: none;
 `;
 
+type Dictionary<K extends string, T> = { [P in K]?: T };
+
+interface FilterReducerStateRange {
+	type: 'range';
+	min: number;
+	max: number;
+	lowerValue: number;
+	upperValue: number;
+}
+
+interface FilterReducerStateSelect {
+	type: 'in';
+	values: {
+		name: string;
+		amount: number;
+	}[];
+	selectedValues: string[];
+}
+
+type FilterReducerState = Dictionary<string, FilterReducerStateRange | FilterReducerStateSelect>;
+
+type FilterReducerAction =
+	| {
+			type: 'range-update-lower-value';
+			payload: {
+				field: string;
+				value: number;
+			};
+	  }
+	| {
+			type: 'range-update-upper-value';
+			payload: {
+				field: string;
+				value: number;
+			};
+	  }
+	| {
+			type: 'in-select-item';
+			payload: {
+				field: string;
+				value: string;
+			};
+	  }
+	| {
+			type: 'in-deselect-item';
+			payload: {
+				field: string;
+				value: string;
+			};
+	  };
+
+const filterReducer: React.Reducer<FilterReducerState, FilterReducerAction> = (state, action) => {
+	switch (action.type) {
+		case 'range-update-lower-value': {
+			const filterState = state[action.payload.field];
+			if (filterState?.type !== 'range') {
+				return state;
+			}
+
+			return {
+				...state,
+				[action.payload.field]: {
+					...filterState,
+					lowerValue: action.payload.value,
+				},
+			};
+		}
+		case 'range-update-upper-value': {
+			const filterState = state[action.payload.field];
+			if (filterState?.type !== 'range') {
+				return state;
+			}
+
+			return {
+				...state,
+				[action.payload.field]: {
+					...filterState,
+					upperValue: action.payload.value,
+				},
+			};
+		}
+		case 'in-select-item': {
+			const filterState = state[action.payload.field];
+			if (filterState?.type !== 'in') {
+				return state;
+			}
+
+			return {
+				...state,
+				[action.payload.field]: {
+					...filterState,
+					selectedValues: [...filterState.selectedValues, action.payload.value],
+				},
+			};
+		}
+		case 'in-deselect-item': {
+			const filterState = state[action.payload.field];
+			if (filterState?.type !== 'in') {
+				return state;
+			}
+
+			return {
+				...state,
+				[action.payload.field]: {
+					...filterState,
+					selectedValues: filterState.selectedValues.filter(selectedValue => selectedValue !== action.payload.value),
+				},
+			};
+		}
+	}
+};
+
+const convertRawFiltersToReducerState = (
+	rawFilters: ProductListProductsQueryResponse['category']['products']['availableFilters'],
+): FilterReducerState => {
+	return rawFilters.reduce<FilterReducerState>((reducerState, rawFilter) => {
+		switch (rawFilter.__typename) {
+			case 'ProductFilterRange': {
+				return {
+					...reducerState,
+					[rawFilter.field]: {
+						type: 'range',
+						min: rawFilter.min,
+						max: rawFilter.max,
+						lowerValue: rawFilter.min,
+						upperValue: rawFilter.max,
+					},
+				};
+			}
+			case 'ProductFilterSelect': {
+				return {
+					...reducerState,
+					[rawFilter.field]: {
+						type: 'in',
+						values: rawFilter.values.map(({ name, amount }) => ({ name, amount })),
+						selectedValues: [],
+					},
+				};
+			}
+			default:
+				throw new Error();
+		}
+	}, {});
+};
+
 interface Props {
 	category: ProductList_category;
 }
 
-const ProductListView: React.FC<Props> = ({ category: c }) => {
-	const [category, setCategory] = useState<ProductListProductsQueryResponse['category']>(c);
+const ProductListView: React.FC<Props> = ({ category }) => {
+	const [products, setProducts] = useState(category.products.edges.map(edge => edge.node));
 	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
+	const [filtersState, dispatchFilters] = useReducer(
+		filterReducer,
+		convertRawFiltersToReducerState(category.products.availableFilters),
+	);
 
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
-	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const [lowerValue, setLowerValue] = useState(category.products?.filterValues.price.min || 0);
-	const [upperValue, setUpperValue] = useState(category.products?.filterValues.price.max || 100);
 
 	const handleCategoryFilterOpen = (id: string) => () => {
 		setCurrentlyOpenedFilter(id);
@@ -66,42 +229,50 @@ const ProductListView: React.FC<Props> = ({ category: c }) => {
 		setCurrentlyOpenedFilter(currentlyOpenedFilter => (currentlyOpenedFilter === id ? null : currentlyOpenedFilter));
 	};
 
-	const handleFilterUpdate = async (orderBy: string, lowerPrice: number, upperPrice: number) => {
-		if (
-			orderBy !== 'popularity_DESC' &&
-			orderBy !== 'created_DESC' &&
-			orderBy !== 'price_ASC' &&
-			orderBy !== 'price_DESC' &&
-			orderBy !== 'discount_DESC'
-		) {
-			return;
-		}
+	useEffect(() => {
+		const asyncEffect = async () => {
+			if (
+				orderBy !== 'popularity_DESC' &&
+				orderBy !== 'created_DESC' &&
+				orderBy !== 'price_ASC' &&
+				orderBy !== 'price_DESC' &&
+				orderBy !== 'discount_DESC'
+			) {
+				return;
+			}
 
-		const response = await fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
-			where: {
-				id: category.id,
-			},
-			orderBy,
-			filter: {
-				price_between: {
-					min: lowerPrice,
-					max: upperPrice,
+			const response = await fetchQuery<ProductListProductsQuery>(relayEnviroment, PRODUCT_LIST_PRODUCTS_QUERY, {
+				where: {
+					id: category.id,
 				},
-			},
-		});
+				orderBy,
+				filters: Object.entries(filtersState).map<ProductFilterInput>(([field, filter]) => {
+					if (!filter) {
+						throw new Error();
+					}
 
-		setCategory(response.category);
-		const { products } = response.category;
-		if (products) {
-			if (products.filterValues.price.min > lowerValue) {
-				setLowerValue(products.filterValues.price.min);
-			}
+					if (filter.type === 'range') {
+						return {
+							field,
+							between: {
+								from: filter.lowerValue,
+								to: filter.upperValue,
+							},
+						};
+					}
 
-			if (products.filterValues.price.max < upperValue) {
-				setUpperValue(products.filterValues.price.max);
-			}
-		}
-	};
+					return {
+						field,
+						in: filter.values.map(({ name }) => name),
+					};
+				}),
+			});
+
+			setProducts(response.category.products.edges.map(edge => edge.node));
+		};
+
+		asyncEffect();
+	}, [orderBy, filtersState, category.id, relayEnviroment]);
 
 	return (
 		<div>
@@ -118,55 +289,88 @@ const ProductListView: React.FC<Props> = ({ category: c }) => {
 					selectedItemId={orderBy}
 					onItemSelected={itemId => {
 						setOrderBy(itemId);
-						handleFilterUpdate(itemId, lowerValue, upperValue);
 					}}
 					open={currentlyOpenedFilter === 'order'}
 					onOpenRequest={handleCategoryFilterOpen('order')}
 					onCloseRequest={handleCategoryFilterClose('order')}
 				/>
-				<CategoryFilterMultiSelect
-					title="Märke"
-					items={[
-						{ id: '0', node: 'Adidas' },
-						{ id: '1', node: 'Nike' },
-						{ id: '2', node: 'Whatever' },
-						{ id: '3', node: 'Floats' },
-						{ id: '4', node: 'Your' },
-						{ id: '5', node: 'Boat' },
-					]}
-					selectedItemIds={selectedItems}
-					onItemSelected={itemId => {
-						setSelectedItems(items => [...items, itemId]);
-					}}
-					onItemUnselected={itemId => {
-						setSelectedItems(items => items.filter(item => item !== itemId));
-					}}
-					open={currentlyOpenedFilter === 'brand'}
-					onOpenRequest={handleCategoryFilterOpen('brand')}
-					onCloseRequest={handleCategoryFilterClose('brand')}
-				/>
-				<CategoryFilterRangeSelect
-					title="Pris"
-					min={category.products.filterValues.price.min}
-					max={category.products.filterValues.price.max}
-					lowerValue={lowerValue}
-					upperValue={upperValue}
-					onLowerValueChange={newLowerValue => {
-						setLowerValue(newLowerValue);
-						handleFilterUpdate(orderBy, newLowerValue, upperValue);
-					}}
-					onUpperValueChange={newUpperValue => {
-						setUpperValue(newUpperValue);
-						handleFilterUpdate(orderBy, lowerValue, newUpperValue);
-					}}
-					open={currentlyOpenedFilter === 'price'}
-					onOpenRequest={handleCategoryFilterOpen('price')}
-					onCloseRequest={handleCategoryFilterClose('price')}
-				/>
+				{category.products.availableFilters.map(filter => {
+					switch (filter.__typename) {
+						case 'ProductFilterRange': {
+							const filterState = filtersState[filter.field];
+							if (filterState?.type !== 'range') {
+								return null;
+							}
+
+							return (
+								<CategoryFilterRangeSelect
+									title={filter.label}
+									min={filter.min}
+									max={filter.max}
+									lowerValue={filterState.lowerValue}
+									upperValue={filterState.upperValue}
+									onLowerValueChange={newLowerValue => {
+										dispatchFilters({
+											type: 'range-update-lower-value',
+											payload: { field: filter.field, value: newLowerValue },
+										});
+									}}
+									onUpperValueChange={newUpperValue => {
+										dispatchFilters({
+											type: 'range-update-upper-value',
+											payload: { field: filter.field, value: newUpperValue },
+										});
+									}}
+									open={currentlyOpenedFilter === filter.field}
+									onOpenRequest={handleCategoryFilterOpen(filter.field)}
+									onCloseRequest={handleCategoryFilterClose(filter.field)}
+								/>
+							);
+						}
+						case 'ProductFilterSelect': {
+							const filterState = filtersState[filter.field];
+							if (filterState?.type !== 'in') {
+								return null;
+							}
+
+							return (
+								<CategoryFilterMultiSelect
+									title={filter.label}
+									items={filter.values.map(value => ({
+										id: value.name,
+										node: (
+											<div>
+												{value.name} ({value.amount})
+											</div>
+										),
+									}))}
+									selectedItemIds={filterState.selectedValues}
+									onItemSelected={itemId => {
+										dispatchFilters({
+											type: 'in-select-item',
+											payload: { field: filter.field, value: itemId },
+										});
+									}}
+									onItemUnselected={itemId => {
+										dispatchFilters({
+											type: 'in-deselect-item',
+											payload: { field: filter.field, value: itemId },
+										});
+									}}
+									open={currentlyOpenedFilter === filter.field}
+									onOpenRequest={handleCategoryFilterOpen(filter.field)}
+									onCloseRequest={handleCategoryFilterClose(filter.field)}
+								/>
+							);
+						}
+						default:
+							return null;
+					}
+				})}
 			</FiltersContainer>
-			{category.products.edges.length > 0 && (
+			{products.length > 0 && (
 				<div style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-					{category.products.edges.map(({ node: product }) => (
+					{products.map(product => (
 						<ProductCard key={product.id} product={product} />
 					))}
 				</div>
@@ -186,10 +390,22 @@ export default createFragmentContainer(ProductListView, {
 						...ProductCard_product
 					}
 				}
-				filterValues {
-					price {
+				availableFilters {
+					__typename
+					... on ProductFilterRange {
+						field
+						label
 						min
 						max
+						unit
+					}
+					... on ProductFilterSelect {
+						field
+						label
+						values {
+							name
+							amount
+						}
 					}
 				}
 			}

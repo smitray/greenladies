@@ -1,9 +1,6 @@
-interface ProductFilter {
-	field: String!
-	label: String!
-}
+union ProductFilter = ProductFilterRange | ProductFilterSelect
 
-type ProductFilterRange implements ProductFilter {
+type ProductFilterRange {
 	field: String!
 	label: String!
 	min: Float!
@@ -16,7 +13,7 @@ type ProductFilterSelectValue {
 	amount: Int!
 }
 
-type ProductFilterSelect implements ProductFilter {
+type ProductFilterSelect {
 	field: String!
 	label: String!
 	values: [ProductFilterSelectValue!]!

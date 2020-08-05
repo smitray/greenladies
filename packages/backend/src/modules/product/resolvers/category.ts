@@ -1,5 +1,5 @@
 import { ProductModuleResolversType } from '..';
-import { GQLProductFilterInput, GQLProductFilterRange, GQLProductFilterSelect } from '../../../__generated__/types';
+import { GQLProductFilter, GQLProductFilterInput } from '../../../__generated__/types';
 import { Product } from '../../../magento-sync';
 import { connectionFromArray } from '../../../utils/relay';
 import { CategoryProvider } from '../../category/category.provider';
@@ -132,10 +132,7 @@ function combineFilters(listOfFilteredProductsLists: FilteredProducts[]): Filter
 		.filter(notNull);
 }
 
-function extractFilterInformation(
-	productsMap: Map<string, Product>,
-	filters: FilteredProducts[],
-): (GQLProductFilterRange | GQLProductFilterSelect)[] {
+function extractFilterInformation(productsMap: Map<string, Product>, filters: FilteredProducts[]): GQLProductFilter[] {
 	return filters.map(filter => {
 		const registeredFilter = registeredFilters.find(({ field }) => field === filter.field);
 		if (!registeredFilter) {
@@ -232,14 +229,17 @@ const resolvers: ProductModuleResolversType = {
 			}
 
 			const productsMap = new Map(products.map(product => [product.id, product]));
-			const filteredProductsIds = Array.from(
-				appliedFilters.reduce((prev, current, index) => {
-					if (index === 0) {
-						return current.productIds;
-					}
-					return setIntersection(prev, current.productIds);
-				}, new Set<string>()),
-			);
+			const filteredProductsIds =
+				appliedFilters.length === 0
+					? products.map(({ id }) => id)
+					: Array.from(
+							appliedFilters.reduce((prev, current, index) => {
+								if (index === 0) {
+									return current.productIds;
+								}
+								return setIntersection(prev, current.productIds);
+							}, new Set<string>()),
+					  );
 			const filteredProducts = filteredProductsIds.map(id => {
 				const p = productsMap.get(id);
 				if (!p) {
@@ -268,6 +268,8 @@ const resolvers: ProductModuleResolversType = {
 					filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.price - left.price);
 				}
 			}
+
+			console.log(appliedFilters);
 
 			return {
 				...connectionFromArray(
