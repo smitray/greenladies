@@ -1,11 +1,23 @@
-type Range {
-	min: Float!
-	max: Float!
+interface ProductFilter {
+	field: String!
+	label: String!
 }
 
-type ProductsFilterValues {
-	sizes: [String!]!
-	brands: [String!]!
-	colours: [String!]!
-	price: Range!
+type ProductFilterRange implements ProductFilter {
+	field: String!
+	label: String!
+	min: Float!
+	max: Float!
+	unit: String!
+}
+
+type ProductFilterSelectValue {
+	name: String!
+	amount: Int!
+}
+
+type ProductFilterSelect implements ProductFilter {
+	field: String!
+	label: String!
+	values: [ProductFilterSelectValue!]!
 }
