@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { NavbarView } from './Navbar.view';
 
-const TIMEOUT_MS = 200;
+const TIMEOUT_MS = 300;
 
 export const NavbarLogic = () => {
 	const [currentlySelectedTopLevelItemIndex, setCurrentlySelectedTopLevelItemIndex] = useState<number | null>(null);
@@ -24,17 +24,20 @@ export const NavbarLogic = () => {
 			clearTimeout(currentlySelectedTopLevelItemIndexTimeoutRef.current);
 		}
 
-		// If mega menu is open, clear the mega menu unfocus timeout in order
-		// to not clear current category, just setting its unfocus to false
-		if (megaMenuFocus) {
-			if (megaMenuFocusTimeoutRef.current) {
-				clearTimeout(megaMenuFocusTimeoutRef.current);
+		currentlySelectedTopLevelItemIndexTimeoutRef.current = setTimeout(() => {
+			// If mega menu is open, clear the mega menu unfocus timeout in order
+			// to not clear current category, just setting its unfocus to false
+			if (megaMenuFocus) {
+				if (megaMenuFocusTimeoutRef.current) {
+					clearTimeout(megaMenuFocusTimeoutRef.current);
+				}
+
+				setMegaMenuFocus(false);
 			}
 
-			setMegaMenuFocus(false);
-		}
-
-		setCurrentlySelectedTopLevelItemIndex(index);
+			setCurrentlySelectedTopLevelItemIndex(index);
+			currentlySelectedTopLevelItemIndexTimeoutRef.current = null;
+		}, TIMEOUT_MS);
 	};
 
 	const handleTopLevelItemUnfocus = () => {

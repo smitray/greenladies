@@ -33,8 +33,8 @@ const ProductCardView: React.FC<Props> = ({ product }) => {
 			<ProductDetails>
 				<ProductName>{product.name}</ProductName>
 				<div>
-					<ProductPrice>{product.price} kr</ProductPrice>
-					<ProductSpecialPrice>17 kr</ProductSpecialPrice>
+					<ProductPrice>{product.price.toFixed(2).replace('.', ',')} kr</ProductPrice>
+					<ProductSpecialPrice>{Number(17).toFixed(2).replace('.', ',')} kr</ProductSpecialPrice>
 				</div>
 				<ProductBrand>Gant</ProductBrand>
 			</ProductDetails>

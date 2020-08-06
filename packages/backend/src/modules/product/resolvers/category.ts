@@ -114,7 +114,6 @@ function combineFilters(listOfFilteredProductsLists: FilteredProducts[]): Filter
 
 	return listOfFilteredProductsLists
 		.map((filteredProducts, _index, listOfFilteredProductsListsInner) => {
-			console.log(filteredProducts);
 			return listOfFilteredProductsListsInner
 				.filter(({ field }) => field !== filteredProducts.field)
 				.sort((left, right) => left.productIds.size - right.productIds.size)
@@ -152,8 +151,6 @@ function extractFilterInformation(productsMap: Map<string, Product>, filters: Fi
 			case 'in': {
 				const valuesDictionary = products.reduce<Dictionary<string, number>>((prev, current) => {
 					const value = (current as any)[registeredFilter.field] as number | string;
-
-					console.log(value);
 
 					const count = prev[value];
 					if (count) {
@@ -268,8 +265,6 @@ const resolvers: ProductModuleResolversType = {
 					filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.price - left.price);
 				}
 			}
-
-			console.log(appliedFilters);
 
 			return {
 				...connectionFromArray(
