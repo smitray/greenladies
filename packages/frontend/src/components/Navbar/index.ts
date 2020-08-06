@@ -1,3 +1,3 @@
-import { default as Navbar } from './Navbar.view';
+import { NavbarLogic as Navbar } from './Navbar.logic';
 
 export { Navbar };
