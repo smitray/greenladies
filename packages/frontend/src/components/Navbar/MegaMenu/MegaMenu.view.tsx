@@ -1,8 +1,13 @@
 import React from 'react';
 
+import Link from 'next/link';
+
 import {
+	MegaMenuChunkList,
+	MegaMenuChunkListItem,
 	MegaMenuInnerList,
 	MegaMenuInnerListItem,
+	MegaMenuLink,
 	MegaMenuOuterList,
 	MegaMenuOuterListItem,
 	MegaMenuTitle,
@@ -38,16 +43,30 @@ export const MegaMenuView = ({ category }: MegaMenuViewProps) => {
 	return (
 		<MegaMenuOuterList>
 			{category.categories.map((category, index) => {
+				const chunks = chunkArray(category.categories);
+
 				return (
-					<MegaMenuOuterListItem key={index}>
-						<MegaMenuTitle style={{ fontSize: '30px' }}>{category.name}</MegaMenuTitle>
-						{chunkArray(category.categories).map((chunk, index) => (
-							<MegaMenuInnerList key={index}>
-								{chunk.map((category, index) => (
-									<MegaMenuInnerListItem key={index}>{category.name}</MegaMenuInnerListItem>
-								))}
-							</MegaMenuInnerList>
-						))}
+					<MegaMenuOuterListItem key={index} style={{ flexGrow: chunks.length }}>
+						<MegaMenuTitle>
+							<Link href={category.href || '#'}>
+								<MegaMenuLink href={category.href || '#'}>{category.name}</MegaMenuLink>
+							</Link>
+						</MegaMenuTitle>
+						<MegaMenuChunkList>
+							{chunks.map((chunk, index) => (
+								<MegaMenuChunkListItem key={index}>
+									<MegaMenuInnerList>
+										{chunk.map((category, index) => (
+											<MegaMenuInnerListItem key={index}>
+												<Link href={category.href || '#'}>
+													<MegaMenuLink href={category.href || '#'}>{category.name}</MegaMenuLink>
+												</Link>
+											</MegaMenuInnerListItem>
+										))}
+									</MegaMenuInnerList>
+								</MegaMenuChunkListItem>
+							))}
+						</MegaMenuChunkList>
 					</MegaMenuOuterListItem>
 				);
 			})}

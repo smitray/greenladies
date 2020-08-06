@@ -236,7 +236,7 @@ export const NavbarView = ({
 				onMouseEnter={handleMegaMenuFocus}
 				onMouseLeave={handleMegaMenuUnfocus}
 			>
-				<CenterWrapper style={{ padding: '20px 0' }}>
+				<CenterWrapper style={{ paddingTop: '20px', paddingBottom: '20px' }}>
 					{currentlySelectedTopLevelItemIndex != null && (
 						<MegaMenu category={categories[currentlySelectedTopLevelItemIndex].category} />
 					)}
