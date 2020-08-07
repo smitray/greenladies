@@ -1,13 +1,13 @@
 import { Injectable, ProviderScope } from '@graphql-modules/di';
 
 import { Category } from '../../magento-sync';
-import { redisCacheConnection } from '../../redis-connection';
+import { getRedisCacheConnection } from '../../redis-connection';
 
 @Injectable({ scope: ProviderScope.Request })
 export class CategoryProvider {
 	getCategory(id: string) {
 		return new Promise<Category>((resolve, reject) => {
-			redisCacheConnection.get('Category:id:' + id, (err, reply) => {
+			getRedisCacheConnection().get('Category:id:' + id, (err, reply) => {
 				if (err) {
 					return reject(err);
 				}
@@ -23,7 +23,7 @@ export class CategoryProvider {
 
 	async getCategoryByUrlKey(urlKey: string) {
 		const id = await new Promise<string>((resolve, reject) => {
-			redisCacheConnection.get('Category:urlKey:' + urlKey, (err, reply) => {
+			getRedisCacheConnection().get('Category:urlKey:' + urlKey, (err, reply) => {
 				if (err) {
 					reject(err);
 				}

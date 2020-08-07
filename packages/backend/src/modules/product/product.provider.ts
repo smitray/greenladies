@@ -1,13 +1,13 @@
 import { Injectable } from '@graphql-modules/di';
 
 import { Product } from '../../magento-sync';
-import { redisCacheConnection } from '../../redis-connection';
+import { getRedisCacheConnection } from '../../redis-connection';
 
 @Injectable()
 export class ProductProvider {
 	async getProducts() {
 		const productIds = await new Promise<string[]>((resolve, reject) => {
-			redisCacheConnection.get('productIds', (err, reply) => {
+			getRedisCacheConnection().get('productIds', (err, reply) => {
 				if (err) {
 					return reject(err);
 				}
@@ -21,7 +21,7 @@ export class ProductProvider {
 		});
 
 		return new Promise<Product[]>((resolve, reject) => {
-			redisCacheConnection.mget(productIds, (err, reply) => {
+			getRedisCacheConnection().mget(productIds, (err, reply) => {
 				if (err) {
 					return reject(err);
 				}
@@ -33,7 +33,7 @@ export class ProductProvider {
 
 	getProduct(id: string) {
 		return new Promise<Product>((resolve, reject) => {
-			redisCacheConnection.get('Product:id:' + id, (err, reply) => {
+			getRedisCacheConnection().get('Product:id:' + id, (err, reply) => {
 				if (err) {
 					return reject(err);
 				}
@@ -49,7 +49,7 @@ export class ProductProvider {
 
 	async getProductByUrlKey(urlKey: string) {
 		const id = await new Promise<string>((resolve, reject) => {
-			redisCacheConnection.get('Product:urlKey:' + urlKey, (err, reply) => {
+			getRedisCacheConnection().get('Product:urlKey:' + urlKey, (err, reply) => {
 				if (err) {
 					return reject(err);
 				}

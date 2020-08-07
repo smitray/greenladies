@@ -1,3 +1,12 @@
 import redis from 'redis';
 
-export const redisCacheConnection = redis.createClient({ host: 'redis-cache' });
+let redisCacheConnection: redis.RedisClient | null = null;
+
+export const getRedisCacheConnection = () => {
+	if (redisCacheConnection !== null) {
+		return redisCacheConnection;
+	}
+
+	redisCacheConnection = redis.createClient({ host: 'redis-cache' });
+	return redisCacheConnection;
+};

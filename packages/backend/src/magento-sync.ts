@@ -1,6 +1,6 @@
 import { getCategories, MagentoFullCategory } from './api/category';
 import { getProducts, getProductsByCategoryId, MagentoFullProduct } from './api/product';
-import { redisCacheConnection } from './redis-connection';
+import { getRedisCacheConnection } from './redis-connection';
 
 export interface Product {
 	id: string;
@@ -43,7 +43,7 @@ function transformProduct(product: MagentoFullProduct): Product {
 async function saveProductsInCache(products: Product[]) {
 	// Save product id => product
 	const saveProducts = new Promise((resolve, reject) => {
-		redisCacheConnection.mset(
+		getRedisCacheConnection().mset(
 			products.reduce<string[]>((prev, current) => {
 				return [...prev, 'Product:id:' + current.id, JSON.stringify(current)];
 			}, []),
@@ -59,7 +59,7 @@ async function saveProductsInCache(products: Product[]) {
 
 	// Save product urlKey => product id
 	const mapUrlKeyToId = new Promise((resolve, reject) => {
-		redisCacheConnection.mset(
+		getRedisCacheConnection().mset(
 			products.reduce<string[]>((prev, current) => {
 				if (current.type !== 'virtual' && current.urlKey) {
 					return [...prev, 'Product:urlKey:' + current.urlKey, current.id];
@@ -78,7 +78,7 @@ async function saveProductsInCache(products: Product[]) {
 	});
 
 	const saveProductIds = new Promise((resolve, reject) => {
-		redisCacheConnection.set('productIds', JSON.stringify(products.map(product => product.id)), (err, reply) => {
+		getRedisCacheConnection().set('productIds', JSON.stringify(products.map(product => product.id)), (err, reply) => {
 			if (err) {
 				reject(err);
 			}
@@ -124,7 +124,7 @@ async function transformCategory(category: MagentoFullCategory): Promise<Categor
 async function saveCategoriesInCache(categories: Category[]) {
 	// Save category id => category
 	const saveCategories = new Promise((resolve, reject) => {
-		redisCacheConnection.mset(
+		getRedisCacheConnection().mset(
 			categories.reduce<string[]>((prev, current) => {
 				return [...prev, 'Category:id:' + current.id, JSON.stringify(current)];
 			}, []),
@@ -140,7 +140,7 @@ async function saveCategoriesInCache(categories: Category[]) {
 
 	// Save product urlKey => product id
 	const mapUrlKeyToId = new Promise((resolve, reject) => {
-		redisCacheConnection.mset(
+		getRedisCacheConnection().mset(
 			categories.reduce<string[]>((prev, current) => {
 				if (current.urlKey) {
 					return [...prev, 'Category:urlKey:' + current.urlKey, current.id];
