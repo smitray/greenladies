@@ -62,7 +62,7 @@ async function saveProductsInCache(products: Product[]) {
 		redisCacheConnection.mset(
 			products.reduce<string[]>((prev, current) => {
 				if (current.type !== 'virtual' && current.urlKey) {
-					return [...prev, 'Product:urlKey:' + current.urlKey, 'Product:id:' + current.id];
+					return [...prev, 'Product:urlKey:' + current.urlKey, current.id];
 				}
 
 				return prev;

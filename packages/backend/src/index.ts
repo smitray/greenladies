@@ -9,7 +9,9 @@ import { syncMagentoProductsAndCategories } from './magento-sync';
 (async function () {
 	const app = express();
 
-	await syncMagentoProductsAndCategories();
+	syncMagentoProductsAndCategories()
+		.then(() => console.log('Successfully synced magento to redis'))
+		.catch(() => console.log('Could not sync magento'));
 
 	const server = await createApolloServer();
 	server.applyMiddleware({

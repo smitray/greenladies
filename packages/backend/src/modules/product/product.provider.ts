@@ -58,7 +58,7 @@ export class ProductProvider {
 					return reject(new Error('Product not found'));
 				}
 
-				return resolve(JSON.parse(reply));
+				return resolve(reply);
 			});
 		});
 
