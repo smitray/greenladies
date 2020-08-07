@@ -304,6 +304,7 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 							return (
 								<CategoryFilterRangeSelect
+									key={filter.field}
 									title={filter.label}
 									min={filter.min}
 									max={filter.max}
@@ -335,6 +336,7 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 							return (
 								<CategoryFilterMultiSelect
+									key={filter.field}
 									title={filter.label}
 									items={filter.values.map(value => ({
 										id: value.name,
