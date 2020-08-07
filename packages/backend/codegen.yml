@@ -8,3 +8,4 @@ generates:
       typesPrefix: GQL
       mappers:
         Category: ./../types#Node
+        Product: ./../types#Node

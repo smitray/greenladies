@@ -1,0 +1,29 @@
+enum OrderProductsInput {
+	popularity_DESC
+	created_DESC
+	price_ASC
+	price_DESC
+	discount_DESC
+}
+
+input RangeInput {
+	from: Float!
+	to: Float!
+}
+
+input ProductFilterInput {
+	field: String!
+	in: [String!]
+	between: RangeInput
+}
+
+extend type Category {
+	products(
+		first: Int
+		after: String
+		last: Int
+		before: String
+		orderBy: OrderProductsInput
+		filters: [ProductFilterInput!]
+	): ProductConnection!
+}

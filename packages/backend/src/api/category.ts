@@ -1,8 +1,6 @@
-import { stringify } from 'query-string';
-
 import { instance } from './util';
 
-export interface MagentoSimpleCategory {
+interface MagentoSimpleCategory {
 	id: number;
 	parent_id: number;
 	name: string;
@@ -11,12 +9,6 @@ export interface MagentoSimpleCategory {
 	level: number;
 	product_count: number;
 	children_data: MagentoSimpleCategory[];
-}
-
-export async function getCategories() {
-	const { data } = await instance.get('/rest/default/V1/categories');
-
-	return data['children_data'] as MagentoSimpleCategory[];
 }
 
 export interface MagentoFullCategory {
@@ -31,7 +23,7 @@ export interface MagentoFullCategory {
 	updated_at: string;
 	path: string;
 	available_sort_by: string[];
-	include_in_menu: true;
+	include_in_menu: boolean;
 	extension_attributes: Record<string, any>;
 	custom_attributes: {
 		attribute_code: string;
@@ -39,23 +31,24 @@ export interface MagentoFullCategory {
 	}[];
 }
 
-export async function getCategory(id: string | number) {
+export async function getCategory(id: number) {
 	const { data } = await instance.get('/rest/default/V1/categories/' + id);
 
 	return data as MagentoFullCategory;
 }
 
-export async function getCategoryByKey(key: string) {
-	const query = {
-		'searchCriteria[filterGroups][0][filters][0][field]': 'url_key',
-		'searchCriteria[filterGroups][0][filters][0][value]': key,
-		'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
-	};
-	const { data } = await instance.get('/rest/default/V1/categories/list?' + stringify(query));
+function flattenCategories(category: MagentoSimpleCategory): MagentoSimpleCategory[] {
+	return [category, ...category.children_data.flatMap(flattenCategories)];
+}
 
-	if (data.items.length === 0) {
-		throw new Error('Category not found');
-	}
+async function expandCategory(simpleCategory: MagentoSimpleCategory) {
+	return getCategory(simpleCategory.id);
+}
 
-	return data.items[0] as MagentoFullCategory;
+export async function getCategories() {
+	const { data } = await instance.get('/rest/default/V1/categories');
+
+	const rootCategories = data['children_data'] as MagentoSimpleCategory[];
+
+	return Promise.all(rootCategories.flatMap(flattenCategories).map(expandCategory));
 }

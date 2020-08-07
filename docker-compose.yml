@@ -22,6 +22,15 @@ services:
       - /usr/src/app/packages/backend/node_modules
       - ./packages/backend:/usr/src/app/packages/backend
 
+  redis-cache:
+    image: redis:6.0.6
+
+  redis-ui:
+    image: patrikx3/p3x-redis-ui:2020.10.315
+    ports:
+      - ${REDIS_UI_PORT}:7843
+    volumes:
+      - ./redis-ui/settings:/settings
   magento2:
     build: magento2
     image: magento2:latest

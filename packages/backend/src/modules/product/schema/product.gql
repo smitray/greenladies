@@ -1,0 +1,6 @@
+type Product implements Node {
+	id: ID!
+	name: String!
+	urlKey: String!
+	price: Float!
+}

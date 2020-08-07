@@ -1,8 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
 
 import { CategoryModule } from '../category';
+import { ProductModule } from '../product';
 import { RelayModule } from '../relay';
 
 export const AppModule = new GraphQLModule({
-	imports: [CategoryModule, RelayModule],
+	imports: [CategoryModule, ProductModule, RelayModule],
 });

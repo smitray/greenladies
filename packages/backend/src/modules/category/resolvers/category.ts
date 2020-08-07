@@ -7,34 +7,39 @@ const resolvers: CategoryModuleResolversType = {
 		id: ({ id }) => {
 			return toGlobalId('Category', id);
 		},
+		urlKey: async ({ id }, _args, { injector }) => {
+			const category = await injector.get(CategoryProvider).getCategory(id);
+
+			return category.urlKey;
+		},
 		name: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
 			return category.name;
 		},
-		isActive: async ({ id }, _args, { injector }) => {
-			const category = await injector.get(CategoryProvider).getCategory(id);
-
-			return category.is_active;
-		},
 		includeInMenu: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			return category.include_in_menu;
+			return category.includeInMenu;
 		},
 		children: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			if (category.children.length === 0) {
+			if (category.childrenIds.length === 0) {
 				return [];
 			}
 
-			return category.children.split(',').map(id => ({ id }));
+			return category.childrenIds.map(id => ({ id }));
 		},
 		parent: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 
-			return { id: String(category.parent_id) };
+			// The category with id=2 is the default category (root)
+			if (category.parentId === '2') {
+				return null;
+			}
+
+			return { id: String(category.parentId) };
 		},
 	},
 };

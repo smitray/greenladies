@@ -1,18 +1,41 @@
-import { Injectable } from '@graphql-modules/di';
+import { Injectable, ProviderScope } from '@graphql-modules/di';
 
-import { getCategories, getCategory, getCategoryByKey } from '../../api/category';
+import { Category } from '../../magento-sync';
+import { getRedisCacheConnection } from '../../redis-connection';
 
-@Injectable()
+@Injectable({ scope: ProviderScope.Request })
 export class CategoryProvider {
-	getCategories() {
-		return getCategories();
-	}
-
 	getCategory(id: string) {
-		return getCategory(id);
+		return new Promise<Category>((resolve, reject) => {
+			getRedisCacheConnection().get('Category:id:' + id, (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (reply === null) {
+					return reject(new Error('Category not found'));
+				}
+
+				return resolve(JSON.parse(reply));
+			});
+		});
 	}
 
-	getCategoryByKey(key: string) {
-		return getCategoryByKey(key);
+	async getCategoryByUrlKey(urlKey: string) {
+		const id = await new Promise<string>((resolve, reject) => {
+			getRedisCacheConnection().get('Category:urlKey:' + urlKey, (err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				if (reply === null) {
+					return reject(new Error('Category not found'));
+				}
+
+				resolve(reply);
+			});
+		});
+
+		return this.getCategory(id);
 	}
 }
