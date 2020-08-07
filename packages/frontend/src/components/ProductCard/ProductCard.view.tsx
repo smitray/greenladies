@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Link from 'next/link';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { ProductCard_product } from './__generated__/ProductCard_product.graphql';
@@ -16,22 +17,26 @@ import {
 	ProductTagsContainer,
 } from './ProductCard.styles';
 
-interface Props {
+interface ProductCardViewProps {
 	product: ProductCard_product;
 }
 
-const ProductCardView: React.FC<Props> = ({ product }) => {
+const ProductCardView = ({ product }: ProductCardViewProps) => {
 	return (
 		<div>
-			<ProductImageWrapper>
-				<ProductImage src="#" />
-				<ProductTagsContainer>
-					<ProductTagCondition>NY</ProductTagCondition>
-					<ProductTagDiscount>-38%</ProductTagDiscount>
-				</ProductTagsContainer>
-			</ProductImageWrapper>
+			<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
+				<ProductImageWrapper>
+					<ProductImage src="#" />
+					<ProductTagsContainer>
+						<ProductTagCondition>NY</ProductTagCondition>
+						<ProductTagDiscount>-38%</ProductTagDiscount>
+					</ProductTagsContainer>
+				</ProductImageWrapper>
+			</Link>
 			<ProductDetails>
-				<ProductName>{product.name}</ProductName>
+				<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
+					<ProductName>{product.name}</ProductName>
+				</Link>
 				<div>
 					<ProductPrice>{product.price.toFixed(2).replace('.', ',')} kr</ProductPrice>
 					<ProductSpecialPrice>{Number(17).toFixed(2).replace('.', ',')} kr</ProductSpecialPrice>

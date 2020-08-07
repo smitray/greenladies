@@ -4,12 +4,13 @@ import React from 'react';
 
 import { NextComponentType } from 'next';
 import { AppContextType, AppInitialProps, AppPropsType } from 'next/dist/next-server/lib/utils';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import { Record as RelayRecord } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
-import { createRelayEnvironment, RelayProvider } from '../lib/relay-environment';
+import { createRelayEnvironment } from '../lib/relay-environment';
 
 type ServerState = { [key: string]: RelayRecord };
 
@@ -38,14 +39,14 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 	const environment = createRelayEnvironment(serverState);
 
 	return (
-		<RelayProvider environment={environment}>
+		<RelayEnvironmentProvider environment={environment}>
 			<React.Fragment>
 				<GlobalStyles />
 				<MessageBar />
 				<Navbar />
 				<Component {...pageProps} />
 			</React.Fragment>
-		</RelayProvider>
+		</RelayEnvironmentProvider>
 	);
 };
 

@@ -4,7 +4,8 @@ export const ProductDetails = styled.div`
 	padding-top: 20px;
 `;
 
-export const ProductImageWrapper = styled.div`
+export const ProductImageWrapper = styled.a`
+	display: block;
 	position: relative;
 	background: #eaeaea;
 `;
@@ -42,7 +43,10 @@ export const ProductTagDiscount = styled(ProductTag)`
 	color: red;
 `;
 
-export const ProductName = styled.h1`
+export const ProductName = styled.a`
+	display: block;
+	color: black;
+	text-decoration: none;
 	font-size: 20px;
 	font-weight: bold;
 	margin: 0 0 8px 0;

@@ -1,5 +1,3 @@
-import React, { createContext, useContext } from 'react';
-
 import {
 	CacheConfig,
 	Environment,
@@ -88,27 +86,3 @@ export function createRelayEnvironment(records?: RecordMap) {
 
 	return relayEnvironment;
 }
-
-interface RelayContextValue {
-	getEnvironment: () => Environment;
-}
-
-const RelayContext = createContext<RelayContextValue>({
-	getEnvironment: () => {
-		throw new Error('No provider was provided');
-	},
-});
-
-interface RelayProviderProps {
-	environment: Environment;
-}
-
-export const RelayProvider: React.FC<RelayProviderProps> = ({ children, environment }) => {
-	return <RelayContext.Provider value={{ getEnvironment: () => environment }}>{children}</RelayContext.Provider>;
-};
-
-export const useRelayEnvironment = () => {
-	const { getEnvironment } = useContext(RelayContext);
-
-	return getEnvironment();
-};

@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer, useState } from 'react';
 
 import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
+import { useRelayEnvironment } from 'react-relay/hooks';
 import styled from 'styled-components';
 
-import { useRelayEnvironment } from '../../lib/relay-environment';
 import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
 import { CategoryFilterRangeSelect } from '../CategoryFilterRangeSelect';
 import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
