@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+import './api/shopping-cart';
 
 import express from 'express';
 import session, { SessionOptions } from 'express-session';

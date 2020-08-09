@@ -1,4 +1,4 @@
-import { instance } from './util';
+import { magentoAdminRequester } from './util';
 
 interface MagentoSimpleCategory {
 	id: number;
@@ -32,7 +32,7 @@ export interface MagentoFullCategory {
 }
 
 export async function getCategory(id: number) {
-	const { data } = await instance.get('/rest/default/V1/categories/' + id);
+	const { data } = await magentoAdminRequester.get('/rest/default/V1/categories/' + id);
 
 	return data as MagentoFullCategory;
 }
@@ -46,7 +46,7 @@ async function expandCategory(simpleCategory: MagentoSimpleCategory) {
 }
 
 export async function getCategories() {
-	const { data } = await instance.get('/rest/default/V1/categories');
+	const { data } = await magentoAdminRequester.get('/rest/default/V1/categories');
 
 	const rootCategories = data['children_data'] as MagentoSimpleCategory[];
 
