@@ -1,5 +1,6 @@
 input ProductWhereUniqueInput {
-	urlKey: String!
+	id: ID
+	urlKey: String
 }
 
 type Query {

@@ -1,0 +1,37 @@
+input AddProductToCartInput {
+	product: ProductWhereUniqueInput!
+	amount: Int!
+}
+
+type AddProductToCartPayload {
+	shoppingCartProduct: ShoppingCartProduct!
+}
+
+type Mutation {
+	addProductToCart(input: AddProductToCartInput!): AddProductToCartPayload!
+}
+
+input UpdateProductAmountInCartInput {
+	product: ProductWhereUniqueInput!
+	amount: Int!
+}
+
+type UpdateProductAmountInCartPayload {
+	shoppingCartProduct: ShoppingCartProduct!
+}
+
+type Mutation {
+	updateProductAmountInCart(input: UpdateProductAmountInCartInput!): UpdateProductAmountInCartPayload!
+}
+
+input RemoveProductFromCartInput {
+	product: ProductWhereUniqueInput!
+}
+
+type RemoveProductFromCartPayload {
+	success: Boolean!
+}
+
+type Mutation {
+	removeProductFromCart(input: RemoveProductFromCartInput!): RemoveProductFromCartPayload!
+}
