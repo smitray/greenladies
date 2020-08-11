@@ -18,3 +18,19 @@ export function fromGlobalId(globalId: string) {
 
 	return { type, id };
 }
+
+export function transformGlobaIdInObject<T extends { id?: string | null }>(type: string, obj: T) {
+	if (obj.id) {
+		const { type: t, id } = fromGlobalId(obj.id);
+		if (t !== type) {
+			throw new Error('Type mismatch');
+		}
+
+		return {
+			...obj,
+			id,
+		};
+	}
+
+	return obj;
+}

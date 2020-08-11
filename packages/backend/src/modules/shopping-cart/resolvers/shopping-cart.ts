@@ -15,6 +15,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 				items.map(async item => {
 					const product = await injector.get(ProductProvider).getProductBySku(item.sku);
 					return {
+						id: item.item_id.toString(),
 						product: {
 							id: product.id,
 						},

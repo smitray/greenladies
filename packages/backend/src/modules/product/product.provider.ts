@@ -2,7 +2,6 @@ import { Injectable, ProviderScope } from '@graphql-modules/di';
 
 import { Product } from '../../magento-sync';
 import { getRedisCacheConnection } from '../../redis-connection';
-import { fromGlobalId } from '../../utils/global-id';
 
 @Injectable({ scope: ProviderScope.Request })
 export class ProductProvider {

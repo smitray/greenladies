@@ -24,7 +24,7 @@ export interface GuestShoppingCartItem {
 			bundle_options: {
 				option_id: number;
 				option_qty: number;
-				option_selections: [0];
+				option_selections: number[];
 				extension_attributes: Record<string, any>;
 			}[];
 			configurable_item_options: {
@@ -295,21 +295,95 @@ export interface GuestShoppingCart {
 }
 
 export async function getGuestShoppingCart(cartId: string) {
-	const { data } = await magentoGuestRequester.get('/rest/default/V1/guest-carts/' + cartId);
+	const { data } = await magentoGuestRequester.get<GuestShoppingCart>('/rest/default/V1/guest-carts/' + cartId);
 
-	return data as GuestShoppingCart;
+	return data;
 }
 
 export async function getGuestShoppingCartItems(cartId: string) {
-	const { data } = await magentoGuestRequester.get('/rest/default/V1/guest-carts/' + cartId + '/items');
+	const { data } = await magentoGuestRequester.get<GuestShoppingCartItem[]>(
+		'/rest/default/V1/guest-carts/' + cartId + '/items',
+	);
 
-	return data as GuestShoppingCartItem[];
+	return data;
 }
 
 export async function createGuestShoppingCart() {
-	const { data } = await magentoGuestRequester.post('/rest/default/V1/guest-carts');
+	const { data } = await magentoGuestRequester.post<string>('/rest/default/V1/guest-carts');
 
-	return data as string;
+	return data;
+}
+
+interface GuestShoppingCartProudctAddedResult {
+	item_id: number;
+	sku: string;
+	qty: number;
+	name: string;
+	price: number;
+	product_type: string;
+	quote_id: string;
+	product_option: {
+		extension_attributes: {
+			custom_options: {
+				option_id: string;
+				option_value: string;
+				extension_attributes: {
+					file_info: {
+						base64_encoded_data: string;
+						type: string;
+						name: string;
+					};
+				};
+			}[];
+			bundle_options: [
+				{
+					option_id: number;
+					option_qty: number;
+					option_selections: number[];
+					extension_attributes: Record<string, any>;
+				},
+			];
+			configurable_item_options: {
+				option_id: string;
+				option_value: number;
+				extension_attributes: Record<string, any>;
+			}[];
+			downloadable_option: {
+				downloadable_links: number[];
+			};
+			giftcard_item_option: {
+				giftcard_amount: string;
+				custom_giftcard_amount: number;
+				giftcard_sender_name: string;
+				giftcard_recipient_name: string;
+				giftcard_sender_email: string;
+				giftcard_recipient_email: string;
+				giftcard_message: string;
+				extension_attributes: {
+					giftcard_created_codes: string[];
+				};
+			};
+		};
+	};
+	extension_attributes: {
+		discounts: {
+			discount_data: {
+				amount: number;
+				base_amount: number;
+				original_amount: number;
+				base_original_amount: number;
+			};
+			rule_label: string;
+			rule_id: number;
+		}[];
+		negotiable_quote_item: {
+			item_id: number;
+			original_price: number;
+			original_tax_amount: number;
+			original_discount_amount: number;
+			extension_attributes: Record<string, any>;
+		};
+	};
 }
 
 export async function addProductToGuestShoppingCart({
@@ -321,19 +395,47 @@ export async function addProductToGuestShoppingCart({
 	productSku: string;
 	quantity: number;
 }) {
-	try {
-		const { data } = await magentoGuestRequester.post(`/rest/default/V1/guest-carts/${cartId}/items`, {
+	const { data } = await magentoGuestRequester.post<GuestShoppingCartProudctAddedResult>(
+		`/rest/default/V1/guest-carts/${cartId}/items`,
+		{
 			cartItem: {
 				qty: quantity,
 				quote_id: cartId,
 				sku: productSku,
 			},
-		});
+		},
+	);
 
-		console.log(data);
+	return data;
+}
 
-		return data;
-	} catch (error) {
-		console.log(error.response.data);
-	}
+export async function updateGuestShoppingCartProductQuantity({
+	cartId,
+	itemId,
+	quantity,
+}: {
+	cartId: string;
+	itemId: string;
+	quantity: number;
+}) {
+	const { data } = await magentoGuestRequester.put<GuestShoppingCartProudctAddedResult>(
+		`/rest/default/V1/guest-carts/${cartId}/items/${itemId}`,
+		{
+			cartItem: {
+				qty: quantity,
+				quote_id: cartId,
+				// sku: productSku,
+			},
+		},
+	);
+
+	return data;
+}
+
+export async function deleteProductFromGuestShoppingCart({ cartId, itemId }: { cartId: string; itemId: string }) {
+	const { data } = await magentoGuestRequester.delete<boolean>(
+		`/rest/default/V1/guest-carts/${cartId}/items/${itemId}`,
+	);
+
+	return data;
 }

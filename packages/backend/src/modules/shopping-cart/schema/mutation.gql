@@ -1,6 +1,6 @@
 input AddProductToCartInput {
 	product: ProductWhereUniqueInput!
-	amount: Int!
+	quantity: Int!
 }
 
 type AddProductToCartPayload {
@@ -12,8 +12,8 @@ type Mutation {
 }
 
 input UpdateProductAmountInCartInput {
-	product: ProductWhereUniqueInput!
-	amount: Int!
+	itemId: ID!
+	quantity: Int!
 }
 
 type UpdateProductAmountInCartPayload {
@@ -25,7 +25,7 @@ type Mutation {
 }
 
 input RemoveProductFromCartInput {
-	product: ProductWhereUniqueInput!
+	itemId: ID!
 }
 
 type RemoveProductFromCartPayload {
