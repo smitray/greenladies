@@ -5,10 +5,10 @@ import path from 'path';
 
 import { GQLResolvers } from '../../__generated__/types';
 import { ApolloContext } from '../../create-apollo-server';
-// import { CategoryModule } from '../category';
-// import { RelayModule } from '../relay';
+import { ProductModule } from '../product';
+import { RelayModule } from '../relay';
 
-// import { ShoppingCartProvider } from './shopping-cart.provider';
+import { ShoppingCartProvider } from './shopping-cart.provider';
 
 export interface ShoppingCartModuleContext {
 	request: Request;
@@ -17,8 +17,8 @@ export interface ShoppingCartModuleContext {
 export type ShoppingCartModuleResolversType = GQLResolvers<ModuleContext<ShoppingCartModuleContext>>;
 
 export const ShoppingCartModule = new GraphQLModule<any, ApolloContext, ShoppingCartModuleContext>({
-	// imports: [CategoryModule, RelayModule],
-	// providers: [ShoppingCartProvider],
+	imports: [ProductModule, RelayModule],
+	providers: [ShoppingCartProvider],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
 	context: ({ req }) => {

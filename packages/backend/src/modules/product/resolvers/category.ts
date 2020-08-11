@@ -210,7 +210,9 @@ const resolvers: ProductModuleResolversType = {
 	Category: {
 		products: async ({ id }, args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
-			const products = await Promise.all(category.productIds.map(id => injector.get(ProductProvider).getProduct(id)));
+			const products = await Promise.all(
+				category.productIds.map(id => injector.get(ProductProvider).getProduct({ id })),
+			);
 			if (products.length === 0) {
 				return {
 					...connectionFromArray(products, args),

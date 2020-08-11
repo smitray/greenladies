@@ -1,4 +1,4 @@
-type ShoppingCartProduct {
+type ShoppingCartItem {
 	product: Product!
 	amount: Int!
 }

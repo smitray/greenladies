@@ -294,12 +294,6 @@ export interface GuestShoppingCart {
 	};
 }
 
-export async function createGuestShoppingCart() {
-	const { data } = await magentoGuestRequester.post('/rest/default/V1/guest-carts');
-
-	return data as string;
-}
-
 export async function getGuestShoppingCart(cartId: string) {
 	const { data } = await magentoGuestRequester.get('/rest/default/V1/guest-carts/' + cartId);
 
@@ -310,4 +304,36 @@ export async function getGuestShoppingCartItems(cartId: string) {
 	const { data } = await magentoGuestRequester.get('/rest/default/V1/guest-carts/' + cartId + '/items');
 
 	return data as GuestShoppingCartItem[];
+}
+
+export async function createGuestShoppingCart() {
+	const { data } = await magentoGuestRequester.post('/rest/default/V1/guest-carts');
+
+	return data as string;
+}
+
+export async function addProductToGuestShoppingCart({
+	cartId,
+	productSku,
+	quantity,
+}: {
+	cartId: string;
+	productSku: string;
+	quantity: number;
+}) {
+	try {
+		const { data } = await magentoGuestRequester.post(`/rest/default/V1/guest-carts/${cartId}/items`, {
+			cartItem: {
+				qty: quantity,
+				quote_id: cartId,
+				sku: productSku,
+			},
+		});
+
+		console.log(data);
+
+		return data;
+	} catch (error) {
+		console.log(error.response.data);
+	}
 }

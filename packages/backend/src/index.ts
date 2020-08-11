@@ -2,11 +2,15 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import './api/shopping-cart';
 
+import RedisSession from 'connect-redis';
 import express from 'express';
 import session, { SessionOptions } from 'express-session';
 
 import { createApolloServer } from './create-apollo-server';
 import { syncMagentoProductsAndCategories } from './magento-sync';
+import { getRedisCacheConnection } from './redis-connection';
+
+const RedisSessionStore = RedisSession(session);
 
 const sessionOptions: SessionOptions = {
 	secret: String(process.env.APP_SECRET),
@@ -19,6 +23,7 @@ const sessionOptions: SessionOptions = {
 		sameSite: 'strict',
 		secure: false,
 	},
+	store: new RedisSessionStore({ client: getRedisCacheConnection() }),
 };
 
 (async function () {

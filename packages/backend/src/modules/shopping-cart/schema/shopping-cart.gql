@@ -1,4 +1,4 @@
-type ShoppingCart {
+type ShoppingCart implements Node {
 	id: ID!
-	products: [ShoppingCartProduct!]!
+	items: [ShoppingCartItem!]!
 }

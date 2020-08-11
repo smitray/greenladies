@@ -4,7 +4,7 @@ input AddProductToCartInput {
 }
 
 type AddProductToCartPayload {
-	shoppingCartProduct: ShoppingCartProduct!
+	shoppingCartItem: ShoppingCartItem!
 }
 
 type Mutation {
@@ -17,7 +17,7 @@ input UpdateProductAmountInCartInput {
 }
 
 type UpdateProductAmountInCartPayload {
-	shoppingCartProduct: ShoppingCartProduct!
+	shoppingCartItem: ShoppingCartItem!
 }
 
 type Mutation {

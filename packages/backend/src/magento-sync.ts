@@ -77,6 +77,26 @@ async function saveProductsInCache(products: Product[]) {
 		);
 	});
 
+	// Save product sku => product id
+	const mapSkuToId = new Promise((resolve, reject) => {
+		getRedisCacheConnection().mset(
+			products.reduce<string[]>((prev, current) => {
+				if (current.type !== 'virtual' && current.sku) {
+					return [...prev, 'Product:sku:' + current.sku, current.id];
+				}
+
+				return prev;
+			}, []),
+			(err, reply) => {
+				if (err) {
+					reject(err);
+				}
+
+				resolve(reply);
+			},
+		);
+	});
+
 	const saveProductIds = new Promise((resolve, reject) => {
 		getRedisCacheConnection().set('productIds', JSON.stringify(products.map(product => product.id)), (err, reply) => {
 			if (err) {
@@ -87,7 +107,7 @@ async function saveProductsInCache(products: Product[]) {
 		});
 	});
 
-	return Promise.all([saveProducts, mapUrlKeyToId, saveProductIds]);
+	return Promise.all([saveProducts, mapUrlKeyToId, mapSkuToId, saveProductIds]);
 }
 
 async function syncMagnetoProducts() {

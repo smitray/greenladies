@@ -1,9 +1,10 @@
-import { Injectable } from '@graphql-modules/di';
+import { Injectable, ProviderScope } from '@graphql-modules/di';
 
 import { Product } from '../../magento-sync';
 import { getRedisCacheConnection } from '../../redis-connection';
+import { fromGlobalId } from '../../utils/global-id';
 
-@Injectable()
+@Injectable({ scope: ProviderScope.Request })
 export class ProductProvider {
 	async getProducts() {
 		const productIds = await new Promise<string[]>((resolve, reject) => {
@@ -31,7 +32,23 @@ export class ProductProvider {
 		});
 	}
 
-	getProduct(id: string) {
+	getProduct({ id, urlKey, sku }: { id?: string | null; urlKey?: string | null; sku?: string | null }) {
+		if (id) {
+			return this.getProductById(id);
+		}
+
+		if (urlKey) {
+			return this.getProductByUrlKey(urlKey);
+		}
+
+		if (sku) {
+			return this.getProductBySku(sku);
+		}
+
+		throw new Error('One identifier must be given');
+	}
+
+	getProductById(id: string) {
 		return new Promise<Product>((resolve, reject) => {
 			getRedisCacheConnection().get('Product:id:' + id, (err, reply) => {
 				if (err) {
@@ -62,6 +79,24 @@ export class ProductProvider {
 			});
 		});
 
-		return this.getProduct(id);
+		return this.getProductById(id);
+	}
+
+	async getProductBySku(sku: string) {
+		const id = await new Promise<string>((resolve, reject) => {
+			getRedisCacheConnection().get('Product:sku:' + sku, (err, reply) => {
+				if (err) {
+					return reject(err);
+				}
+
+				if (reply === null) {
+					return reject(new Error('Product not found'));
+				}
+
+				return resolve(reply);
+			});
+		});
+
+		return this.getProductById(id);
 	}
 }
