@@ -7,7 +7,7 @@ echo "--- Adding Magento credentials to composer ---"
 composer global config http-basic.repo.magento.com $MAGENTO_PUBLIC_KEY $MAGENTO_PRIVATE_KEY
 
 echo " --- Creating Magento project ---"
-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition /var/www/html
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.3.5 /var/www/html
 
 echo "--- Updating folder permissions ---"
 find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
