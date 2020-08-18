@@ -14,7 +14,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 				request.session.guestShoppingCartId = await injector.get(ShoppingCartProvider).createGuestShoppingCart();
 			}
 
-			const guestShoppingCartId: string = request.session.guestShoppingCartId;
+			const guestShoppingCartId = request.session.guestShoppingCartId;
 
 			const product = await injector
 				.get(ProductProvider)
@@ -41,7 +41,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const cartId = request.session.guestShoppingCartId;
 
-			if (typeof cartId !== 'string') {
+			if (!cartId) {
 				throw new Error('There is no cart available');
 			}
 
@@ -68,7 +68,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const cartId = request.session.guestShoppingCartId;
 
-			if (typeof cartId !== 'string') {
+			if (!cartId) {
 				throw new Error('There is no cart available');
 			}
 

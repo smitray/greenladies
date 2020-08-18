@@ -40,7 +40,7 @@ const sessionOptions: SessionOptions = {
 
 	syncMagentoProductsAndCategories()
 		.then(() => console.log('Successfully synced magento to redis'))
-		.catch(() => console.log('Could not sync magento'));
+		.catch(error => console.log('Could not sync magento', error.message));
 
 	const server = await createApolloServer();
 	server.applyMiddleware({

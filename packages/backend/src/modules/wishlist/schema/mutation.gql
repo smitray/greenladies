@@ -1,0 +1,23 @@
+input AddProductToWishlistInput {
+	product: ProductWhereUniqueInput!
+}
+
+type AddProductToWishlistPayload {
+	product: Product!
+}
+
+type Mutation {
+	addProductToWishlist(input: AddProductToWishlistInput!): AddProductToWishlistPayload!
+}
+
+input RemoveProductFromWishlistInput {
+	product: ProductWhereUniqueInput!
+}
+
+type RemoveProductFromWishlistPayload {
+	success: Boolean
+}
+
+type Mutation {
+	removeProductFromWishlist(input: RemoveProductFromWishlistInput!): RemoveProductFromWishlistPayload!
+}
