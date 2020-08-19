@@ -64,3 +64,5 @@ export const ProductSpecialPrice = styled.span`
 export const ProductBrand = styled.span`
 	color: #777777;
 `;
+
+export const ProductWishlist = styled.button``;

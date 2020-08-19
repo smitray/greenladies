@@ -9,6 +9,9 @@ export const CATEGORY_QUERY = graphql`
 			...CategorySidebar_category
 			...ProductList_category
 		}
+		wishlist {
+			...Wishlist_wishlist
+		}
 	}
 `;
 

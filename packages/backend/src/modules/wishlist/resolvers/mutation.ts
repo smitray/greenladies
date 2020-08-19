@@ -20,7 +20,10 @@ const resolvers: WishlistModuleResolversType = {
 			}
 
 			return {
-				product,
+				productEdge: {
+					node: product,
+					cursor: '',
+				},
 			};
 		},
 		removeProductFromWishlist: async (_parent, { input }, { request, injector }) => {
@@ -37,7 +40,10 @@ const resolvers: WishlistModuleResolversType = {
 			}
 
 			return {
-				success: true,
+				productEdge: {
+					node: product,
+					cursor: '',
+				},
 			};
 		},
 	},

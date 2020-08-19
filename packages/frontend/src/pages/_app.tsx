@@ -51,7 +51,7 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 };
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
-	const relayEnvironment = createRelayEnvironment();
+	const relayEnvironment = createRelayEnvironment(undefined, ctx.req?.headers.cookie);
 
 	let pageProps: Record<string, any> = {};
 	if ((Component as any).getInitialProps) {

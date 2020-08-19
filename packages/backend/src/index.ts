@@ -45,6 +45,10 @@ const sessionOptions: SessionOptions = {
 	const server = await createApolloServer();
 	server.applyMiddleware({
 		app,
+		cors: {
+			credentials: true,
+			origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : false,
+		},
 	});
 
 	app.listen(3000, () => {

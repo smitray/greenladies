@@ -7,15 +7,19 @@ const resolvers: WishlistModuleResolversType = {
 		wishlist: async (_parent, args, { request, injector }) => {
 			if (!request.session) {
 				return {
-					...connectionFromArray([], {}),
-					availableFilters: [],
+					products: {
+						...connectionFromArray([], args),
+						availableFilters: [],
+					},
 				};
 			}
 
 			if (!request.session.wishlist) {
 				return {
-					...connectionFromArray([], {}),
-					availableFilters: [],
+					products: {
+						...connectionFromArray([], args),
+						availableFilters: [],
+					},
 				};
 			}
 
@@ -24,8 +28,10 @@ const resolvers: WishlistModuleResolversType = {
 			);
 
 			return {
-				...connectionFromArray(products, args),
-				availableFilters: [],
+				products: {
+					...connectionFromArray(products, args),
+					availableFilters: [],
+				},
 			};
 		},
 	},

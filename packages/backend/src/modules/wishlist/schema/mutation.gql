@@ -3,7 +3,7 @@ input AddProductToWishlistInput {
 }
 
 type AddProductToWishlistPayload {
-	product: Product!
+	productEdge: ProductEdge!
 }
 
 type Mutation {
@@ -15,7 +15,7 @@ input RemoveProductFromWishlistInput {
 }
 
 type RemoveProductFromWishlistPayload {
-	success: Boolean
+	productEdge: ProductEdge!
 }
 
 type Mutation {
