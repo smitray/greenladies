@@ -1,4 +1,5 @@
 import 'rc-slider/assets/index.css';
+import 'rc-drawer/assets/index.css';
 
 import React from 'react';
 
