@@ -7,7 +7,7 @@ echo "--- Adding Magento credentials to composer ---"
 composer global config http-basic.repo.magento.com $MAGENTO_PUBLIC_KEY $MAGENTO_PRIVATE_KEY
 
 echo " --- Creating Magento project ---"
-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.3.5 /var/www/html
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4 /var/www/html
 
 echo "--- Updating folder permissions ---"
 find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
@@ -21,6 +21,7 @@ echo "--- Installing Magento ---"
   --db-name=$MYSQL_DATABASE \
   --db-user=$MYSQL_USERNAME \
   --db-password=$MYSQL_PASSWORD \
+  --elasticsearch-host=magento2-elasticsearch \
   --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME \
   --admin-lastname=$MAGENTO_ADMIN_LASTNAME \
   --admin-email=$MAGENTO_ADMIN_EMAIL \
@@ -33,3 +34,7 @@ echo "--- Installing Magento ---"
 
 echo "--- Enabling developer mode ---"
 bin/magento deploy:mode:set developer
+
+echo "--- Disabling 2fa ---"
+bin/magento module:disable Magento_TwoFactorAuth
+bin/magento cache:flush 

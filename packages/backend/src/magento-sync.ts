@@ -137,7 +137,7 @@ async function transformCategory(category: MagentoFullCategory): Promise<Categor
 		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
 		parentId: String(category.parent_id),
 		childrenIds: category.children === '' ? [] : category.children.split(','),
-		productIds: (await getProductsByCategoryId(category.id)).map(category => String(category.id)),
+		productIds: (await getProductsByCategoryId(category.id)).map(product => String(product.id)),
 	};
 }
 
