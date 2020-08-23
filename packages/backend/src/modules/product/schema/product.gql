@@ -6,6 +6,7 @@ type ProductConfiguration implements Node {
 	specialPrice: Float!
 	currency: String!
 	size: String!
+	colors: [String!]!
 }
 
 type Product implements Node {
