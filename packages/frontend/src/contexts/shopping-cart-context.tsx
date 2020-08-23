@@ -39,6 +39,7 @@ function ShoppingCartProviderInternal({ cart, children }: React.PropsWithChildre
 
 	return (
 		<ShoppingCartContext.Provider value={{ isOpen, open, close }}>
+			<button onClick={() => setIsOpen(open => !open)}>CART</button>
 			{children}
 			<ShoppingCart open={isOpen} onCloseRequest={close} cart={cart} />
 		</ShoppingCartContext.Provider>

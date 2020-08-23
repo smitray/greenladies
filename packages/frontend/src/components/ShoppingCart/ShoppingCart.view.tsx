@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 import Drawer from 'rc-drawer';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { useRemoveFromCartMutation } from '../../mutations/shopping-cart';
+
 import { ShoppingCart_cart } from './__generated__/ShoppingCart_cart.graphql';
 
 interface WishlistViewProps {
@@ -13,7 +15,7 @@ interface WishlistViewProps {
 
 const ShoppingCartView = ({ cart, open, onCloseRequest }: WishlistViewProps) => {
 	const items = useMemo(() => cart.items.edges.map(edge => edge.node), [cart]);
-
+	const { commit: removeFromCart } = useRemoveFromCartMutation();
 	return (
 		<Drawer open={open} placement="right" handler={false} width={300} onClose={onCloseRequest}>
 			<div>
@@ -22,7 +24,7 @@ const ShoppingCartView = ({ cart, open, onCloseRequest }: WishlistViewProps) => 
 					items.map(item => (
 						<div key={item.id}>
 							{item.product.name}
-							<button>REMOVE</button>
+							<button onClick={() => removeFromCart(item.id)}>REMOVE</button>
 						</div>
 					))}
 			</div>
