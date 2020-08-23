@@ -39,13 +39,12 @@ const resolvers: ProductModuleResolversType = {
 				};
 			}
 
-			// const { orderBy, filters } = args;
 			let availableProductsByBrands: Product[] | null = null;
 			let availableProductsByPrice: Product[] | null = null;
 			let availableProductsByColors: Product[] | null = null;
 			let availableProductsBySizes: Product[] | null = null;
 			let filteredProducts: Product[] | null = null;
-			const { filters } = args;
+			const { orderBy, filters } = args;
 			if (filters) {
 				const productsFilteredByBrands = filters.brand_in
 					? products.filter(product => {
@@ -72,16 +71,7 @@ const resolvers: ProductModuleResolversType = {
 							if (product.__type === 'ConfigurableProduct') {
 								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 								const { from, to } = filters.price_between!;
-								if (product.priceRange.from >= from && product.priceRange.from <= to) {
-									// price range "from" is between filter range
-									return true;
-								} else if (product.priceRange.to >= from && product.priceRange.to <= to) {
-									// price range "to" is between filter range
-									return true;
-								} else if (product.priceRange.from < from && product.priceRange.to > to) {
-									// filter range is within price range
-									return true;
-								}
+								return product.price >= from && product.price <= to;
 							}
 
 							return false;
@@ -194,8 +184,45 @@ const resolvers: ProductModuleResolversType = {
 				availableProductsBySizes = filteredProducts;
 			}
 
+			let filteredAndOrderedProducts = filteredProducts;
+			if (orderBy) {
+				switch (orderBy) {
+					case 'popularity_DESC':
+						break;
+					case 'created_DESC':
+						break;
+					case 'price_ASC':
+						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
+							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
+								return left.price - right.price;
+							}
+
+							throw new Error('This should not happen');
+						});
+						break;
+					case 'price_DESC':
+						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
+							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
+								return right.price - left.price;
+							}
+
+							throw new Error('This should not happen');
+						});
+						break;
+					case 'discount_DESC':
+						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
+							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
+								return left.specialPrice / left.price - right.specialPrice / right.price;
+							}
+
+							throw new Error('This should not happen');
+						});
+						break;
+				}
+			}
+
 			return {
-				...connectionFromArray(filteredProducts, args),
+				...connectionFromArray(filteredAndOrderedProducts, args),
 				availableFilters: {
 					brands: [
 						...new Set(
@@ -226,8 +253,8 @@ const resolvers: ProductModuleResolversType = {
 									(prev, product) => {
 										if (product.__type === 'ConfigurableProduct') {
 											return {
-												from: Math.min(prev.from, product.priceRange.from),
-												to: Math.max(prev.to, product.priceRange.to),
+												from: Math.min(prev.from, product.price),
+												to: Math.max(prev.to, product.price),
 											};
 										}
 

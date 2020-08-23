@@ -108,6 +108,30 @@ const resolvers: ProductModuleResolversType = {
 
 			throw new Error('Invalid product');
 		},
+		originalPrice: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.price;
+			}
+
+			throw new Error('Invalid product');
+		},
+		specialPrice: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.specialPrice;
+			}
+
+			throw new Error('Invalid product');
+		},
+		currency: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.currency;
+			}
+
+			throw new Error('Invalid product');
+		},
 	},
 };
 

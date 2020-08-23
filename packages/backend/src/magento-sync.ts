@@ -34,10 +34,9 @@ export interface ConfigurableProduct {
 	virtualProductIds: string[];
 	sizes: string[];
 	colors: string[];
-	priceRange: {
-		from: number;
-		to: number;
-	};
+	price: number;
+	specialPrice: number;
+	currency: string;
 }
 
 export interface VirtualProduct {
@@ -62,15 +61,9 @@ async function transformConfigurableProduct(product: MagentoConfigurableProduct)
 		...product,
 		sizes: [...new Set(virtualProducts.map(virtualProduct => virtualProduct.size))],
 		colors: [...new Set(virtualProducts.flatMap(virtualProduct => virtualProduct.colors))],
-		priceRange: virtualProducts.reduce(
-			(prev, current) => {
-				return {
-					from: Math.min(current.price.specialPrice, prev.from),
-					to: Math.max(current.price.specialPrice, prev.to),
-				};
-			},
-			{ from: 1000000000, to: -1000000000 },
-		),
+		price: virtualProducts[0].price.originalPrice,
+		specialPrice: virtualProducts[0].price.specialPrice,
+		currency: virtualProducts[0].price.currency,
 	};
 }
 

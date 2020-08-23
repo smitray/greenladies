@@ -9,7 +9,15 @@ const resolvers: WishlistModuleResolversType = {
 				return {
 					products: {
 						...connectionFromArray([], args),
-						availableFilters: [],
+						availableFilters: {
+							brands: [],
+							colors: [],
+							price: {
+								from: 0,
+								to: 0,
+							},
+							sizes: [],
+						},
 					},
 				};
 			}
@@ -18,7 +26,15 @@ const resolvers: WishlistModuleResolversType = {
 				return {
 					products: {
 						...connectionFromArray([], args),
-						availableFilters: [],
+						availableFilters: {
+							brands: [],
+							colors: [],
+							price: {
+								from: 0,
+								to: 0,
+							},
+							sizes: [],
+						},
 					},
 				};
 			}
@@ -30,7 +46,15 @@ const resolvers: WishlistModuleResolversType = {
 			return {
 				products: {
 					...connectionFromArray(products, args),
-					availableFilters: [],
+					availableFilters: {
+						brands: [],
+						colors: [],
+						price: {
+							from: 0,
+							to: 0,
+						},
+						sizes: [],
+					},
 				},
 			};
 		},
