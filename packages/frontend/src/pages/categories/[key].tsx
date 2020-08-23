@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { CategorySidebar } from '../../components/CategorySidebar';
 import { ProductList } from '../../components/ProductList';
-import { Wishlist } from '../../components/Wishlist';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
 
@@ -22,7 +21,7 @@ interface Props {
 }
 
 const Category: MyNextPage<Props> = ({ categoryUrlKey }) => {
-	const { category, wishlist } = useLazyLoadQuery<CategoryQuery>(
+	const { category } = useLazyLoadQuery<CategoryQuery>(
 		CATEGORY_QUERY,
 		{ where: { urlKey: categoryUrlKey } },
 		{ fetchPolicy: 'store-only' },
@@ -35,9 +34,6 @@ const Category: MyNextPage<Props> = ({ categoryUrlKey }) => {
 			</div>
 			<div style={{ flexGrow: 1 }}>
 				<ProductList category={category} />
-			</div>
-			<div>
-				<Wishlist wishlist={wishlist} />
 			</div>
 		</CenterWrapper>
 	);
