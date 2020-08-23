@@ -11,9 +11,9 @@ interface ConnectionArguments {
 	before?: string | null;
 }
 
-interface Connection {
+interface Connection<T extends Node = Node> {
 	totalCount: number;
-	edges: Edge<Node>[];
+	edges: Edge<T>[];
 	pageInfo: PageInfo;
 }
 
@@ -50,8 +50,10 @@ export function cursorToOffset(cursor: string): number {
 	return offset;
 }
 
-export function connectionFromArray(allNodes: Node[], { first, after, last, before }: ConnectionArguments): Connection {
-	// const edges = edgesToReturn(arraySlice, args);
+export function connectionFromArray<T extends Node>(
+	allNodes: T[],
+	{ first, after, last, before }: ConnectionArguments,
+): Connection<T> {
 	let hasNextPage = false;
 	let hasPreviousPage = false;
 	let start = 0;
@@ -104,7 +106,7 @@ export function connectionFromArray(allNodes: Node[], { first, after, last, befo
 		};
 	}
 
-	const edges = nodes.map<Edge<Node>>((node, index) => ({
+	const edges = nodes.map<Edge<T>>((node, index) => ({
 		cursor: offsetToCursor(start + index),
 		node,
 	}));

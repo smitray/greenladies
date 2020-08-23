@@ -1,17 +1,14 @@
 import { ShoppingCartModuleResolversType } from '..';
-import { toGlobalId } from '../../../utils/global-id';
+import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../../product/product.provider';
 import { ShoppingCartProvider } from '../shopping-cart.provider';
 
 const resolvers: ShoppingCartModuleResolversType = {
 	ShoppingCart: {
-		id: ({ id }) => {
-			return toGlobalId('ShoppingCart', id);
-		},
-		items: async ({ id }, _args, { injector }) => {
+		items: async ({ id }, args, { injector }) => {
 			const items = await injector.get(ShoppingCartProvider).getGuestShoppingCartItems(id);
 
-			return Promise.all(
+			const processedItems = await Promise.all(
 				items.map(async item => {
 					const product = await injector.get(ProductProvider).getProductBySku(item.sku);
 					return {
@@ -23,6 +20,8 @@ const resolvers: ShoppingCartModuleResolversType = {
 					};
 				}),
 			);
+
+			return connectionFromArray(processedItems, args);
 		},
 	},
 };

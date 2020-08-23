@@ -12,6 +12,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
+import { ShoppingCartProvider } from '../contexts/shopping-cart-context';
 import { WishlistProvider } from '../contexts/wishlist-context';
 import { createRelayEnvironment } from '../lib/relay-environment';
 import { APP_QUERY, AppQuery } from '../queries/app';
@@ -55,16 +56,18 @@ interface MyAppInnerProps {
 }
 
 const MyAppInner = ({ Component, pageProps }: MyAppInnerProps) => {
-	const { wishlist } = useLazyLoadQuery<AppQuery>(APP_QUERY, { fetchPolicy: 'store-only' });
+	const { wishlist, shoppingCart } = useLazyLoadQuery<AppQuery>(APP_QUERY, { fetchPolicy: 'store-only' });
 
 	return (
 		<WishlistProvider wishlist={wishlist}>
-			<React.Fragment>
-				<GlobalStyles />
-				<MessageBar />
-				<Navbar />
-				<Component {...pageProps} />
-			</React.Fragment>
+			<ShoppingCartProvider cart={shoppingCart}>
+				<React.Fragment>
+					<GlobalStyles />
+					<MessageBar />
+					<Navbar />
+					<Component {...pageProps} />
+				</React.Fragment>
+			</ShoppingCartProvider>
 		</WishlistProvider>
 	);
 };
