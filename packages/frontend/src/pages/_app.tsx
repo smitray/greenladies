@@ -50,7 +50,7 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 };
 
 interface MyAppInnerProps {
-	Component: NextComponentType<NextPageContext, any, {}>;
+	Component: NextComponentType<NextPageContext, any, any>;
 	pageProps: any;
 }
 
