@@ -1,6 +1,6 @@
 import { stringify } from 'query-string';
 
-import { instance } from './util';
+import { magentoAdminRequester } from './util';
 
 interface MagentoSimpleProduct {
 	sku: string;
@@ -10,7 +10,7 @@ interface MagentoSimpleProduct {
 }
 
 export async function getProductsByCategoryId(categoryId: number) {
-	const { data } = await instance.get('/rest/default/V1/categories/' + categoryId + '/products');
+	const { data } = await magentoAdminRequester.get('/rest/default/V1/categories/' + categoryId + '/products');
 
 	const products = data as MagentoSimpleProduct[];
 
@@ -227,13 +227,13 @@ export async function getProducts({ page = 1, pageSize = 10 }) {
 		'searchCriteria[currentPage]': page,
 		'searchCriteria[pageSize]': pageSize,
 	};
-	const { data } = await instance.get('/rest/default/V1/products?' + stringify(query));
+	const { data } = await magentoAdminRequester.get('/rest/default/V1/products?' + stringify(query));
 
 	return data.items as MagentoFullProduct[];
 }
 
 async function getProductBySku(sku: string) {
-	const { data } = await instance.get('/rest/default/V1/products/' + sku);
+	const { data } = await magentoAdminRequester.get('/rest/default/V1/products/' + sku);
 
 	return data as MagentoFullProduct;
 }

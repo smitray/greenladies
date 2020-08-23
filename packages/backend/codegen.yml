@@ -9,3 +9,4 @@ generates:
       mappers:
         Category: ./../types#Node
         Product: ./../types#Node
+        ShoppingCart: ./../types#Node

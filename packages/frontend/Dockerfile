@@ -1,7 +1,7 @@
 FROM node:12.18.2
 
-RUN apt update -y
-RUN apt install -y python-dev
+RUN apt-get update -y
+RUN apt-get install -y python-dev
 
 WORKDIR /tmp
 RUN git clone https://github.com/facebook/watchman.git -b v4.9.0 --depth 1

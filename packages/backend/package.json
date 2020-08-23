@@ -24,7 +24,9 @@
 		"@graphql-toolkit/file-loading": "^0.10.7",
 		"apollo-server-express": "^2.15.1",
 		"axios": "^0.19.2",
+		"connect-redis": "^5.0.0",
 		"express": "^4.17.1",
+		"express-session": "^1.17.1",
 		"query-string": "^6.13.1",
 		"redis": "^3.0.2",
 		"reflect-metadata": "^0.1.13"
@@ -33,7 +35,9 @@
 		"@graphql-codegen/cli": "^1.17.0",
 		"@graphql-codegen/typescript": "^1.17.0",
 		"@graphql-codegen/typescript-resolvers": "^1.17.0",
+		"@types/connect-redis": "^0.0.14",
 		"@types/express": "^4.17.6",
+		"@types/express-session": "^1.17.0",
 		"@types/redis": "^2.8.25",
 		"concurrently": "^5.2.0",
 		"ts-node-dev": "^1.0.0-pre.51"

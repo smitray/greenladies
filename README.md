@@ -26,7 +26,7 @@ in the root of the project.
 To run the project execute the following command
 
 ```
-docker-compose -f docker-compose.database.yml -f docker-compose.yml up
+docker-compose -f docker-compose.database.yml -f docker-compose.yml up -d
 ```
 
 in the root of the project.

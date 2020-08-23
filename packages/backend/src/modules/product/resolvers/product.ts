@@ -8,17 +8,17 @@ const resolvers: ProductModuleResolversType = {
 			return toGlobalId('Product', id);
 		},
 		name: async ({ id }, _args, { injector }) => {
-			const product = await injector.get(ProductProvider).getProduct(id);
+			const product = await injector.get(ProductProvider).getProduct({ id });
 
 			return product.name;
 		},
 		urlKey: async ({ id }, _args, { injector }) => {
-			const product = await injector.get(ProductProvider).getProduct(id);
+			const product = await injector.get(ProductProvider).getProduct({ id });
 
 			return product.urlKey;
 		},
 		price: async ({ id }, _args, { injector }) => {
-			const product = await injector.get(ProductProvider).getProduct(id);
+			const product = await injector.get(ProductProvider).getProduct({ id });
 
 			return product.price;
 		},
