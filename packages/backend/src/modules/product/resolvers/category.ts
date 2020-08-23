@@ -1,6 +1,6 @@
 import { ProductModuleResolversType } from '..';
 import { GQLProductFilter, GQLProductFilterInput } from '../../../__generated__/types';
-import { Product } from '../../../magento-sync';
+import { Product } from '../../../api/product';
 import { connectionFromArray } from '../../../utils/relay';
 import { CategoryProvider } from '../../category/category.provider';
 import { ProductProvider } from '../product.provider';
@@ -220,7 +220,8 @@ const resolvers: ProductModuleResolversType = {
 				};
 			}
 
-			const { orderBy, filters } = args;
+			// const { orderBy, filters } = args;
+			const { filters } = args;
 
 			let appliedFilters: FilteredProducts[] = [];
 			if (filters) {
@@ -257,16 +258,16 @@ const resolvers: ProductModuleResolversType = {
 				}
 			});
 
-			let filteredAndOrderedProducts = filteredProducts;
-			if (orderBy) {
-				if (orderBy === 'price_ASC') {
-					filteredAndOrderedProducts = filteredProducts.sort((left, right) => left.price - right.price);
-				}
+			const filteredAndOrderedProducts = filteredProducts;
+			// if (orderBy) {
+			// 	if (orderBy === 'price_ASC') {
+			// 		filteredAndOrderedProducts = filteredProducts.sort((left, right) => left.price - right.price);
+			// 	}
 
-				if (orderBy === 'price_DESC') {
-					filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.price - left.price);
-				}
-			}
+			// 	if (orderBy === 'price_DESC') {
+			// 		filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.price - left.price);
+			// 	}
+			// }
 
 			return {
 				...connectionFromArray(

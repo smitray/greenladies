@@ -2,8 +2,6 @@ type Category implements Node {
 	id: ID!
 	urlKey: String!
 	name: String!
-	# availableSortBy: [String!]!
-	includeInMenu: Boolean!
 	children: [Category!]!
 	parent: Category
 }

@@ -17,11 +17,6 @@ const resolvers: CategoryModuleResolversType = {
 
 			return category.name;
 		},
-		includeInMenu: async ({ id }, _args, { injector }) => {
-			const category = await injector.get(CategoryProvider).getCategory(id);
-
-			return category.includeInMenu;
-		},
 		children: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 

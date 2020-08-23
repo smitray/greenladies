@@ -1,91 +1,24 @@
-import { getCategories, MagentoFullCategory } from './api/category';
-import { getProducts, getProductsByCategoryId, MagentoFullProduct } from './api/product';
+import { Category as MagentoCategory, getCategories } from './api/category';
+import { getProducts, getProductsByCategoryId, Product } from './api/product';
 import { getRedisCacheConnection } from './redis-connection';
 
-export interface Product {
-	id: string;
-	sku: string;
-	name: string;
-	price: number;
-	visibility: 'none' | 'catalog' | 'search' | 'catalog+search';
-	type: string;
-	urlKey: string;
-}
-
-function transformVisibility(visibility: number) {
-	switch (visibility) {
-		case 1:
-			return 'none';
-		case 2:
-			return 'catalog';
-		case 3:
-			return 'search';
-		case 4:
-			return 'catalog+search';
-		default:
-			throw new Error('Invalid visibilty value');
-	}
-}
-
-function transformProduct(product: MagentoFullProduct): Product {
-	return {
-		id: String(product.id),
-		sku: product.sku,
-		name: product.name,
-		price: product.price,
-		visibility: transformVisibility(product.visibility),
-		type: product.type_id,
-		// TODO: throw error if not set
-		urlKey: product.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
-	};
-}
-
 async function saveProductsInCache(products: Product[]) {
-	// Save product id => product
 	const saveProducts = new Promise((resolve, reject) => {
 		getRedisCacheConnection().mset(
-			products.reduce<string[]>((prev, current) => {
-				return [...prev, 'Product:id:' + current.id, JSON.stringify(current)];
-			}, []),
-			(err, reply) => {
-				if (err) {
-					reject(err);
+			products.reduce<string[]>((prevEntries, product) => {
+				const entries: string[] = [];
+				// Product id => product
+				entries.push(`Product:id:${product.id}`, JSON.stringify(product));
+
+				// Product urlKey => product id
+				if (product.__type === 'ConfigurableProduct') {
+					entries.push(`Product:urlKey:${product.urlKey}`, product.id);
 				}
 
-				resolve(reply);
-			},
-		);
-	});
+				// Product sku => product id
+				entries.push(`Product:sku:${product.sku}`, product.id);
 
-	// Save product urlKey => product id
-	const mapUrlKeyToId = new Promise((resolve, reject) => {
-		getRedisCacheConnection().mset(
-			products.reduce<string[]>((prev, current) => {
-				if (current.type !== 'virtual' && current.urlKey) {
-					return [...prev, 'Product:urlKey:' + current.urlKey, current.id];
-				}
-
-				return prev;
-			}, []),
-			(err, reply) => {
-				if (err) {
-					reject(err);
-				}
-
-				resolve(reply);
-			},
-		);
-	});
-
-	// Save product sku => product id
-	const mapSkuToId = new Promise((resolve, reject) => {
-		getRedisCacheConnection().mset(
-			products.reduce<string[]>((prev, current) => {
-				if (current.type !== 'virtual' && current.sku) {
-					return [...prev, 'Product:sku:' + current.sku, current.id];
-				}
-
-				return prev;
+				return [...prevEntries, ...entries];
 			}, []),
 			(err, reply) => {
 				if (err) {
@@ -107,13 +40,11 @@ async function saveProductsInCache(products: Product[]) {
 		});
 	});
 
-	return Promise.all([saveProducts, mapUrlKeyToId, mapSkuToId, saveProductIds]);
+	return Promise.all([saveProducts, saveProductIds]);
 }
 
 async function syncMagnetoProducts() {
-	const magentoProducts = await getProducts({ pageSize: 1000000 });
-
-	const products = magentoProducts.map(transformProduct);
+	const products = await getProducts({ pageSize: 1000000 });
 
 	await saveProductsInCache(products);
 }
@@ -121,23 +52,18 @@ async function syncMagnetoProducts() {
 export interface Category {
 	id: string;
 	name: string;
-	includeInMenu: boolean;
 	urlKey: string;
 	parentId: string;
 	childrenIds: string[];
 	productIds: string[];
 }
 
-async function transformCategory(category: MagentoFullCategory): Promise<Category> {
+async function transformCategory(category: MagentoCategory): Promise<Category> {
 	return {
-		id: String(category.id),
-		name: category.name,
-		includeInMenu: category.include_in_menu,
-		// TODO: throw error if not set
-		urlKey: category.custom_attributes.find(attribute => attribute.attribute_code === 'url_key')?.value || '',
-		parentId: String(category.parent_id),
-		childrenIds: category.children === '' ? [] : category.children.split(','),
-		productIds: (await getProductsByCategoryId(category.id)).map(category => String(category.id)),
+		...category,
+		productIds: (await getProductsByCategoryId(category.id))
+			.filter(product => product.__type === 'ConfigurableProduct')
+			.map(product => String(product.id)),
 	};
 }
 
