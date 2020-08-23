@@ -41,7 +41,7 @@ const sessionOptions: SessionOptions = {
 
 	syncMagentoProductsAndCategories()
 		.then(() => console.log('Successfully synced magento to redis'))
-		.catch(error => console.log('Could not sync magento', error.message));
+		.catch(error => console.log('Could not sync magento', error.message, error));
 
 	createGreenLadiesAttributeSet()
 		.then(() => console.log('Successfully created attribute set'))

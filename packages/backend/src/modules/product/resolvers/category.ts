@@ -1,6 +1,6 @@
 import { ProductModuleResolversType } from '..';
 import { GQLProductFilter, GQLProductFilterInput } from '../../../__generated__/types';
-import { Product } from '../../../magento-sync';
+import { Product } from '../../../api/product';
 import { connectionFromArray } from '../../../utils/relay';
 import { CategoryProvider } from '../../category/category.provider';
 import { ProductProvider } from '../product.provider';
