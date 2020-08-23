@@ -11,10 +11,11 @@ input RangeInput {
 	to: Float!
 }
 
-input ProductFilterInput {
-	field: String!
-	in: [String!]
-	between: RangeInput
+input ProductFiltersInput {
+	price_between: RangeInput
+	brand_in: [String!]
+	size_in: [String!]
+	color_in: [String!]
 }
 
 extend type Category {
@@ -24,6 +25,6 @@ extend type Category {
 		last: Int
 		before: String
 		orderBy: OrderProductsInput
-		filters: [ProductFilterInput!]
+		filters: ProductFiltersInput
 	): ProductConnection!
 }

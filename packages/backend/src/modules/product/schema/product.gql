@@ -1,6 +1,26 @@
-type Product implements Node {
+type ProductConfiguration implements Node {
 	id: ID!
 	name: String!
+	quantity: Int!
+	originalPrice: Float!
+	specialPrice: Float!
+	currency: String!
+	size: String!
+}
+
+type Product implements Node {
+	id: ID!
 	urlKey: String!
-	price: Float!
+	name: String!
+	brand: String!
+	metaTitle: String!
+	metaKeyword: String!
+	metaDescription: String!
+	fullDescription: String!
+	shortDescription: String!
+	washingDescription: String!
+	image: String!
+	images: [String!]!
+	configurationAttributes: [String!]!
+	virtualProducts: [ProductConfiguration!]!
 }
