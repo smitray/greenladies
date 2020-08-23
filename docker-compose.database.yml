@@ -10,5 +10,10 @@ services:
     volumes:
       - magento2-dbdata:/var/lib/mysql
 
+  magento2-elasticsearch:
+    image: elasticsearch:7.6.2
+    environment:
+      - discovery.type=single-node
+
 volumes:
   magento2-dbdata:

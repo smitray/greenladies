@@ -10,18 +10,21 @@ import {
 } from 'relay-runtime';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
-async function fetchQueryServer(operation: RequestParameters, variables: Variables) {
-	const response = await fetch('http://backend:3000/graphql', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			query: operation.text,
-			variables,
-		}),
-	});
-	return response.json();
+function fetchQueryServer(cookieHeader?: string) {
+	return async function (operation: RequestParameters, variables: Variables) {
+		const response = await fetch('http://backend:3000/graphql', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				cookie: cookieHeader || '',
+			},
+			body: JSON.stringify({
+				query: operation.text,
+				variables,
+			}),
+		});
+		return response.json();
+	};
 }
 
 const FIVE_MINUTES = 60 * 1000;
@@ -48,6 +51,7 @@ async function fetchQueryClient(operation: RequestParameters, variables: Variabl
 		headers: {
 			'Content-Type': 'application/json',
 		},
+		credentials: process.env.NODE_ENV === 'development' ? 'include' : 'same-origin',
 		body: JSON.stringify({
 			query: operation.text,
 			variables,
@@ -69,7 +73,7 @@ async function fetchQueryClient(operation: RequestParameters, variables: Variabl
 let relayEnvironment: Environment | null = null;
 let store: Store | null = null;
 
-export function createRelayEnvironment(records?: RecordMap) {
+export function createRelayEnvironment(records?: RecordMap, cookieHeader?: string) {
 	if (relayEnvironment) {
 		return relayEnvironment;
 	}
@@ -81,7 +85,7 @@ export function createRelayEnvironment(records?: RecordMap) {
 
 	relayEnvironment = new Environment({
 		store,
-		network: Network.create(typeof window === 'undefined' ? fetchQueryServer : fetchQueryClient),
+		network: Network.create(typeof window === 'undefined' ? fetchQueryServer(cookieHeader) : fetchQueryClient),
 	});
 
 	return relayEnvironment;

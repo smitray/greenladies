@@ -11,7 +11,7 @@ interface MagentoSimpleCategory {
 	children_data: MagentoSimpleCategory[];
 }
 
-export interface MagentoFullCategory {
+interface MagentoFullCategory {
 	id: number;
 	parent_id: number;
 	name: string;
@@ -31,10 +31,48 @@ export interface MagentoFullCategory {
 	}[];
 }
 
-export async function getCategory(id: number) {
-	const { data } = await magentoAdminRequester.get('/rest/default/V1/categories/' + id);
+function getCustomAttribute(
+	customAttributes: { attribute_code: string; value: string }[],
+	code: string,
+	required = true,
+) {
+	const attribute = customAttributes.find(attribute => attribute.attribute_code === code);
+	if (!attribute) {
+		if (!required) {
+			return '';
+		}
 
-	return data as MagentoFullCategory;
+		throw new Error('Invalid category, must have ' + code + ' attribute');
+	}
+
+	return attribute.value;
+}
+
+export interface Category {
+	id: string;
+	name: string;
+	urlKey: string;
+	parentId: string;
+	childrenIds: string[];
+}
+
+function transformCategory(category: MagentoFullCategory): Category {
+	return {
+		id: category.id.toString(),
+		name: category.name,
+		urlKey: getCustomAttribute(category.custom_attributes, 'url_key', true),
+		parentId: category.parent_id.toString(),
+		childrenIds: category.children
+			.split(',')
+			.filter(childId => childId !== '')
+			.map(childId => childId.trim()),
+	};
+}
+
+export async function getCategory(id: number) {
+	const { data: category } = await magentoAdminRequester.get<MagentoFullCategory>('/rest/default/V1/categories/' + id);
+
+	return transformCategory(category);
 }
 
 function flattenCategories(category: MagentoSimpleCategory): MagentoSimpleCategory[] {

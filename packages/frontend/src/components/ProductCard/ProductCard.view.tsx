@@ -3,6 +3,8 @@ import React from 'react';
 import Link from 'next/link';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../../mutations/wishlist';
+
 import { ProductCard_product } from './__generated__/ProductCard_product.graphql';
 import {
 	ProductBrand,
@@ -15,6 +17,7 @@ import {
 	ProductTagCondition,
 	ProductTagDiscount,
 	ProductTagsContainer,
+	ProductWishlist,
 } from './ProductCard.styles';
 
 interface ProductCardViewProps {
@@ -22,6 +25,17 @@ interface ProductCardViewProps {
 }
 
 const ProductCardView = ({ product }: ProductCardViewProps) => {
+	const { commit: addToWishlist, pending: addToWishlistPending } = useAddToWishlistMutation();
+	const { commit: removeFromWishlist, pending: removeFromWishlistPending } = useRemoveFromWishlistMutation();
+
+	const handleWishlistClick = () => {
+		if (product.inWishlist) {
+			removeFromWishlist(product.id);
+		} else {
+			addToWishlist(product.id);
+		}
+	};
+
 	return (
 		<div>
 			<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
@@ -42,6 +56,9 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 					<ProductSpecialPrice>{Number(17).toFixed(2).replace('.', ',')} kr</ProductSpecialPrice>
 				</div>
 				<ProductBrand>Gant</ProductBrand>
+				<ProductWishlist disabled={addToWishlistPending || removeFromWishlistPending} onClick={handleWishlistClick}>
+					{product.inWishlist ? ':noheart:' : ':heart:'}
+				</ProductWishlist>
 			</ProductDetails>
 		</div>
 	);
@@ -50,9 +67,11 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 export default createFragmentContainer(ProductCardView, {
 	product: graphql`
 		fragment ProductCard_product on Product {
+			id
 			name
 			price
 			urlKey
+			inWishlist
 		}
 	`,
 });

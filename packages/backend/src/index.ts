@@ -7,6 +7,7 @@ import express from 'express';
 import session, { SessionOptions } from 'express-session';
 
 import { createApolloServer } from './create-apollo-server';
+import { createGreenLadiesAttributeSet } from './create-attribute-set';
 import { syncMagentoProductsAndCategories } from './magento-sync';
 import { getRedisCacheConnection } from './redis-connection';
 
@@ -40,11 +41,19 @@ const sessionOptions: SessionOptions = {
 
 	syncMagentoProductsAndCategories()
 		.then(() => console.log('Successfully synced magento to redis'))
-		.catch(() => console.log('Could not sync magento'));
+		.catch(error => console.log('Could not sync magento', error.message, error));
+
+	createGreenLadiesAttributeSet()
+		.then(() => console.log('Successfully created attribute set'))
+		.catch(error => console.log('Could not create attribute set', error.message));
 
 	const server = await createApolloServer();
 	server.applyMiddleware({
 		app,
+		cors: {
+			credentials: true,
+			origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : false,
+		},
 	});
 
 	app.listen(3000, () => {
