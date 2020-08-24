@@ -8,11 +8,13 @@ const resolvers: ShoppingCartModuleResolversType = {
 				throw new Error('No session available');
 			}
 
-			if (!request.session.guestShoppingCartId) {
-				request.session.guestShoppingCartId = await injector.get(ShoppingCartProvider).createGuestShoppingCart();
+			if (!request.session.guestShoppingCart) {
+				request.session.guestShoppingCart = {
+					cartId: await injector.get(ShoppingCartProvider).createGuestShoppingCart(),
+				};
 			}
 
-			return { id: request.session.guestShoppingCartId };
+			return { id: request.session.guestShoppingCart.cartId };
 		},
 	},
 };

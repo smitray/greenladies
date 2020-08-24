@@ -23,7 +23,7 @@ export function transformGlobaIdInObject<T extends { id?: string | null }>(type:
 	if (obj.id) {
 		const { type: t, id } = fromGlobalId(obj.id);
 		if (t !== type) {
-			throw new Error('Type mismatch');
+			throw new Error('Type mismatch, expected: ' + type + ', got: ' + t);
 		}
 
 		return {
