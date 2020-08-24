@@ -33,7 +33,7 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 			<div>
 				{product.virtualProducts.map(virtualProduct => (
 					<div key={virtualProduct.id}>
-						{virtualProduct.size}
+						{virtualProduct.id}:{virtualProduct.size}
 						<button onClick={() => addToCart(virtualProduct.id)}>Add to cart</button>
 					</div>
 				))}

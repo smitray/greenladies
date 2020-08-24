@@ -12,6 +12,7 @@ const ADD_PRODUCT_TO_CART = graphql`
 			shoppingCartItemEdge {
 				node {
 					id
+					amount
 					product {
 						name
 					}
@@ -33,12 +34,19 @@ export const useAddToCartMutation = () => {
 				},
 				updater: storeProxy => {
 					const newEdge = storeProxy.getRootField('addProductToCart')?.getLinkedRecord('shoppingCartItemEdge') || null;
-					const rootProxy = storeProxy.getRoot();
-					const cartProxy = rootProxy.getLinkedRecord('shoppingCart');
-					if (cartProxy) {
+					const cartProxy = storeProxy.getRoot().getLinkedRecord('shoppingCart');
+					if (cartProxy && newEdge) {
 						const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
-						if (connection && newEdge) {
-							ConnectionHandler.insertEdgeAfter(connection, newEdge);
+						if (connection) {
+							const connectionEdges = connection.getLinkedRecords('edges');
+							const itemInCart =
+								connectionEdges?.findIndex(
+									connectionEdge =>
+										connectionEdge.getLinkedRecord('node')?.getLinkedRecord('product')?.getValue('id') === productId,
+								) !== -1;
+							if (!itemInCart) {
+								ConnectionHandler.insertEdgeAfter(connection, newEdge);
+							}
 						}
 					}
 				},
@@ -54,6 +62,7 @@ const UPDATE_CART_AMOUNT = graphql`
 			shoppingCartItemEdge {
 				node {
 					id
+					amount
 				}
 				cursor
 			}
@@ -70,17 +79,6 @@ export const useUpdateCartAmountMutation = () => {
 				variables: {
 					itemId,
 					quantity,
-				},
-				updater: storeProxy => {
-					// const newEdge = storeProxy.getRootField('addProductToCart')?.getLinkedRecord('shoppingCartItemEdge') || null;
-					// const rootProxy = storeProxy.getRoot();
-					// const cartProxy = rootProxy.getLinkedRecord('shoppingCart');
-					// if (cartProxy) {
-					//   const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
-					//   if (connection && newEdge) {
-					//     ConnectionHandler.insertEdgeAfter(connection, newEdge);
-					//   }
-					// }
 				},
 			});
 		},
@@ -103,21 +101,29 @@ export const useRemoveFromCartMutation = () => {
 
 	return {
 		commit: (itemId: string) => {
-			commitRemoveFromCart({
-				variables: {
-					itemId,
-				},
-				updater: storeProxy => {
-					const rootProxy = storeProxy.getRoot();
-					const cartProxy = rootProxy.getLinkedRecord('shoppingCart');
-					if (cartProxy) {
-						const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
-						if (connection) {
-							ConnectionHandler.deleteNode(connection, itemId);
+			return new Promise((resolve, reject) =>
+				commitRemoveFromCart({
+					variables: {
+						itemId,
+					},
+					updater: storeProxy => {
+						const rootProxy = storeProxy.getRoot();
+						const cartProxy = rootProxy.getLinkedRecord('shoppingCart');
+						if (cartProxy) {
+							const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
+							if (connection) {
+								ConnectionHandler.deleteNode(connection, itemId);
+							}
 						}
-					}
-				},
-			});
+					},
+					onCompleted: () => {
+						resolve();
+					},
+					onError: () => {
+						reject();
+					},
+				}),
+			);
 		},
 		pending,
 	};
