@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { FaTimes, FaTrashAlt } from 'react-icons/fa';
 import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -48,6 +49,20 @@ const FiltersContainer = styled.ul`
 	list-style: none;
 `;
 
+const RemoveFilterButton = styled.button`
+	outline: none;
+	padding: 8px 24px 8px 8px;
+	background: white;
+	border: 1px solid #e6e6e6;
+	cursor: pointer;
+	margin-right: 4px;
+	position: relative;
+
+	&:hover {
+		background: #e6e6e6;
+	}
+`;
+
 function colorCodeToHex(code: string) {
 	switch (code) {
 		case 'black':
@@ -91,6 +106,8 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
 
+	const [selectedFilters, setSelectedFilters] = useState<{ filter: string; code: string; display: string }[]>([]);
+
 	const handleCategoryFilterOpen = (id: string) => () => {
 		setCurrentlyOpenedFilter(id);
 	};
@@ -129,6 +146,13 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 			setProducts(response.category.products.edges.map(edge => edge.node));
 			setAvailableFilters(response.category.products.availableFilters);
+			if (response.category.products.availableFilters.price.from < lowerPrice) {
+				setLowerPrice(response.category.products.availableFilters.price.from);
+			}
+
+			if (response.category.products.availableFilters.price.to > upperPrice) {
+				setUpperPrice(response.category.products.availableFilters.price.to);
+			}
 		};
 
 		asyncEffect();
@@ -163,9 +187,22 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					selectedItemIds={selectedBrands}
 					onItemSelected={itemId => {
 						setSelectedBrands(selectedBrands => [...selectedBrands, itemId]);
+						setSelectedFilters(selectedFilters => [
+							...selectedFilters,
+							{
+								filter: 'brand',
+								code: itemId,
+								display: itemId,
+							},
+						]);
 					}}
 					onItemUnselected={itemId => {
 						setSelectedBrands(selectedBrands => selectedBrands.filter(selectedBrand => selectedBrand !== itemId));
+						setSelectedFilters(selectedFilters =>
+							selectedFilters.filter(
+								selectedFilter => !(selectedFilter.filter === 'brand' && selectedFilter.code === itemId),
+							),
+						);
 					}}
 					open={currentlyOpenedFilter === 'brand'}
 					onOpenRequest={handleCategoryFilterOpen('brand')}
@@ -180,9 +217,22 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					selectedItemIds={selectedSizes}
 					onItemSelected={itemId => {
 						setSelectedSizes(selectedSizes => [...selectedSizes, itemId]);
+						setSelectedFilters(selectedFilters => [
+							...selectedFilters,
+							{
+								filter: 'size',
+								code: itemId,
+								display: itemId,
+							},
+						]);
 					}}
 					onItemUnselected={itemId => {
 						setSelectedSizes(selectedSizes => selectedSizes.filter(selectedSize => selectedSize !== itemId));
+						setSelectedFilters(selectedFilters =>
+							selectedFilters.filter(
+								selectedFilter => !(selectedFilter.filter === 'size' && selectedFilter.code === itemId),
+							),
+						);
 					}}
 					open={currentlyOpenedFilter === 'size'}
 					onOpenRequest={handleCategoryFilterOpen('size')}
@@ -204,9 +254,22 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					selectedItemIds={selectedColors}
 					onItemSelected={itemId => {
 						setSelectedColors(selectedColors => [...selectedColors, itemId]);
+						setSelectedFilters(selectedFilters => [
+							...selectedFilters,
+							{
+								filter: 'color',
+								code: itemId,
+								display: colorCodeToDisplay(itemId),
+							},
+						]);
 					}}
 					onItemUnselected={itemId => {
 						setSelectedColors(selectedColors => selectedColors.filter(selectedColor => selectedColor !== itemId));
+						setSelectedFilters(selectedFilters =>
+							selectedFilters.filter(
+								selectedFilter => !(selectedFilter.filter === 'color' && selectedFilter.code === itemId),
+							),
+						);
 					}}
 					open={currentlyOpenedFilter === 'color'}
 					onOpenRequest={handleCategoryFilterOpen('color')}
@@ -229,6 +292,93 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onCloseRequest={handleCategoryFilterClose('price')}
 				/>
 			</FiltersContainer>
+			{selectedFilters.length > 0 && (
+				<FiltersContainer>
+					<RemoveFilterButton
+						onClick={() => {
+							setSelectedFilters([]);
+							setSelectedBrands([]);
+							setSelectedColors([]);
+							setSelectedSizes([]);
+							setLowerPrice(availableFilters.price.from);
+							setUpperPrice(availableFilters.price.to);
+						}}
+					>
+						Ta bort filter
+						<div
+							style={{
+								position: 'absolute',
+								top: '0',
+								bottom: '0',
+								right: '4px',
+								display: 'flex',
+								alignItems: 'center',
+							}}
+						>
+							<div style={{ width: '16px', height: '16px' }}>
+								<FaTrashAlt size="16" />
+							</div>
+						</div>
+					</RemoveFilterButton>
+					{selectedFilters.map((selectedFilter, index) => (
+						<RemoveFilterButton
+							key={index}
+							onClick={() => {
+								switch (selectedFilter.filter) {
+									case 'brand':
+										setSelectedBrands(selectedBrands =>
+											selectedBrands.filter(selectedBrand => selectedBrand !== selectedFilter.code),
+										);
+										setSelectedFilters(selectedFilters =>
+											selectedFilters.filter(
+												({ filter, code }) => !(filter === 'brand' && code === selectedFilter.code),
+											),
+										);
+										break;
+									case 'color':
+										setSelectedColors(selectedColors =>
+											selectedColors.filter(selectedColor => selectedColor !== selectedFilter.code),
+										);
+										setSelectedFilters(selectedFilters =>
+											selectedFilters.filter(
+												({ filter, code }) => !(filter === 'color' && code === selectedFilter.code),
+											),
+										);
+										break;
+									case 'size':
+										setSelectedSizes(selectedSizes =>
+											selectedSizes.filter(selectedSize => selectedSize !== selectedFilter.code),
+										);
+										setSelectedFilters(selectedFilters =>
+											selectedFilters.filter(
+												({ filter, code }) => !(filter === 'size' && code === selectedFilter.code),
+											),
+										);
+										break;
+									case 'price':
+										break;
+								}
+							}}
+						>
+							{selectedFilter.display}
+							<div
+								style={{
+									position: 'absolute',
+									top: '0',
+									bottom: '0',
+									right: '4px',
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<div style={{ width: '16px', height: '16px' }}>
+									<FaTimes size="16" />
+								</div>
+							</div>
+						</RemoveFilterButton>
+					))}
+				</FiltersContainer>
+			)}
 			{products.length > 0 && (
 				<div style={{ display: 'grid', gap: '24px', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
 					{products.map(product => (
