@@ -1,18 +1,24 @@
 import styled from 'styled-components';
 
+export const ProductCardWrapper = styled.div`
+	cursor: pointer;
+`;
+
 export const ProductDetails = styled.div`
-	padding-top: 20px;
+	margin-top: 12px;
 `;
 
 export const ProductImageWrapper = styled.a`
 	display: block;
 	position: relative;
-	background: #eaeaea;
+	background: #f6f6f6;
+	width: 100%;
+	padding-top: 131.4%;
 `;
 
 export const ProductImage = styled.img`
-	display: block;
-	height: 280px;
+	width: 100%;
+	height: 100%;
 `;
 
 export const ProductTagsContainer = styled.ul`
@@ -30,39 +36,60 @@ const ProductTag = styled.li`
 	margin-top: 6px;
 	padding: 2px 6px;
 	font-size: 12px;
-	text-transform: uppercase;
+	background: white;
+	font-weight: bold;
 `;
 
 export const ProductTagCondition = styled(ProductTag)`
-	background: #65c800;
-	color: white;
+	color: green;
 `;
 
 export const ProductTagDiscount = styled(ProductTag)`
-	background: white;
 	color: red;
 `;
 
-export const ProductName = styled.a`
+export const ProductName = styled.div`
 	display: block;
 	color: black;
 	text-decoration: none;
-	font-size: 20px;
-	font-weight: bold;
-	margin: 0 0 8px 0;
+	font-size: 14px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 `;
 
-export const ProductPrice = styled.span`
+export const ProductPrice = styled.div`
 	color: #999999;
 	text-decoration: line-through;
+	font-size: 14px;
+	white-space: nowrap;
+	margin-bottom: 4px;
 `;
 
-export const ProductSpecialPrice = styled.span`
-	margin-left: 16px;
+export const ProductSpecialPrice = styled.div`
+	color: red;
+	font-size: 14px;
+	font-weight: bold;
+	white-space: nowrap;
 `;
 
-export const ProductBrand = styled.span`
-	color: #777777;
+export const ProductBrand = styled.div`
+	font-size: 14px;
+	font-weight: bold;
+	white-space: nowrap;
+	margin-bottom: 4px;
 `;
 
-export const ProductWishlist = styled.button``;
+export const ProductWishlist = styled.button`
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	outline: none;
+	border: none;
+	background: white;
+	padding: 8px;
+	border-radius: 100%;
+	height: 36px;
+	width: 36px;
+	cursor: pointer;
+`;
