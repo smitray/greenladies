@@ -43,7 +43,7 @@ const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
 
 const FiltersContainer = styled.ul`
 	display: flex;
-	margin: 0;
+	margin: 0 0 12px 0;
 	padding: 0;
 	list-style: none;
 `;

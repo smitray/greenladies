@@ -15,7 +15,6 @@ export const RangeInputWrapper = styled.div`
 
 export const RangeInput = styled.input`
 	border: 1px solid #eaeaea;
-	border-radius: 4px;
 	padding: 0 32px 0 8px;
 	outline: none;
 	width: 100%;

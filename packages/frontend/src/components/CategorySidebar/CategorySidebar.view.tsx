@@ -10,7 +10,7 @@ interface Category {
 	id: string;
 	name: string;
 	urlKey: string;
-	hasProducts: boolean;
+	productCount: number;
 	children: Category[];
 }
 
@@ -20,7 +20,7 @@ interface InputCategory {
 	urlKey: string;
 	products: {
 		totalCount: number;
-	} | null;
+	};
 	parent?: InputCategory | null;
 	children?: ReadonlyArray<InputCategory>;
 }
@@ -30,7 +30,7 @@ function inputToOutputCategory(category: InputCategory): Category {
 		id: category.id,
 		name: category.name,
 		urlKey: category.urlKey,
-		hasProducts: (category.products?.totalCount || 0) > 0,
+		productCount: category.products.totalCount,
 		children: (category.children || []).map(child => {
 			return inputToOutputCategory(child);
 		}),
@@ -58,18 +58,22 @@ interface CategorySidebarLinkProps {
 }
 
 const CategorySidebarLink = styled.a<CategorySidebarLinkProps>`
-	display: block;
-	padding: 5px 0;
+	font-size: 14px;
+	display: inline-block;
+	position: relative;
+	padding-bottom: ${({ selected }) => (selected ? '4px' : '0')};
 	font-weight: ${({ selected }) => (selected ? 'bold' : 'normal')};
-	text-decoration: ${({ selected }) => (selected ? 'underline' : 'none')};
 	color: black;
+	border-bottom: ${({ selected }) => (selected ? '1px solid black' : '1px solid transparent')};
+	text-decoration: none;
 
 	&:hover {
-		text-decoration: underline;
+		border-bottom: 1px solid black;
 	}
 `;
 
 const CategorySidebarNoLink = styled.div`
+	font-size: 14px;
 	padding: 5px 0;
 	color: grey;
 `;
@@ -80,6 +84,12 @@ const CategorySidebarList = styled.ul`
 	list-style: none;
 `;
 
+const CategoryProductCount = styled.span`
+	font-size: 12px;
+	color: grey;
+	margin-left: 4px;
+`;
+
 interface CategorySidebarRecursiveProps {
 	category: Category;
 	currentCategoryId: string;
@@ -88,17 +98,22 @@ interface CategorySidebarRecursiveProps {
 const CategorySidebarRecursive: React.FC<CategorySidebarRecursiveProps> = ({ category, currentCategoryId }) => {
 	return (
 		<React.Fragment>
-			{(category.hasProducts && (
-				<Link href="/categories/[key]" as={`/categories/${category.urlKey}`}>
-					<CategorySidebarLink href={`/categories/${category.urlKey}`} selected={category.id === currentCategoryId}>
-						{category.name}
-					</CategorySidebarLink>
-				</Link>
-			)) || <CategorySidebarNoLink>{category.name}</CategorySidebarNoLink>}
+			{category.productCount > 0 ? (
+				<React.Fragment>
+					<Link href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
+						<CategorySidebarLink selected={category.id === currentCategoryId}>{category.name}</CategorySidebarLink>
+					</Link>
+					<CategoryProductCount>({category.productCount})</CategoryProductCount>
+				</React.Fragment>
+			) : (
+				<CategorySidebarNoLink>
+					{category.name} <CategoryProductCount>(0)</CategoryProductCount>
+				</CategorySidebarNoLink>
+			)}
 			{category.children.length > 0 && (
 				<CategorySidebarList>
 					{category.children.map(childCategory => (
-						<li key={childCategory.id}>
+						<li key={childCategory.id} style={{ padding: '4px 0' }}>
 							<CategorySidebarRecursive category={childCategory} currentCategoryId={currentCategoryId} />
 						</li>
 					))}
@@ -115,7 +130,23 @@ interface Props {
 const CategorySidebarView: React.FC<Props> = ({ category }) => {
 	const categoryTree = createCategoryTree(category);
 
-	return <CategorySidebarRecursive category={categoryTree} currentCategoryId={category.id} />;
+	return (
+		<div>
+			<div style={{ marginBottom: '8px' }}>
+				<Link href="/categories/[key]" as={`/categories/${categoryTree.urlKey}`}>
+					<strong style={{ fontSize: '16px' }}>{categoryTree.name}</strong>
+				</Link>
+				<CategoryProductCount>({categoryTree.productCount})</CategoryProductCount>
+			</div>
+			<ul style={{ margin: '0', padding: '0', listStyle: 'none' }}>
+				{categoryTree.children.map(child => (
+					<li key={child.id} style={{ padding: '4px 0' }}>
+						<CategorySidebarRecursive category={child} currentCategoryId={category.id} />
+					</li>
+				))}
+			</ul>
+		</div>
+	);
 };
 
 export default createFragmentContainer(CategorySidebarView, {

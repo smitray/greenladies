@@ -6,6 +6,7 @@ export const CATEGORY_QUERY = graphql`
 	query categoryQuery($where: CategoryWhereUniqueInput!) {
 		category(where: $where) {
 			id
+			name
 			...CategorySidebar_category
 			...ProductList_category
 		}

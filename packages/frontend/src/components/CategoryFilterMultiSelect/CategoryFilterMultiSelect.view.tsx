@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import { FaCheckSquare, FaRegSquare } from 'react-icons/fa';
+
 import { chunkifyArray } from '../../utils/chunkify-array';
 import { CategoryFilterBase } from '../CategoryFilterBase';
 import { CategoryFilterColumnListItem, CategoryFilterColumns } from '../CategoryFilterColumns';
@@ -57,7 +59,10 @@ export const CategoryFilterMultiSelectView: React.FC<Props> = ({
 											}
 										}}
 									>
-										{item.node}
+										<div style={{ display: 'flex' }}>
+											<div style={{ marginRight: '4px' }}>{selected ? <FaCheckSquare /> : <FaRegSquare />}</div>
+											{item.node}
+										</div>
 									</CategoryFilterColumnListItem>
 								);
 							})}
