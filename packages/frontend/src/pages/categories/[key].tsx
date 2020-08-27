@@ -33,6 +33,7 @@ const Category: MyNextPage<Props> = ({ categoryUrlKey }) => {
 				<CategorySidebar category={category} />
 			</div>
 			<div style={{ flexGrow: 1 }}>
+				<h1 style={{ margin: '0 0 16px 0' }}>{category.name}</h1>
 				<ProductList category={category} />
 			</div>
 		</CenterWrapper>
