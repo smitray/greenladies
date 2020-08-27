@@ -59,8 +59,10 @@ export const CategoryFilterMultiSelectView: React.FC<Props> = ({
 											}
 										}}
 									>
-										<div style={{ display: 'flex' }}>
-											<div style={{ marginRight: '4px' }}>{selected ? <FaCheckSquare /> : <FaRegSquare />}</div>
+										<div style={{ display: 'flex', alignItems: 'center' }}>
+											<div style={{ marginRight: '4px', height: '16px', width: '16px' }}>
+												{selected ? <FaCheckSquare size="16" /> : <FaRegSquare size="16" />}
+											</div>
 											{item.node}
 										</div>
 									</CategoryFilterColumnListItem>

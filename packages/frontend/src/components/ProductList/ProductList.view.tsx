@@ -48,6 +48,31 @@ const FiltersContainer = styled.ul`
 	list-style: none;
 `;
 
+function colorCodeToHex(code: string) {
+	switch (code) {
+		case 'black':
+			return 'black';
+		case 'darkgreen':
+			return 'darkgreen';
+		case 'blue':
+			return 'blue';
+		default:
+			return 'white';
+	}
+}
+function colorCodeToDisplay(code: string) {
+	switch (code) {
+		case 'black':
+			return 'Svart';
+		case 'darkgreen':
+			return 'Mörkgrön';
+		case 'blue':
+			return 'Blå';
+		default:
+			return 'Vit';
+	}
+}
+
 interface Props {
 	category: ProductList_category;
 }
@@ -167,7 +192,14 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					title="Färg"
 					items={availableFilters.colors.map(color => ({
 						id: color,
-						node: <div>{color}</div>,
+						node: (
+							<div style={{ display: 'flex', alignItems: 'center' }}>
+								<div
+									style={{ marginRight: '4px', height: '14px', width: '14px', background: colorCodeToHex(color) }}
+								></div>
+								{colorCodeToDisplay(color)}
+							</div>
+						),
 					}))}
 					selectedItemIds={selectedColors}
 					onItemSelected={itemId => {
