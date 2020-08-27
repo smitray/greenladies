@@ -1,6 +1,6 @@
 import { Injectable, ProviderScope } from '@graphql-modules/di';
 
-import { Product } from '../../api/product';
+import { Product } from '../../magento-sync';
 import { getRedisCacheConnection } from '../../redis-connection';
 
 @Injectable({ scope: ProviderScope.Request })

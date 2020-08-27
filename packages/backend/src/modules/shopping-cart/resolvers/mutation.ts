@@ -6,44 +6,54 @@ import { ShoppingCartProvider } from '../shopping-cart.provider';
 const resolvers: ShoppingCartModuleResolversType = {
 	Mutation: {
 		addProductToCart: async (_parent, { input }, { injector, request }) => {
-			if (!request.session) {
-				throw new Error('There is no session available');
+			try {
+				if (!request.session) {
+					throw new Error('There is no session available');
+				}
+
+				if (!request.session.guestShoppingCart) {
+					request.session.guestShoppingCart = {
+						cartId: await injector.get(ShoppingCartProvider).createGuestShoppingCart(),
+					};
+				}
+
+				const cartId = request.session.guestShoppingCart.cartId;
+
+				const product = await injector
+					.get(ProductProvider)
+					.getProduct(transformGlobaIdInObject('ProductConfiguration', input.product));
+
+				const item = await injector.get(ShoppingCartProvider).addProductToGuestShoppingCart({
+					cartId,
+					productId: product.id,
+					quantity: input.quantity,
+				});
+
+				return {
+					shoppingCartItemEdge: {
+						node: {
+							id: item.item_id.toString(),
+							amount: item.qty,
+							product: product,
+						},
+						cursor: '',
+					},
+				};
+			} catch (error) {
+				console.log(error);
+				throw error;
 			}
-
-			if (!request.session.guestShoppingCartId) {
-				request.session.guestShoppingCartId = await injector.get(ShoppingCartProvider).createGuestShoppingCart();
-			}
-
-			const guestShoppingCartId = request.session.guestShoppingCartId;
-
-			const product = await injector
-				.get(ProductProvider)
-				.getProduct(transformGlobaIdInObject('Product', input.product));
-
-			const item = await injector.get(ShoppingCartProvider).addProductToGuestShoppingCart({
-				cartId: guestShoppingCartId,
-				productId: product.id,
-				quantity: input.quantity,
-			});
-
-			return {
-				shoppingCartItem: {
-					id: item.item_id.toString(),
-					amount: item.qty,
-					product: product,
-				},
-			};
 		},
 		updateProductAmountInCart: async (_parent, { input }, { injector, request }) => {
 			if (!request.session) {
 				throw new Error('There is no session available');
 			}
 
-			const cartId = request.session.guestShoppingCartId;
-
-			if (!cartId) {
+			if (!request.session.guestShoppingCart) {
 				throw new Error('There is no cart available');
 			}
+
+			const cartId = request.session.guestShoppingCart.cartId;
 
 			const item = await injector.get(ShoppingCartProvider).updateGuestShoppingCartProductQuantity({
 				cartId,
@@ -54,10 +64,13 @@ const resolvers: ShoppingCartModuleResolversType = {
 			const product = await injector.get(ProductProvider).getProduct({ sku: item.sku });
 
 			return {
-				shoppingCartItem: {
-					id: item.item_id.toString(),
-					amount: item.qty,
-					product: product,
+				shoppingCartItemEdge: {
+					node: {
+						id: item.item_id.toString(),
+						amount: item.qty,
+						product: product,
+					},
+					cursor: '',
 				},
 			};
 		},
@@ -66,11 +79,11 @@ const resolvers: ShoppingCartModuleResolversType = {
 				throw new Error('There is no session available');
 			}
 
-			const cartId = request.session.guestShoppingCartId;
-
-			if (!cartId) {
+			if (!request.session.guestShoppingCart) {
 				throw new Error('There is no cart available');
 			}
+
+			const cartId = request.session.guestShoppingCart.cartId;
 
 			const success = await injector.get(ShoppingCartProvider).deleteProductFromGuestShoppingCart({
 				cartId,

@@ -7,6 +7,9 @@ export const APP_QUERY = graphql`
 		wishlist {
 			...wishlistContext_wishlist
 		}
+		shoppingCart {
+			...shoppingCartContext_cart
+		}
 	}
 `;
 

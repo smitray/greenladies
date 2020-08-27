@@ -1,20 +1,11 @@
-union ProductFilter = ProductFilterRange | ProductFilterSelect
-
-type ProductFilterRange {
-	field: String!
-	label: String!
-	min: Float!
-	max: Float!
-	unit: String!
+type Range {
+	from: Float!
+	to: Float!
 }
 
-type ProductFilterSelectValue {
-	name: String!
-	amount: Int!
-}
-
-type ProductFilterSelect {
-	field: String!
-	label: String!
-	values: [ProductFilterSelectValue!]!
+type ProductFilters {
+	price: Range!
+	brands: [String!]!
+	sizes: [String!]!
+	colors: [String!]!
 }

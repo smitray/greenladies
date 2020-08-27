@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
@@ -10,17 +10,13 @@ import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
 import { ProductCard } from '../ProductCard';
 
 import { ProductList_category } from './__generated__/ProductList_category.graphql';
-import {
-	ProductFilterInput,
-	ProductListProductsQuery,
-	ProductListProductsQueryResponse,
-} from './__generated__/ProductListProductsQuery.graphql';
+import { ProductListProductsQuery } from './__generated__/ProductListProductsQuery.graphql';
 
 const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
 	query ProductListProductsQuery(
 		$where: CategoryWhereUniqueInput!
 		$orderBy: OrderProductsInput
-		$filters: [ProductFilterInput!]
+		$filters: ProductFiltersInput
 	) {
 		category(where: $where) {
 			id
@@ -32,22 +28,13 @@ const PRODUCT_LIST_PRODUCTS_QUERY = graphql`
 					}
 				}
 				availableFilters {
-					__typename
-					... on ProductFilterRange {
-						field
-						label
-						min
-						max
-						unit
+					brands
+					colors
+					price {
+						from
+						to
 					}
-					... on ProductFilterSelect {
-						field
-						label
-						values {
-							name
-							amount
-						}
-					}
+					sizes
 				}
 			}
 		}
@@ -61,163 +48,21 @@ const FiltersContainer = styled.ul`
 	list-style: none;
 `;
 
-type Dictionary<K extends string, T> = { [P in K]?: T };
-
-interface FilterReducerStateRange {
-	type: 'range';
-	min: number;
-	max: number;
-	lowerValue: number;
-	upperValue: number;
-}
-
-interface FilterReducerStateSelect {
-	type: 'in';
-	values: {
-		name: string;
-		amount: number;
-	}[];
-	selectedValues: string[];
-}
-
-type FilterReducerState = Dictionary<string, FilterReducerStateRange | FilterReducerStateSelect>;
-
-type FilterReducerAction =
-	| {
-			type: 'range-update-lower-value';
-			payload: {
-				field: string;
-				value: number;
-			};
-	  }
-	| {
-			type: 'range-update-upper-value';
-			payload: {
-				field: string;
-				value: number;
-			};
-	  }
-	| {
-			type: 'in-select-item';
-			payload: {
-				field: string;
-				value: string;
-			};
-	  }
-	| {
-			type: 'in-deselect-item';
-			payload: {
-				field: string;
-				value: string;
-			};
-	  };
-
-const filterReducer: React.Reducer<FilterReducerState, FilterReducerAction> = (state, action) => {
-	switch (action.type) {
-		case 'range-update-lower-value': {
-			const filterState = state[action.payload.field];
-			if (filterState?.type !== 'range') {
-				return state;
-			}
-
-			return {
-				...state,
-				[action.payload.field]: {
-					...filterState,
-					lowerValue: action.payload.value,
-				},
-			};
-		}
-		case 'range-update-upper-value': {
-			const filterState = state[action.payload.field];
-			if (filterState?.type !== 'range') {
-				return state;
-			}
-
-			return {
-				...state,
-				[action.payload.field]: {
-					...filterState,
-					upperValue: action.payload.value,
-				},
-			};
-		}
-		case 'in-select-item': {
-			const filterState = state[action.payload.field];
-			if (filterState?.type !== 'in') {
-				return state;
-			}
-
-			return {
-				...state,
-				[action.payload.field]: {
-					...filterState,
-					selectedValues: [...filterState.selectedValues, action.payload.value],
-				},
-			};
-		}
-		case 'in-deselect-item': {
-			const filterState = state[action.payload.field];
-			if (filterState?.type !== 'in') {
-				return state;
-			}
-
-			return {
-				...state,
-				[action.payload.field]: {
-					...filterState,
-					selectedValues: filterState.selectedValues.filter(selectedValue => selectedValue !== action.payload.value),
-				},
-			};
-		}
-	}
-};
-
-const convertRawFiltersToReducerState = (
-	rawFilters: ProductListProductsQueryResponse['category']['products']['availableFilters'],
-): FilterReducerState => {
-	return rawFilters.reduce<FilterReducerState>((reducerState, rawFilter) => {
-		switch (rawFilter.__typename) {
-			case 'ProductFilterRange': {
-				return {
-					...reducerState,
-					[rawFilter.field]: {
-						type: 'range',
-						min: rawFilter.min,
-						max: rawFilter.max,
-						lowerValue: rawFilter.min,
-						upperValue: rawFilter.max,
-					},
-				};
-			}
-			case 'ProductFilterSelect': {
-				return {
-					...reducerState,
-					[rawFilter.field]: {
-						type: 'in',
-						values: rawFilter.values.map(({ name, amount }) => ({ name, amount })),
-						selectedValues: [],
-					},
-				};
-			}
-			default:
-				throw new Error();
-		}
-	}, {});
-};
-
 interface Props {
 	category: ProductList_category;
 }
 
 const ProductListView: React.FC<Props> = ({ category }) => {
 	const [products, setProducts] = useState(category.products.edges.map(edge => edge.node));
+	const [availableFilters, setAvailableFilters] = useState(category.products.availableFilters);
 	const [currentlyOpenedFilter, setCurrentlyOpenedFilter] = useState<string | null>(null);
 	const relayEnviroment = useRelayEnvironment();
-	const [filtersState, dispatchFilters] = useReducer(
-		filterReducer,
-		convertRawFiltersToReducerState(category.products.availableFilters),
-	);
+
+	const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+	const [selectedColors, setSelectedColors] = useState<string[]>([]);
+	const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+	const [lowerPrice, setLowerPrice] = useState(category.products.availableFilters.price.from);
+	const [upperPrice, setUpperPrice] = useState(category.products.availableFilters.price.to);
 
 	const [orderBy, setOrderBy] = useState('popularity_DESC');
 
@@ -246,33 +91,23 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					id: category.id,
 				},
 				orderBy,
-				filters: Object.entries(filtersState).map<ProductFilterInput>(([field, filter]) => {
-					if (!filter) {
-						throw new Error();
-					}
-
-					if (filter.type === 'range') {
-						return {
-							field,
-							between: {
-								from: filter.lowerValue,
-								to: filter.upperValue,
-							},
-						};
-					}
-
-					return {
-						field,
-						in: filter.values.map(({ name }) => name),
-					};
-				}),
+				filters: {
+					brand_in: selectedBrands.length === 0 ? undefined : selectedBrands,
+					color_in: selectedColors.length === 0 ? undefined : selectedColors,
+					price_between: {
+						from: lowerPrice,
+						to: upperPrice,
+					},
+					size_in: selectedSizes.length === 0 ? undefined : selectedSizes,
+				},
 			});
 
 			setProducts(response.category.products.edges.map(edge => edge.node));
+			setAvailableFilters(response.category.products.availableFilters);
 		};
 
 		asyncEffect();
-	}, [orderBy, filtersState, category.id, relayEnviroment]);
+	}, [category.id, lowerPrice, orderBy, relayEnviroment, selectedBrands, selectedColors, selectedSizes, upperPrice]);
 
 	return (
 		<div>
@@ -294,81 +129,73 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 					onOpenRequest={handleCategoryFilterOpen('order')}
 					onCloseRequest={handleCategoryFilterClose('order')}
 				/>
-				{category.products.availableFilters.map(filter => {
-					switch (filter.__typename) {
-						case 'ProductFilterRange': {
-							const filterState = filtersState[filter.field];
-							if (filterState?.type !== 'range') {
-								return null;
-							}
-
-							return (
-								<CategoryFilterRangeSelect
-									key={filter.field}
-									title={filter.label}
-									min={filter.min}
-									max={filter.max}
-									lowerValue={filterState.lowerValue}
-									upperValue={filterState.upperValue}
-									onLowerValueChange={newLowerValue => {
-										dispatchFilters({
-											type: 'range-update-lower-value',
-											payload: { field: filter.field, value: newLowerValue },
-										});
-									}}
-									onUpperValueChange={newUpperValue => {
-										dispatchFilters({
-											type: 'range-update-upper-value',
-											payload: { field: filter.field, value: newUpperValue },
-										});
-									}}
-									open={currentlyOpenedFilter === filter.field}
-									onOpenRequest={handleCategoryFilterOpen(filter.field)}
-									onCloseRequest={handleCategoryFilterClose(filter.field)}
-								/>
-							);
-						}
-						case 'ProductFilterSelect': {
-							const filterState = filtersState[filter.field];
-							if (filterState?.type !== 'in') {
-								return null;
-							}
-
-							return (
-								<CategoryFilterMultiSelect
-									key={filter.field}
-									title={filter.label}
-									items={filter.values.map(value => ({
-										id: value.name,
-										node: (
-											<div>
-												{value.name} ({value.amount})
-											</div>
-										),
-									}))}
-									selectedItemIds={filterState.selectedValues}
-									onItemSelected={itemId => {
-										dispatchFilters({
-											type: 'in-select-item',
-											payload: { field: filter.field, value: itemId },
-										});
-									}}
-									onItemUnselected={itemId => {
-										dispatchFilters({
-											type: 'in-deselect-item',
-											payload: { field: filter.field, value: itemId },
-										});
-									}}
-									open={currentlyOpenedFilter === filter.field}
-									onOpenRequest={handleCategoryFilterOpen(filter.field)}
-									onCloseRequest={handleCategoryFilterClose(filter.field)}
-								/>
-							);
-						}
-						default:
-							return null;
-					}
-				})}
+				<CategoryFilterMultiSelect
+					title="Märke"
+					items={availableFilters.brands.map(brand => ({
+						id: brand,
+						node: <div>{brand}</div>,
+					}))}
+					selectedItemIds={selectedBrands}
+					onItemSelected={itemId => {
+						setSelectedBrands(selectedBrands => [...selectedBrands, itemId]);
+					}}
+					onItemUnselected={itemId => {
+						setSelectedBrands(selectedBrands => selectedBrands.filter(selectedBrand => selectedBrand !== itemId));
+					}}
+					open={currentlyOpenedFilter === 'brand'}
+					onOpenRequest={handleCategoryFilterOpen('brand')}
+					onCloseRequest={handleCategoryFilterClose('brand')}
+				/>
+				<CategoryFilterMultiSelect
+					title="Storlek"
+					items={availableFilters.sizes.map(size => ({
+						id: size,
+						node: <div>{size}</div>,
+					}))}
+					selectedItemIds={selectedSizes}
+					onItemSelected={itemId => {
+						setSelectedSizes(selectedSizes => [...selectedSizes, itemId]);
+					}}
+					onItemUnselected={itemId => {
+						setSelectedSizes(selectedSizes => selectedSizes.filter(selectedSize => selectedSize !== itemId));
+					}}
+					open={currentlyOpenedFilter === 'size'}
+					onOpenRequest={handleCategoryFilterOpen('size')}
+					onCloseRequest={handleCategoryFilterClose('size')}
+				/>
+				<CategoryFilterMultiSelect
+					title="Färg"
+					items={availableFilters.colors.map(color => ({
+						id: color,
+						node: <div>{color}</div>,
+					}))}
+					selectedItemIds={selectedColors}
+					onItemSelected={itemId => {
+						setSelectedColors(selectedColors => [...selectedColors, itemId]);
+					}}
+					onItemUnselected={itemId => {
+						setSelectedColors(selectedColors => selectedColors.filter(selectedColor => selectedColor !== itemId));
+					}}
+					open={currentlyOpenedFilter === 'color'}
+					onOpenRequest={handleCategoryFilterOpen('color')}
+					onCloseRequest={handleCategoryFilterClose('color')}
+				/>
+				<CategoryFilterRangeSelect
+					title="Pris"
+					min={availableFilters.price.from}
+					max={availableFilters.price.to}
+					lowerValue={lowerPrice}
+					upperValue={upperPrice}
+					onLowerValueChange={newLowerValue => {
+						setLowerPrice(newLowerValue);
+					}}
+					onUpperValueChange={newUpperValue => {
+						setUpperPrice(newUpperValue);
+					}}
+					open={currentlyOpenedFilter === 'price'}
+					onOpenRequest={handleCategoryFilterOpen('price')}
+					onCloseRequest={handleCategoryFilterClose('price')}
+				/>
 			</FiltersContainer>
 			{products.length > 0 && (
 				<div style={{ display: 'grid', gap: '24px', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
@@ -393,22 +220,13 @@ export default createFragmentContainer(ProductListView, {
 					}
 				}
 				availableFilters {
-					__typename
-					... on ProductFilterRange {
-						field
-						label
-						min
-						max
-						unit
+					brands
+					colors
+					price {
+						from
+						to
 					}
-					... on ProductFilterSelect {
-						field
-						label
-						values {
-							name
-							amount
-						}
-					}
+					sizes
 				}
 			}
 		}

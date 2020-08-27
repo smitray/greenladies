@@ -428,12 +428,12 @@ interface ConfigurableProductConfiguration {
 	}[];
 }
 
-async function getProductConfigurations(sku: string) {
-	const { data } = await magentoAdminRequester.get<ConfigurableProductConfiguration[]>(
+export async function getConfigurableProductVirtualProducts(sku: string) {
+	const { data: products } = await magentoAdminRequester.get<ConfigurableProductConfiguration[]>(
 		`/rest/default/V1/configurable-products/${sku}/children`,
 	);
 
-	return data;
+	return Promise.all(products.map(transformVirtualProduct));
 }
 
 async function attributeValueToLabel(attributeCode: string, value: string) {
@@ -540,7 +540,7 @@ export interface VirtualProduct {
 export type Product = ConfigurableProduct | VirtualProduct;
 
 async function transformConfigurableProduct(product: MagentoFullProduct): Promise<ConfigurableProduct> {
-	const virtualProducts = await getProductConfigurations(product.sku);
+	const virtualProducts = await getConfigurableProductVirtualProducts(product.sku);
 	const brandAttribute = getCustomAttribute(product.custom_attributes, 'mgs_brand', true);
 	const brand = await attributeValueToLabel('mgs_brand', brandAttribute);
 

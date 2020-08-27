@@ -36,6 +36,8 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 		}
 	};
 
+	const discount = Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100);
+
 	return (
 		<div>
 			<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
@@ -43,7 +45,7 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 					<ProductImage src="#" />
 					<ProductTagsContainer>
 						<ProductTagCondition>NY</ProductTagCondition>
-						<ProductTagDiscount>-38%</ProductTagDiscount>
+						<ProductTagDiscount>-{discount}%</ProductTagDiscount>
 					</ProductTagsContainer>
 				</ProductImageWrapper>
 			</Link>
@@ -52,10 +54,10 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 					<ProductName>{product.name}</ProductName>
 				</Link>
 				<div>
-					<ProductPrice>{product.price.toFixed(2).replace('.', ',')} kr</ProductPrice>
-					<ProductSpecialPrice>{Number(17).toFixed(2).replace('.', ',')} kr</ProductSpecialPrice>
+					<ProductPrice>{product.originalPrice.toFixed(2).replace('.', ',')} kr</ProductPrice>
+					<ProductSpecialPrice>{product.specialPrice.toFixed(2).replace('.', ',')} kr</ProductSpecialPrice>
 				</div>
-				<ProductBrand>Gant</ProductBrand>
+				<ProductBrand>{product.brand}</ProductBrand>
 				<ProductWishlist disabled={addToWishlistPending || removeFromWishlistPending} onClick={handleWishlistClick}>
 					{product.inWishlist ? ':noheart:' : ':heart:'}
 				</ProductWishlist>
@@ -69,8 +71,11 @@ export default createFragmentContainer(ProductCardView, {
 		fragment ProductCard_product on Product {
 			id
 			name
-			price
 			urlKey
+			originalPrice
+			specialPrice
+			currency
+			brand
 			inWishlist
 		}
 	`,

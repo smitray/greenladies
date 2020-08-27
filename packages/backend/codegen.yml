@@ -10,3 +10,4 @@ generates:
         Category: ./../types#Node
         Product: ./../types#Node
         ShoppingCart: ./../types#Node
+        ProductConfiguration: ./../types#Node

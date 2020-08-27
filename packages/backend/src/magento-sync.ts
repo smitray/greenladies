@@ -1,6 +1,86 @@
 import { Category as MagentoCategory, getCategories } from './api/category';
-import { getProducts, getProductsByCategoryId, Product } from './api/product';
+import {
+	ConfigurableProduct as MagentoConfigurableProduct,
+	getConfigurableProductVirtualProducts,
+	getProducts,
+	getProductsByCategoryId,
+	Product as MagentoProduct,
+	VirtualProduct as MagentoVirtualProduct,
+} from './api/product';
 import { getRedisCacheConnection } from './redis-connection';
+
+export type Product = ConfigurableProduct | VirtualProduct;
+
+export interface ConfigurableProduct {
+	__type: 'ConfigurableProduct';
+	id: string;
+	sku: string;
+	urlKey: string;
+	name: string;
+	brand: string;
+	metaData: {
+		title: string;
+		keyword: string;
+		description: string;
+	};
+	description: {
+		short: string;
+		full: string;
+	};
+	washingDescription: string;
+	image: string;
+	images: string[];
+	configurationAttributes: string[];
+	virtualProductIds: string[];
+	sizes: string[];
+	colors: string[];
+	price: number;
+	specialPrice: number;
+	currency: string;
+}
+
+export interface VirtualProduct {
+	__type: 'VirtualProduct';
+	id: string;
+	sku: string;
+	name: string;
+	quantity: number;
+	price: {
+		originalPrice: number;
+		specialPrice: number;
+		currency: string;
+	};
+	colors: string[];
+	size: string;
+}
+
+async function transformConfigurableProduct(product: MagentoConfigurableProduct): Promise<ConfigurableProduct> {
+	const virtualProducts = await getConfigurableProductVirtualProducts(product.sku);
+
+	return {
+		...product,
+		sizes: [...new Set(virtualProducts.map(virtualProduct => virtualProduct.size))],
+		colors: [...new Set(virtualProducts.flatMap(virtualProduct => virtualProduct.colors))],
+		price: virtualProducts[0].price.originalPrice,
+		specialPrice: virtualProducts[0].price.specialPrice,
+		currency: virtualProducts[0].price.currency,
+	};
+}
+
+function transformVirtualProduct(product: MagentoVirtualProduct): VirtualProduct {
+	return product;
+}
+
+async function transformProduct(product: MagentoProduct): Promise<Product> {
+	switch (product.__type) {
+		case 'ConfigurableProduct':
+			return transformConfigurableProduct(product);
+		case 'VirtualProduct':
+			return transformVirtualProduct(product);
+		default:
+			throw new Error('Invalid product type');
+	}
+}
 
 async function saveProductsInCache(products: Product[]) {
 	const saveProducts = new Promise((resolve, reject) => {
@@ -44,7 +124,9 @@ async function saveProductsInCache(products: Product[]) {
 }
 
 async function syncMagnetoProducts() {
-	const products = await getProducts({ pageSize: 1000000 });
+	const magentoProducts = await getProducts({ pageSize: 1000000 });
+
+	const products = await Promise.all(magentoProducts.map(transformProduct));
 
 	await saveProductsInCache(products);
 }

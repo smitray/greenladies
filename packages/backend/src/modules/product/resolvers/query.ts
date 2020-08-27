@@ -6,7 +6,11 @@ const resolvers: ProductModuleResolversType = {
 		product: async (_parent, { where }, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct(where);
 
-			return { id: String(product.id) };
+			if (product.__type === 'ConfigurableProduct') {
+				return { id: String(product.id) };
+			}
+
+			throw new Error('Product not found');
 		},
 	},
 };

@@ -7,23 +7,131 @@ const resolvers: ProductModuleResolversType = {
 		id: ({ id }) => {
 			return toGlobalId('Product', id);
 		},
+		urlKey: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.urlKey;
+			}
+
+			throw new Error('Invalid product');
+		},
 		name: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 
 			return product.name;
 		},
-		// urlKey: async ({ id }, _args, { injector }) => {
-		// 	const product = await injector.get(ProductProvider).getProduct({ id });
+		brand: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.brand;
+			}
 
-		// 	return product.urlKey;
-		// },
-		// price: async ({ id }, _args, { injector }) => {
-		// 	const product = await injector.get(ProductProvider).getProduct({ id });
+			throw new Error('Invalid product');
+		},
+		metaTitle: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.metaData.title;
+			}
 
-		// 	return product.price;
-		// },
-		urlKey: () => '',
-		price: () => 0,
+			throw new Error('Invalid product');
+		},
+		metaKeyword: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.metaData.keyword;
+			}
+
+			throw new Error('Invalid product');
+		},
+		metaDescription: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.metaData.description;
+			}
+
+			throw new Error('Invalid product');
+		},
+		fullDescription: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.description.full;
+			}
+
+			throw new Error('Invalid product');
+		},
+		shortDescription: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.description.short;
+			}
+
+			throw new Error('Invalid product');
+		},
+		washingDescription: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.washingDescription;
+			}
+
+			throw new Error('Invalid product');
+		},
+		image: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.image;
+			}
+
+			throw new Error('Invalid product');
+		},
+		images: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.images;
+			}
+
+			throw new Error('Invalid product');
+		},
+		configurationAttributes: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.configurationAttributes;
+			}
+
+			throw new Error('Invalid product');
+		},
+		virtualProducts: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.virtualProductIds.map(virtualProductId => ({ id: virtualProductId }));
+			}
+
+			throw new Error('Invalid product');
+		},
+		originalPrice: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.price;
+			}
+
+			throw new Error('Invalid product');
+		},
+		specialPrice: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.specialPrice;
+			}
+
+			throw new Error('Invalid product');
+		},
+		currency: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.currency;
+			}
+
+			throw new Error('Invalid product');
+		},
 	},
 };
 

@@ -6,6 +6,12 @@ export const PRODUCT_QUERY = graphql`
 	query productQuery($where: ProductWhereUniqueInput!) {
 		product(where: $where) {
 			id
+			name
+			images
+			virtualProducts {
+				id
+				size
+			}
 		}
 	}
 `;
