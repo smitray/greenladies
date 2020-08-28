@@ -1,22 +1,14 @@
-FROM node:12.18.2
-
-RUN apt-get update -y
-RUN apt-get install -y python-dev
-
-WORKDIR /tmp
-RUN git clone https://github.com/facebook/watchman.git -b v4.9.0 --depth 1
-WORKDIR /tmp/watchman
-RUN ./autogen.sh
-RUN ./configure
-RUN make
-RUN make install
+FROM node:12.18.2-slim as builder
 
 WORKDIR /usr/src/app
 
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
 COPY package.json yarn.lock tsconfig.base.json ./
+COPY packages/frontend ./packages/frontend
+COPY packages/backend ./packages/backend
 
-EXPOSE 3000
-
-CMD yarn && yarn --cwd packages/frontend dev
+RUN yarn --production=false
+RUN yarn --cwd packages/frontend build
+RUN yarn --production=true
+RUN yarn --cwd packages/frontend start
