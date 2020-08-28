@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: packages/frontend/dev.Dockerfile
     environment:
-      - GRAPHQL_API_ENDPOINT=${FRONTEND_GRAPHQL_API_ENDPOINT}
+      - GRAPHQL_API_ENDPOINT=/api/graphql
     volumes:
       - /usr/src/app/packages/frontend/node_modules
       - ./packages/frontend:/usr/src/app/packages/frontend

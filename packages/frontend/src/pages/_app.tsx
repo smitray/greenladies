@@ -1,21 +1,18 @@
 import 'rc-slider/assets/index.css';
 import 'rc-drawer/assets/index.css';
+import 'react-photoswipe/lib/photoswipe.css';
 
 import React from 'react';
 
 import { NextComponentType } from 'next';
-import { AppContextType, AppInitialProps, AppPropsType, NextPageContext } from 'next/dist/next-server/lib/utils';
-import { fetchQuery } from 'react-relay';
-import { RelayEnvironmentProvider, useLazyLoadQuery } from 'react-relay/hooks';
+import { AppContextType, AppInitialProps, AppPropsType } from 'next/dist/next-server/lib/utils';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import { Record as RelayRecord } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
-import { ShoppingCartProvider } from '../contexts/shopping-cart-context';
-import { WishlistProvider } from '../contexts/wishlist-context';
 import { createRelayEnvironment } from '../lib/relay-environment';
-import { APP_QUERY, AppQuery } from '../queries/app';
 
 type ServerState = { [key: string]: RelayRecord };
 
@@ -38,6 +35,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+
+  .ReactCollapse--collapse {
+    transition: height 300ms ease-in-out;
+  }
 `;
 
 const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
@@ -45,44 +46,23 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 
 	return (
 		<RelayEnvironmentProvider environment={environment}>
-			<MyAppInner Component={Component} pageProps={pageProps} />
+			<React.Fragment>
+				<GlobalStyles />
+				<MessageBar />
+				<Navbar />
+				<Component {...pageProps} />
+			</React.Fragment>
 		</RelayEnvironmentProvider>
-	);
-};
-
-interface MyAppInnerProps {
-	Component: NextComponentType<NextPageContext, any, any>;
-	pageProps: any;
-}
-
-const MyAppInner = ({ Component, pageProps }: MyAppInnerProps) => {
-	const { wishlist, shoppingCart } = useLazyLoadQuery<AppQuery>(APP_QUERY, { fetchPolicy: 'store-only' });
-
-	return (
-		<WishlistProvider wishlist={wishlist}>
-			<ShoppingCartProvider cart={shoppingCart}>
-				<React.Fragment>
-					<GlobalStyles />
-					<MessageBar />
-					<Navbar />
-					<Component {...pageProps} />
-				</React.Fragment>
-			</ShoppingCartProvider>
-		</WishlistProvider>
 	);
 };
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
 	const relayEnvironment = createRelayEnvironment(undefined, ctx.req?.headers.cookie);
 
-	const appQueryPromise = fetchQuery<AppQuery>(relayEnvironment, APP_QUERY, {});
-
 	let pageProps: Record<string, any> = {};
 	if ((Component as any).getInitialProps) {
 		pageProps = await (Component as any).getInitialProps({ ...ctx, relayEnvironment });
 	}
-
-	await appQueryPromise;
 
 	const serverState = relayEnvironment.getStore().getSource().toJSON();
 

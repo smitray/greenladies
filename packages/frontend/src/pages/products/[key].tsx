@@ -4,8 +4,9 @@ import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
 
+import { ProductDetails } from '../../components/ProductDetails';
+import { ProductImageGallery } from '../../components/ProductImageGallery';
 import { MyNextPage } from '../../lib/types';
-import { useAddToCartMutation } from '../../mutations/shopping-cart';
 import { PRODUCT_QUERY, ProductQuery } from '../../queries/product';
 
 const CenterWrapper = styled.div`
@@ -24,25 +25,18 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 		{ where: { urlKey: productUrlKey } },
 		{ fetchPolicy: 'store-only' },
 	);
-	const { commit: addToCart } = useAddToCartMutation();
 
 	return (
 		<CenterWrapper>
-			<div>id: {product.id}</div>
-			<div>name: {product.name}</div>
-			<div>
-				{product.virtualProducts.map(virtualProduct => (
-					<div key={virtualProduct.id}>
-						{virtualProduct.id}:{virtualProduct.size}
-						<button onClick={() => addToCart(virtualProduct.id)}>Add to cart</button>
-					</div>
-				))}
+			<div style={{ display: 'flex' }}>
+				<div style={{ flexBasis: '50%', marginRight: '24px' }}>
+					<ProductImageGallery product={product} />
+				</div>
+				<div style={{ flexBasis: '50%', marginLeft: '24px' }}>
+					<ProductDetails product={product} />
+				</div>
 			</div>
-			<div>
-				{product.images.map((imagePath, index) => (
-					<img key={index} src={`http://localhost:8081/media/catalog/product/${imagePath}`} alt="" />
-				))}
-			</div>
+			<div>Liknande produkter</div>
 		</CenterWrapper>
 	);
 };
