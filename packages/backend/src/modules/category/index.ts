@@ -15,6 +15,6 @@ export type CategoryModuleResolversType = GQLResolvers<ModuleContext<CategoryMod
 export const CategoryModule = new GraphQLModule<any, ApolloContext, CategoryModuleContext>({
 	imports: [RelayModule],
 	providers: [CategoryProvider],
-	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
-	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
+	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
+	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
 });

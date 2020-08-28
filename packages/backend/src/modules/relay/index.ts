@@ -9,6 +9,6 @@ export interface RelayModuleContext {}
 export type RelayModuleResolversType = GQLResolvers<ModuleContext<RelayModuleContext>>;
 
 export const RelayModule = new GraphQLModule({
-	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
-	resolvers: loadFiles(path.join(__dirname, 'resolvers', '**/*.ts')),
+	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
+	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
 });

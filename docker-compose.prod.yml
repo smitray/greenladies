@@ -5,8 +5,6 @@ services:
     build:
       context: .
       dockerfile: packages/frontend/Dockerfile
-    environment:
-      - GRAPHQL_API_ENDPOINT=/api/graphql
     labels:
       - traefik.enable=true
       - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)

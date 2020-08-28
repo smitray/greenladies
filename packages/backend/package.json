@@ -5,9 +5,10 @@
 	"main": "lib/index.js",
 	"private": true,
 	"scripts": {
-		"build": "yarn generate-graphql-schema && yarn generate-graphql-ts-types && tsc",
+		"build": "yarn generate-graphql-schema && yarn generate-graphql-ts-types && tsc && yarn copy-graphql-files",
 		"clean": "rimraf dist **/__generated__",
 		"dev": "concurrently \"yarn generate-graphql-ts-types:watch\" \"ts-node-dev --respawn --transpile-only src/index.ts\"",
+		"copy-graphql-files": "ts-node --transpile-only src/copy-graphql-files",
 		"generate-graphql-schema": "ts-node --transpile-only src/generate-graphql-schema.ts",
 		"generate-graphql-ts-types": "graphql-codegen",
 		"generate-graphql-ts-types:watch": "graphql-codegen --watch",
@@ -40,6 +41,7 @@
 		"@types/express-session": "^1.17.0",
 		"@types/redis": "^2.8.25",
 		"concurrently": "^5.2.0",
+		"glob": "^7.1.6",
 		"ts-node-dev": "^1.0.0-pre.51"
 	}
 }

@@ -19,8 +19,8 @@ export type ShoppingCartModuleResolversType = GQLResolvers<ModuleContext<Shoppin
 export const ShoppingCartModule = new GraphQLModule<any, ApolloContext, ShoppingCartModuleContext>({
 	imports: [ProductModule, RelayModule],
 	providers: [ShoppingCartProvider],
-	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
-	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
+	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
+	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
 	context: ({ req }) => {
 		return {
 			request: req,

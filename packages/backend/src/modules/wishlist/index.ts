@@ -16,8 +16,8 @@ export type WishlistModuleResolversType = GQLResolvers<ModuleContext<WishlistMod
 
 export const WishlistModule = new GraphQLModule<any, ApolloContext, WishlistModuleContext>({
 	imports: [ProductModule, RelayModule],
-	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts}')),
-	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.ts')),
+	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
+	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
 	context: ({ req }) => {
 		return {
 			request: req,
