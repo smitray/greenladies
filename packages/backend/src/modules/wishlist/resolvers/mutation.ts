@@ -46,6 +46,15 @@ const resolvers: WishlistModuleResolversType = {
 				},
 			};
 		},
+		clearWishlist: (_parent, _args, { request }) => {
+			if (!request.session) {
+				throw new Error('There is no session available');
+			}
+
+			request.session.wishlist = [];
+
+			return true;
+		},
 	},
 };
 

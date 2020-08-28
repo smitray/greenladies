@@ -3,6 +3,7 @@ import { useMutation } from 'react-relay/hooks';
 import { ConnectionHandler } from 'relay-runtime';
 
 import { wishlistAddToWishlistMutation } from './__generated__/wishlistAddToWishlistMutation.graphql';
+import { wishlistClearWishlistMutation } from './__generated__/wishlistClearWishlistMutation.graphql';
 import { wishlistRemoveFromWishlistMutation } from './__generated__/wishlistRemoveFromWishlistMutation.graphql';
 
 const WISHLIST_ADD_TO_WISHLIST_MUTATION = graphql`
@@ -85,6 +86,46 @@ export const useRemoveFromWishlistMutation = () => {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection) {
 							ConnectionHandler.deleteNode(connection, productId);
+						}
+					}
+				},
+			});
+		},
+		pending,
+	};
+};
+
+const CLEAR_WISHLIST_MUTATION = graphql`
+	mutation wishlistClearWishlistMutation {
+		clearWishlist
+	}
+`;
+
+export const useClearWishlistMutation = () => {
+	const [commitClearWishlist, pending] = useMutation<wishlistClearWishlistMutation>(CLEAR_WISHLIST_MUTATION);
+
+	return {
+		commit: () => {
+			commitClearWishlist({
+				variables: {},
+				updater: storeProxy => {
+					const rootProxy = storeProxy.getRoot();
+					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
+					if (wishlistProxy) {
+						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
+						if (connection) {
+							const productIdsInConnection =
+								connection.getLinkedRecords('edges')?.map(edge => edge.getLinkedRecord('node')?.getValue('id')) || [];
+
+							productIdsInConnection.forEach(id => {
+								if (typeof id === 'string') {
+									ConnectionHandler.deleteNode(connection, id);
+									const productRecord = storeProxy.get(id);
+									if (productRecord) {
+										productRecord.setValue(false, 'inWishlist');
+									}
+								}
+							});
 						}
 					}
 				},
