@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Link from 'next/link';
+import { BiShoppingBag } from 'react-icons/bi';
+import { FaRegHeart } from 'react-icons/fa';
+import { graphql, QueryRenderer } from 'react-relay';
+import { useRelayEnvironment } from 'react-relay/hooks';
 
+import { ShoppingCartDrawer } from '../ShoppingCartDrawer';
+import { WishlistDrawer } from '../WishlistDrawer';
+
+import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
+import { NavbarWishlistQuery } from './__generated__/NavbarWishlistQuery.graphql';
 import { MegaMenu } from './MegaMenu';
 import {
 	CenterWrapper,
@@ -48,6 +57,9 @@ export const NavbarView = ({
 	handleMegaMenuFocus,
 	handleMegaMenuUnfocus,
 }: NavbarViewProps) => {
+	const [wishlistDrawerIsOpen, setWishlistDrawerIsOpen] = useState(false);
+	const [shoppingCartDrawerIsOpen, setShoppingCartDrawerIsOpen] = useState(false);
+	const relayEnvironment = useRelayEnvironment();
 	const { categories }: NavbarProps = {
 		categories: [
 			{
@@ -228,6 +240,199 @@ export const NavbarView = ({
 								</li>
 							);
 						})}
+					</Group>
+					<Group>
+						<div style={{ display: 'flex', alignItems: 'center' }}>
+							<QueryRenderer<NavbarWishlistQuery>
+								environment={relayEnvironment}
+								query={graphql`
+									query NavbarWishlistQuery {
+										wishlist {
+											products(first: 10000) @connection(key: "Wishlist_products") {
+												edges {
+													node {
+														id
+													}
+												}
+											}
+											...WishlistDrawer_wishlist
+										}
+									}
+								`}
+								variables={{}}
+								render={({ error, props }) => {
+									if (error) {
+										return null;
+									}
+
+									if (props) {
+										const total = props.wishlist.products.edges.length;
+
+										return (
+											<React.Fragment>
+												<WishlistDrawer
+													wishlist={props.wishlist}
+													open={wishlistDrawerIsOpen}
+													onCloseRequest={() => setWishlistDrawerIsOpen(false)}
+												/>
+												<button
+													style={{
+														display: 'flex',
+														flexDirection: 'column',
+														justifyContent: 'center',
+														alignItems: 'center',
+														cursor: 'pointer',
+														background: 'none',
+														border: 'none',
+														outline: 'none',
+														padding: 'none',
+													}}
+													onClick={() => setWishlistDrawerIsOpen(true)}
+												>
+													<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+														<FaRegHeart size="20" />
+														<div
+															style={{
+																position: 'absolute',
+																background: '#ddd',
+																borderRadius: '100%',
+																fontSize: '12px',
+																textAlign: 'center',
+																top: '0',
+																right: '-8px',
+																width: '16px',
+																height: '16px',
+															}}
+														>
+															{total}
+														</div>
+													</div>
+													<div style={{ fontSize: '12px' }}>Favoriter</div>
+												</button>
+											</React.Fragment>
+										);
+									}
+
+									return (
+										<button
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												justifyContent: 'center',
+												alignItems: 'center',
+												cursor: 'pointer',
+												background: 'none',
+												border: 'none',
+												outline: 'none',
+												padding: 'none',
+											}}
+											onClick={() => setWishlistDrawerIsOpen(true)}
+										>
+											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+												<FaRegHeart size="20" />
+											</div>
+											<div style={{ fontSize: '12px' }}>Favoriter</div>
+										</button>
+									);
+								}}
+							/>
+							<QueryRenderer<NavbarShoppingCartQuery>
+								environment={relayEnvironment}
+								query={graphql`
+									query NavbarShoppingCartQuery {
+										shoppingCart {
+											items(first: 1000) @connection(key: "ShoppingCart_items") {
+												edges {
+													node {
+														amount
+													}
+												}
+											}
+											...ShoppingCartDrawer_cart
+										}
+									}
+								`}
+								variables={{}}
+								render={({ error, props }) => {
+									if (error) {
+										return null;
+									}
+
+									if (props) {
+										const total = props.shoppingCart.items.edges.reduce(
+											(prev, current) => prev + current.node.amount,
+											0,
+										);
+
+										return (
+											<React.Fragment>
+												<ShoppingCartDrawer
+													cart={props.shoppingCart}
+													open={shoppingCartDrawerIsOpen}
+													onCloseRequest={() => setShoppingCartDrawerIsOpen(false)}
+												/>
+												<button
+													style={{
+														display: 'flex',
+														flexDirection: 'column',
+														justifyContent: 'center',
+														alignItems: 'center',
+														cursor: 'pointer',
+														background: 'none',
+														border: 'none',
+														outline: 'none',
+														padding: 'none',
+													}}
+													onClick={() => setShoppingCartDrawerIsOpen(true)}
+												>
+													<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+														<BiShoppingBag size="20" />
+														<div
+															style={{
+																position: 'absolute',
+																background: '#ddd',
+																borderRadius: '100%',
+																fontSize: '12px',
+																textAlign: 'center',
+																top: '0',
+																right: '-8px',
+																width: '16px',
+																height: '16px',
+															}}
+														>
+															{total}
+														</div>
+													</div>
+													<div style={{ fontSize: '12px' }}>Varukorg</div>
+												</button>
+											</React.Fragment>
+										);
+									}
+
+									return (
+										<button
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												justifyContent: 'center',
+												alignItems: 'center',
+												cursor: 'pointer',
+												background: 'none',
+												border: 'none',
+												outline: 'none',
+												padding: 'none',
+											}}
+											onClick={() => setShoppingCartDrawerIsOpen(true)}
+										>
+											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+												<BiShoppingBag size="20" />
+											</div>
+											<div style={{ fontSize: '12px' }}>Varukorg</div>
+										</button>
+									);
+								}}
+							/>
+						</div>
 					</Group>
 				</Row>
 			</CenterWrapper>

@@ -1,28 +1,27 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import Drawer from 'rc-drawer';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { useRemoveFromWishlistMutation } from '../../mutations/wishlist';
 
-import { Wishlist_wishlist } from './__generated__/Wishlist_wishlist.graphql';
+import { WishlistDrawer_wishlist } from './__generated__/WishlistDrawer_wishlist.graphql';
 
-interface WishlistViewProps {
-	wishlist: Wishlist_wishlist;
+interface WishlistDrawerViewProps {
+	wishlist: WishlistDrawer_wishlist;
 	open: boolean;
 	onCloseRequest: () => void;
 }
 
-const WishlistView = ({ wishlist, open, onCloseRequest }: WishlistViewProps) => {
+const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerViewProps) => {
 	const { commit: removeFromWishlist } = useRemoveFromWishlistMutation();
-	const products = useMemo(() => wishlist.products.edges.map(edge => edge.node), [wishlist]);
 
 	return (
 		<Drawer open={open} placement="right" handler={false} width={300} onClose={onCloseRequest}>
 			<div>
-				{products.length === 0 && <div>There are no items in your wishlist</div>}
-				{products.length > 0 &&
-					products.map(product => (
+				{wishlist.products.totalCount === 0 && <div>There are no items in your wishlist</div>}
+				{wishlist.products.edges.length > 0 &&
+					wishlist.products.edges.map(({ node: product }) => (
 						<div key={product.id}>
 							{product.name}
 							<button onClick={() => removeFromWishlist(product.id)}>REMOVE</button>
@@ -33,9 +32,9 @@ const WishlistView = ({ wishlist, open, onCloseRequest }: WishlistViewProps) => 
 	);
 };
 
-export default createFragmentContainer(WishlistView, {
+export default createFragmentContainer(WishlistDrawerView, {
 	wishlist: graphql`
-		fragment Wishlist_wishlist on Wishlist {
+		fragment WishlistDrawer_wishlist on Wishlist {
 			products(first: 10000) @connection(key: "Wishlist_products") {
 				edges {
 					node {
@@ -43,6 +42,7 @@ export default createFragmentContainer(WishlistView, {
 						name
 					}
 				}
+				totalCount
 			}
 		}
 	`,
