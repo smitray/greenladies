@@ -30,7 +30,8 @@ echo "--- Installing Magento ---"
   --language=sv_SE \
   --currency=SEK \
   --timezone=Europe/Stockholm \
-  --use-rewrites=1
+  --use-rewrites=1 \
+  --backend-frontname=notthedefaultadminuri
 
 echo "--- Enabling developer mode ---"
 bin/magento deploy:mode:set developer
