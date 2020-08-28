@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: packages/frontend/dev.Dockerfile
+    environment:
+      - GRAPHQL_API_ENDPOINT=${FRONTEND_GRAPHQL_API_ENDPOINT}
     volumes:
       - /usr/src/app/packages/frontend/node_modules
       - ./packages/frontend:/usr/src/app/packages/frontend
@@ -18,6 +20,12 @@ services:
     build:
       context: .
       dockerfile: packages/backend/dev.Dockerfile
+    environment:
+      - DOMAIN
+      - MAGENTO_INTEGRATION_ACCESS_TOKEN=${BACKEND_MAGENTO_INTEGRATION_ACCESS_TOKEN}
+      - KLARNA_API=${BACKEND_KLARNA_API}
+      - KLARNA_USER_ID=${BACKEND_KLARNA_USER_ID}
+      - KLARNA_PASSWORD=${BACKEND_KLARNA_PASSWORD}
     volumes:
       - /usr/src/app/packages/backend/node_modules
       - ./packages/backend:/usr/src/app/packages/backend

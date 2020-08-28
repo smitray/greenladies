@@ -79,10 +79,10 @@ const resolvers: ProductModuleResolversType = {
 		image: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 			const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-			const HOST = String(process.env.HOST);
+			const DOMAIN = String(process.env.DOMAIN);
 
 			if (product.__type === 'ConfigurableProduct') {
-				return `${protocol}://magento.${HOST}/media/catalog/product${product.image}`;
+				return `${protocol}://magento.${DOMAIN}/media/catalog/product${product.image}`;
 			}
 
 			throw new Error('Invalid product');
@@ -91,9 +91,9 @@ const resolvers: ProductModuleResolversType = {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 			if (product.__type === 'ConfigurableProduct') {
 				const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-				const HOST = String(process.env.HOST);
+				const DOMAIN = String(process.env.DOMAIN);
 
-				return product.images.map(path => `${protocol}://magento.${HOST}/media/catalog/product${path}`);
+				return product.images.map(path => `${protocol}://magento.${DOMAIN}/media/catalog/product${path}`);
 			}
 
 			throw new Error('Invalid product');

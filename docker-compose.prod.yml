@@ -5,11 +5,8 @@ services:
     build:
       context: .
       dockerfile: packages/frontend/Dockerfile
-    volumes:
-      - /usr/src/app/packages/frontend/node_modules
-      - ./packages/frontend:/usr/src/app/packages/frontend
-      - /usr/src/app/packages/backend/node_modules
-      - ./packages/backend:/usr/src/app/packages/backend
+    environment:
+      - GRAPHQL_API_ENDPOINT=${FRONTEND_GRAPHQL_API_ENDPOINT}
     labels:
       - traefik.enable=true
       - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
@@ -22,9 +19,12 @@ services:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
-    volumes:
-      - /usr/src/app/packages/backend/node_modules
-      - ./packages/backend:/usr/src/app/packages/backend
+    environment:
+      - DOMAIN
+      - MAGENTO_INTEGRATION_ACCESS_TOKEN=${BACKEND_MAGENTO_INTEGRATION_ACCESS_TOKEN}
+      - KLARNA_API=${BACKEND_KLARNA_API}
+      - KLARNA_USER_ID=${BACKEND_KLARNA_USER_ID}
+      - KLARNA_PASSWORD=${BACKEND_KLARNA_PASSWORD}
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
