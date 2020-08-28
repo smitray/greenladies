@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { useClickOutside } from '../../hooks/use-click-outside';
 import { useAddToCartMutation } from '../../mutations/shopping-cart';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../../mutations/wishlist';
 
@@ -40,6 +41,14 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 	const { commit: addToWishlist, pending: addingToWishlist } = useAddToWishlistMutation();
 	const { commit: removeFromWishlist, pending: removingFromWishlist } = useRemoveFromWishlistMutation();
 	const { commit: addToCart, pending: addingToCart } = useAddToCartMutation();
+
+	const [selectSizeButtonFocus, setSelectSizeButtonFocus] = useState(false);
+	const sizeDropdownRef = useRef<HTMLDivElement>(null);
+	useClickOutside(sizeDropdownRef, () => {
+		if (!selectSizeButtonFocus) {
+			setSelectSizeOpen(false);
+		}
+	});
 
 	const discount = Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100);
 
@@ -77,6 +86,8 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 							border: '2px solid black',
 							borderRadius: '5px',
 						}}
+						onMouseEnter={() => setSelectSizeButtonFocus(true)}
+						onMouseLeave={() => setSelectSizeButtonFocus(false)}
 					>
 						{selectedConfiguration !== null ? (
 							<div>
@@ -96,6 +107,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 					</div>
 					{selectSizeOpen && (
 						<div
+							ref={sizeDropdownRef}
 							onClick={e => e.stopPropagation()}
 							style={{
 								maxHeight: '500',
