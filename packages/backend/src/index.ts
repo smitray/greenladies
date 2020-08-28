@@ -50,6 +50,7 @@ const sessionOptions: SessionOptions = {
 	const server = await createApolloServer();
 	server.applyMiddleware({
 		app,
+		path: '/api/graphql',
 		cors: {
 			credentials: true,
 			origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : false,

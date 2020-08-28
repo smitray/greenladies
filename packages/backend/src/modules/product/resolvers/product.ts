@@ -78,8 +78,11 @@ const resolvers: ProductModuleResolversType = {
 		},
 		image: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct({ id });
+			const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+			const HOST = String(process.env.HOST);
+
 			if (product.__type === 'ConfigurableProduct') {
-				return product.image;
+				return `${protocol}://magento.${HOST}/media/catalog/product${product.image}`;
 			}
 
 			throw new Error('Invalid product');
@@ -87,7 +90,10 @@ const resolvers: ProductModuleResolversType = {
 		images: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 			if (product.__type === 'ConfigurableProduct') {
-				return product.images;
+				const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+				const HOST = String(process.env.HOST);
+
+				return product.images.map(path => `${protocol}://magento.${HOST}/media/catalog/product${path}`);
 			}
 
 			throw new Error('Invalid product');
