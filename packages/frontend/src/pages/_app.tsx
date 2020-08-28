@@ -38,6 +38,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+
+  .ReactCollapse--collapse {
+    transition: height 300ms ease-in-out;
+  }
 `;
 
 const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {

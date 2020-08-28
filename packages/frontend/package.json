@@ -21,8 +21,10 @@
 		"rc-drawer": "^4.1.0",
 		"rc-slider": "9.2.4",
 		"react": "^16.13.1",
+		"react-collapse": "^5.0.1",
 		"react-dom": "^16.13.1",
 		"react-icons": "^3.11.0",
+		"react-markdown": "^4.3.1",
 		"react-relay": "^10.0.1",
 		"relay-runtime": "^10.0.1",
 		"styled-components": "^5.1.1"
@@ -30,6 +32,7 @@
 	"devDependencies": {
 		"@types/rc-slider": "^8.6.6",
 		"@types/react": "^16.9.43",
+		"@types/react-collapse": "^5.0.0",
 		"@types/react-relay": "^7.0.8",
 		"@types/relay-runtime": "^10.0.1",
 		"@types/styled-components": "^5.1.1",
