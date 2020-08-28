@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Link from 'next/link';
+
 import {
 	CenterWrapper,
 	MessageAnchor,
@@ -16,13 +18,19 @@ const MessageBarView = () => {
 			<CenterWrapper>
 				<MessageList>
 					<MessageLeft>
-						<MessageAnchor href="/om-green-ladies">Om Green Ladies</MessageAnchor>
+						<Link href="/om-oss" passHref>
+							<MessageAnchor>Om Green Ladies</MessageAnchor>
+						</Link>
 					</MessageLeft>
 					<MessageMiddle>
-						<MessageAnchor href="/kopvillkor">Köpvillkor*</MessageAnchor>
+						<Link href="/kundservice" passHref>
+							<MessageAnchor>Fri frakt på beställningar över 999kr / Klimatkompenserad frakt</MessageAnchor>
+						</Link>
 					</MessageMiddle>
 					<MessageRight>
-						<MessageAnchor href="/kopvillkor">Trygga & säkra betalningar</MessageAnchor>
+						<Link href="/kundservice" passHref>
+							<MessageAnchor>Trygg & säker betalning</MessageAnchor>
+						</Link>
 					</MessageRight>
 				</MessageList>
 			</CenterWrapper>

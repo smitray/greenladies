@@ -15,11 +15,11 @@ export const MessageList = styled.ul`
 	padding: 0;
 	list-style: none;
 	display: flex;
+	justify-content: space-between;
 `;
 
 const Message = styled.li`
-	padding: 9px 80px;
-	flex-basis: 33.33%;
+	padding: 8px 8px;
 `;
 
 export const MessageLeft = styled(Message)`
