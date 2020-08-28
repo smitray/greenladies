@@ -296,7 +296,8 @@ export const NavbarView = ({
 																position: 'absolute',
 																background: '#ddd',
 																borderRadius: '100%',
-																fontSize: '12px',
+																fontSize: '10px',
+																lineHeight: '16px',
 																textAlign: 'center',
 																top: '0',
 																right: '-8px',
@@ -390,9 +391,11 @@ export const NavbarView = ({
 														<div
 															style={{
 																position: 'absolute',
-																background: '#ddd',
+																background: 'black',
+																color: 'white',
 																borderRadius: '100%',
-																fontSize: '12px',
+																fontSize: '10px',
+																lineHeight: '16px',
 																textAlign: 'center',
 																top: '0',
 																right: '-8px',
