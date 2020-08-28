@@ -1,19 +1,34 @@
 import React, { useState } from 'react';
 
 import { Collapse } from 'react-collapse';
+import { FaAngleDown, FaAngleUp, FaCaretDown, FaCaretUp } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
+import styled from 'styled-components';
 
 import { ProductDetails_product } from './__generated__/ProductDetails_product.graphql';
+
+const CollapseTitle = styled.div`
+	border-top: 1px solid #ddd;
+	padding: 24px 8px;
+	display: flex;
+	justify-content: space-between;
+`;
+
+const CollapseContentWrapper = styled.div`
+	padding: 8px;
+`;
 
 interface ProductDetailsViewProps {
 	product: ProductDetails_product;
 }
 
 const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
-	const [open, setOpen] = useState(false);
+	const [descriptionOpen, setDescriptionOpen] = useState(false);
+	const [materialOpen, setMaterialOpen] = useState(false);
 
-	const discount = Math.round((product.originalPrice - product.specialPrice) / product.originalPrice);
+	const discount = Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100);
+
 	return (
 		<React.Fragment>
 			<div style={{ marginBottom: '8px' }}>
@@ -38,17 +53,28 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 				<button>Handla</button>
 				<button>Heart</button>
 			</div>
-			<div onClick={() => setOpen(open => !open)}>Beskrivning</div>
-			<Collapse isOpened={open}>
-				<ReactMarkdown source={product.fullDescription} />
+			<CollapseTitle onClick={() => setDescriptionOpen(open => !open)}>
+				<div>Beskrivning</div>
+				{descriptionOpen ? <FaAngleUp /> : <FaAngleDown />}
+			</CollapseTitle>
+			<Collapse isOpened={descriptionOpen}>
+				<CollapseContentWrapper>
+					<ReactMarkdown source={product.fullDescription} />
+				</CollapseContentWrapper>
 			</Collapse>
-			<div onClick={() => setOpen(open => !open)}>Material och skötsel</div>
-			<Collapse isOpened={open}>
-				<h2>Material</h2>
-				<ReactMarkdown source={product.fullDescription} />
-				<h2>Skötselråd</h2>
-				<ReactMarkdown source={product.washingDescription} />
+			<CollapseTitle onClick={() => setMaterialOpen(open => !open)}>
+				<div>Material och skötsel</div>
+				{materialOpen ? <FaAngleUp /> : <FaAngleDown />}
+			</CollapseTitle>
+			<Collapse isOpened={materialOpen}>
+				<CollapseContentWrapper>
+					<h2>Material</h2>
+					<ReactMarkdown source={product.fullDescription} />
+					<h2>Skötselråd</h2>
+					<ReactMarkdown source={product.washingDescription} />
+				</CollapseContentWrapper>
 			</Collapse>
+			<div style={{ borderTop: '1px solid #ddd' }}></div>
 		</React.Fragment>
 	);
 };
