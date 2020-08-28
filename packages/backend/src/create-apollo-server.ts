@@ -1,5 +1,3 @@
-import './generate-graphql-schema';
-
 import { ApolloServer } from 'apollo-server-express';
 import { Request, Response } from 'express';
 
