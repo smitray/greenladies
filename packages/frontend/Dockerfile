@@ -11,4 +11,5 @@ COPY packages/backend ./packages/backend
 RUN yarn --production=false
 RUN yarn --cwd packages/frontend build
 RUN yarn --production=true
-RUN yarn --cwd packages/frontend start
+
+CMD yarn --cwd packages/frontend start
