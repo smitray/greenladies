@@ -7,11 +7,19 @@ import {
 
 export async function createGreenLadiesAttributeSet() {
 	await createAttribute({
+		type: 'dropdown',
 		code: 'color',
 		required: true,
-		options: ['black', 'blue'],
+		options: ['black', 'blue', 'darkgreen'],
 	});
 	await createAttribute({
+		type: 'dropdown',
+		code: 'mgs_brand',
+		required: true,
+		options: ['Alice Bizous', 'Lee', 'ESPRIT', 'Rosebud'],
+	});
+	await createAttribute({
+		type: 'dropdown',
 		code: 'size',
 		required: false,
 		options: [
@@ -42,6 +50,17 @@ export async function createGreenLadiesAttributeSet() {
 			'W33 L33',
 		],
 	});
+	await createAttribute({
+		type: 'text',
+		code: 'washing_description',
+		required: false,
+	});
+	await createAttribute({
+		type: 'dropdown',
+		code: 'condition',
+		options: ['new', 'vintage'],
+		required: true,
+	});
 	const { attribute_set_id: setId } = await createAttributeSet({ name: 'Green Ladies' });
 	const { attribute_group_id: groupId } = await createAttributeSetGroup(parseInt(setId, 10), { name: 'Attributes' });
 	await addAttributeToAttributeSet({
@@ -51,6 +70,21 @@ export async function createGreenLadiesAttributeSet() {
 	});
 	await addAttributeToAttributeSet({
 		code: 'size',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'condition',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'washing_description',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'mgs_brand',
 		setId,
 		groupId,
 	});
