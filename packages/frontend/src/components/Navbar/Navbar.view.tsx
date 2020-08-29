@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaRegHeart, FaSearch } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
@@ -235,25 +235,21 @@ export const NavbarView = ({
 	return (
 		<Wrapper>
 			<CenterWrapper>
-				<Row>
-					<Group style={{ marginLeft: '-20px' }}>
-						{categories.map((category, index) => {
-							return (
-								<li key={index}>
-									<Link href="/">
-										<ItemWrapper
-											onMouseEnter={() => handleTopLevelItemFocus(index)}
-											onMouseLeave={handleTopLevelItemUnfocus}
-										>
-											<Item>
-												<ItemText>{category.category.name}</ItemText>
-											</Item>
-										</ItemWrapper>
-									</Link>
-								</li>
-							);
-						})}
-					</Group>
+				<Row style={{ flexDirection: 'row-reverse', position: 'relative', padding: '8px' }}>
+					<div
+						style={{
+							position: 'absolute',
+							top: '0',
+							right: '0',
+							bottom: '0',
+							left: '0',
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<div>LOGO</div>
+					</div>
 					<Group>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
 							<QueryRenderer<NavbarWishlistQuery>
@@ -475,6 +471,63 @@ export const NavbarView = ({
 					</Group>
 				</Row>
 			</CenterWrapper>
+			<Row style={{ borderTop: '1px solid lightgrey', borderBottom: '1px solid lightgrey', display: 'block' }}>
+				<CenterWrapper style={{ display: 'block' }}>
+					<Row>
+						<Group style={{ marginLeft: '-12px', flexGrow: 1 }}>
+							{categories.map((category, index) => {
+								return (
+									<li key={index}>
+										<Link href="/">
+											<ItemWrapper
+												onMouseEnter={() => handleTopLevelItemFocus(index)}
+												onMouseLeave={handleTopLevelItemUnfocus}
+											>
+												<Item active={index === currentlySelectedTopLevelItemIndex}>
+													<ItemText>{category.category.name}</ItemText>
+												</Item>
+											</ItemWrapper>
+										</Link>
+									</li>
+								);
+							})}
+						</Group>
+						<Group
+							style={{
+								flexBasis: '30%',
+								borderLeft: '1px solid lightgrey',
+								borderRight: '1px solid lightgrey',
+								position: 'relative',
+							}}
+						>
+							<input
+								style={{
+									border: 'none',
+									outline: 'none',
+									width: '100%',
+									paddingLeft: '48px',
+								}}
+								type="text"
+								placeholder="Sök produkter eller märken"
+							/>
+							<div
+								style={{
+									position: 'absolute',
+									left: '16px',
+									bottom: '0',
+									top: '0',
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<div style={{ width: '16px', height: '16px' }}>
+									<FaSearch size="16" color="grey" />
+								</div>
+							</div>
+						</Group>
+					</Row>
+				</CenterWrapper>
+			</Row>
 			<MegaMenuWrapper
 				open={currentlySelectedTopLevelItemIndex !== null}
 				onMouseEnter={handleMegaMenuFocus}
