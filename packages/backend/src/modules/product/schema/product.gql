@@ -21,6 +21,7 @@ type Product implements Node {
 	fullDescription: String!
 	shortDescription: String!
 	washingDescription: String!
+	condition: String!
 	image: String!
 	images: [String!]!
 	configurationAttributes: [String!]!

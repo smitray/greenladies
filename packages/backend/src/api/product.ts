@@ -536,6 +536,7 @@ export interface ConfigurableProduct {
 		full: string;
 	};
 	washingDescription: string;
+	condition: string;
 	image: string;
 	images: string[];
 	configurationAttributes: string[];
@@ -565,6 +566,9 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 	const brandAttribute = getCustomAttribute(product.custom_attributes, 'mgs_brand', true);
 	const brand = await attributeValueToLabel('mgs_brand', brandAttribute);
 
+	const conditionAttribute = getCustomAttribute(product.custom_attributes, 'condition', true);
+	const condition = await attributeValueToLabel('condition', conditionAttribute);
+
 	return {
 		__type: 'ConfigurableProduct',
 		id: product.id.toString(),
@@ -582,6 +586,7 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 			full: getCustomAttribute(product.custom_attributes, 'description'),
 		},
 		washingDescription: getCustomAttribute(product.custom_attributes, 'washing_description', false),
+		condition,
 		image: product.media_gallery_entries.length > 0 ? product.media_gallery_entries[0].file : '',
 		images: product.media_gallery_entries.map(galleryEntry => galleryEntry.file),
 		configurationAttributes: ['size'],

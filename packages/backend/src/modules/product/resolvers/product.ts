@@ -77,6 +77,14 @@ const resolvers: ProductModuleResolversType = {
 
 			throw new Error('Invalid product');
 		},
+		condition: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return product.condition;
+			}
+
+			throw new Error('Invalid product');
+		},
 		image: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 			const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';

@@ -29,6 +29,7 @@ export interface ConfigurableProduct {
 		full: string;
 	};
 	washingDescription: string;
+	condition: string;
 	image: string;
 	images: string[];
 	configurationAttributes: string[];
