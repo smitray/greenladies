@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
@@ -38,6 +38,10 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 	const [selectedConfiguration, setSelectedConfiguration] = useState<
 		ProductDetails_product['virtualProducts'][0] | null
 	>(null);
+
+	useEffect(() => {
+		setSelectedConfiguration(null);
+	}, [product]);
 
 	const { commit: addToWishlist, pending: addingToWishlist } = useAddToWishlistMutation();
 	const { commit: removeFromWishlist, pending: removingFromWishlist } = useRemoveFromWishlistMutation();

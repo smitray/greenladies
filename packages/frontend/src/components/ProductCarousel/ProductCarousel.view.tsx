@@ -99,7 +99,7 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 					overflow: 'hidden',
 					scrollPadding: `0 ${sidePadding}px`,
 					padding: `16px ${sidePadding}px`,
-					margin: '0',
+					margin: '0 -8px',
 					listStyle: 'none',
 				}}
 			>

@@ -436,6 +436,26 @@ export async function getConfigurableProductVirtualProducts(sku: string) {
 	return Promise.all(products.map(({ sku }) => getProductBySku(sku)));
 }
 
+export async function getRelatedProducts(sku: string): Promise<ConfigurableProduct[]> {
+	const { data } = await magentoAdminRequester.get<{ linked_product_sku: string; linked_product_type: string }[]>(
+		`/rest/default/V1/products/${sku}/links/related`,
+	);
+
+	return Promise.all(
+		data
+			.filter(({ linked_product_type }) => linked_product_type === 'configurable')
+			.map(({ linked_product_sku }) => getProductBySku(linked_product_sku)),
+	).then(products =>
+		products.map(product => {
+			if (product.__type === 'ConfigurableProduct') {
+				return product;
+			}
+
+			throw new Error('This will never happen');
+		}),
+	);
+}
+
 async function attributeValueToLabel(attributeCode: string, value: string) {
 	const options = await attributeOptions(attributeCode);
 	const option = options.find(option => option.value === value);

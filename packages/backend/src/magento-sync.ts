@@ -4,6 +4,7 @@ import {
 	getConfigurableProductVirtualProducts,
 	getProducts,
 	getProductsByCategoryId,
+	getRelatedProducts,
 	Product as MagentoProduct,
 	VirtualProduct as MagentoVirtualProduct,
 } from './api/product';
@@ -37,6 +38,7 @@ export interface ConfigurableProduct {
 	price: number;
 	specialPrice: number;
 	currency: string;
+	relatedProductIds: string[];
 }
 
 export interface VirtualProduct {
@@ -61,6 +63,8 @@ async function transformConfigurableProduct(product: MagentoConfigurableProduct)
 	if (virtualProducts[0].__type !== 'VirtualProduct') {
 		throw new Error('Only virtual products should be returned');
 	}
+
+	const relatedProducts = await getRelatedProducts(product.sku);
 
 	return {
 		...product,
@@ -89,6 +93,7 @@ async function transformConfigurableProduct(product: MagentoConfigurableProduct)
 		price: virtualProducts[0].price.originalPrice,
 		specialPrice: virtualProducts[0].price.specialPrice,
 		currency: virtualProducts[0].price.currency,
+		relatedProductIds: relatedProducts.map(relatedProduct => relatedProduct.id),
 	};
 }
 

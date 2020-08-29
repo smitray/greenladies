@@ -28,4 +28,5 @@ type Product implements Node {
 	originalPrice: Float!
 	specialPrice: Float!
 	currency: String!
+	relatedProducts(first: Int, after: String, last: Int, before: String): ProductConnection!
 }

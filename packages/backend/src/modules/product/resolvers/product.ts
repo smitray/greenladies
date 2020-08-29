@@ -1,5 +1,6 @@
 import { ProductModuleResolversType } from '..';
 import { toGlobalId } from '../../../utils/global-id';
+import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../product.provider';
 
 const resolvers: ProductModuleResolversType = {
@@ -134,6 +135,25 @@ const resolvers: ProductModuleResolversType = {
 			const product = await injector.get(ProductProvider).getProduct({ id });
 			if (product.__type === 'ConfigurableProduct') {
 				return product.currency;
+			}
+
+			throw new Error('Invalid product');
+		},
+		relatedProducts: async ({ id }, args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'ConfigurableProduct') {
+				return {
+					...connectionFromArray(
+						product.relatedProductIds.map(id => ({ id })),
+						args,
+					),
+					availableFilters: {
+						brands: [],
+						colors: [],
+						price: { from: 0, to: 0 },
+						sizes: [],
+					},
+				};
 			}
 
 			throw new Error('Invalid product');
