@@ -36,7 +36,6 @@ export const MessageRight = styled(Message)`
 `;
 
 export const MessageAnchor = styled.a`
-	font-family: 'Cerebri Sans', sans-serif;
 	font-size: 10px;
 	line-height: 14px;
 	color: #666666;

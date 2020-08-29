@@ -30,6 +30,7 @@ export declare type MyAppType = NextComponentType<AppContextType, MyAppInitialPr
 const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
+	  font-family: 'Cerebri Sans', sans-serif;
   }
 
   body {
