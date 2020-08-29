@@ -40,6 +40,11 @@ export const useAddToWishlistMutation = () => {
 					if (wishlistProxy) {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection && newEdge) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(totalCount + 1, 'totalCount');
+							}
+
 							ConnectionHandler.insertEdgeAfter(connection, newEdge);
 						}
 					}
@@ -85,6 +90,11 @@ export const useRemoveFromWishlistMutation = () => {
 					if (wishlistProxy) {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(totalCount - 1, 'totalCount');
+							}
+
 							ConnectionHandler.deleteNode(connection, productId);
 						}
 					}
@@ -114,6 +124,11 @@ export const useClearWishlistMutation = () => {
 					if (wishlistProxy) {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(0, 'totalCount');
+							}
+
 							const productIdsInConnection =
 								connection.getLinkedRecords('edges')?.map(edge => edge.getLinkedRecord('node')?.getValue('id')) || [];
 
