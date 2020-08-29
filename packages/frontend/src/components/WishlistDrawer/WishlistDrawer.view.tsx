@@ -16,7 +16,7 @@ interface WishlistDrawerViewProps {
 
 const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerViewProps) => {
 	const { commit: removeFromWishlist } = useRemoveFromWishlistMutation();
-	const [isEditingState, setIsEditingState] = useState(true);
+	const [isEditingState, setIsEditingState] = useState(false);
 
 	const requestClose = () => {
 		onCloseRequest();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
@@ -6,7 +6,9 @@ import { FaRegHeart } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
-import { ShoppingCartDrawer } from '../ShoppingCartDrawer';
+import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
+import { useClickOutside } from '../../hooks/use-click-outside';
+import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
@@ -58,8 +60,19 @@ export const NavbarView = ({
 	handleMegaMenuUnfocus,
 }: NavbarViewProps) => {
 	const [wishlistDrawerIsOpen, setWishlistDrawerIsOpen] = useState(false);
-	const [shoppingCartDrawerIsOpen, setShoppingCartDrawerIsOpen] = useState(false);
+	const {
+		isOpen: shoppingCartModalIsOpen,
+		open: openShoppingCartModal,
+		close: closeShoppingCartModal,
+	} = useShoppingCartModal();
 	const relayEnvironment = useRelayEnvironment();
+	const cartModalWrapperRef = useRef(null);
+	const [shoppingCartModalButtonFocus, setShoppingCartModalButtonFocus] = useState(false);
+	useClickOutside(cartModalWrapperRef, () => {
+		if (!shoppingCartModalButtonFocus) {
+			closeShoppingCartModal();
+		}
+	});
 	const { categories }: NavbarProps = {
 		categories: [
 			{
@@ -350,7 +363,7 @@ export const NavbarView = ({
 													}
 												}
 											}
-											...ShoppingCartDrawer_cart
+											...ShoppingCartModal_cart
 										}
 									}
 								`}
@@ -368,47 +381,69 @@ export const NavbarView = ({
 
 										return (
 											<React.Fragment>
-												<ShoppingCartDrawer
-													cart={props.shoppingCart}
-													open={shoppingCartDrawerIsOpen}
-													onCloseRequest={() => setShoppingCartDrawerIsOpen(false)}
-												/>
 												<button
 													style={{
-														display: 'flex',
-														flexDirection: 'column',
-														justifyContent: 'center',
-														alignItems: 'center',
-														cursor: 'pointer',
+														position: 'relative',
 														background: 'none',
 														border: 'none',
 														outline: 'none',
-														padding: 'none',
+														padding: '0',
+														margin: '0 0 0 8px',
 													}}
-													onClick={() => setShoppingCartDrawerIsOpen(true)}
+													onClick={() => {
+														if (shoppingCartModalButtonFocus) {
+															if (shoppingCartModalIsOpen) {
+																closeShoppingCartModal();
+															} else {
+																openShoppingCartModal();
+															}
+														}
+													}}
 												>
-													<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-														<BiShoppingBag size="20" />
-														<div
-															style={{
-																position: 'absolute',
-																background: 'black',
-																color: 'white',
-																borderRadius: '100%',
-																fontSize: '10px',
-																lineHeight: '16px',
-																textAlign: 'center',
-																top: '0',
-																right: '-8px',
-																width: '16px',
-																height: '16px',
-																fontWeight: 'bold',
-															}}
-														>
-															{total}
+													<div
+														style={{
+															display: 'flex',
+															flexDirection: 'column',
+															justifyContent: 'center',
+															alignItems: 'center',
+															cursor: 'pointer',
+														}}
+														onMouseEnter={() => setShoppingCartModalButtonFocus(true)}
+														onMouseLeave={() => setShoppingCartModalButtonFocus(false)}
+													>
+														<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+															<BiShoppingBag size="20" />
+															<div
+																style={{
+																	position: 'absolute',
+																	background: 'black',
+																	color: 'white',
+																	borderRadius: '100%',
+																	fontSize: '10px',
+																	lineHeight: '16px',
+																	textAlign: 'center',
+																	top: '0',
+																	right: '-8px',
+																	width: '16px',
+																	height: '16px',
+																	fontWeight: 'bold',
+																}}
+															>
+																{total}
+															</div>
 														</div>
+														<div style={{ fontSize: '12px' }}>Varukorg</div>
 													</div>
-													<div style={{ fontSize: '12px' }}>Varukorg</div>
+													<div
+														style={{ position: 'absolute', marginTop: '8px', right: '0', zIndex: 30 }}
+														ref={cartModalWrapperRef}
+													>
+														{shoppingCartModalIsOpen && (
+															<div style={{ border: '2px solid lightgrey', background: 'white' }}>
+																<ShoppingCartModal cart={props.shoppingCart} />
+															</div>
+														)}
+													</div>
 												</button>
 											</React.Fragment>
 										);
@@ -427,7 +462,6 @@ export const NavbarView = ({
 												outline: 'none',
 												padding: 'none',
 											}}
-											onClick={() => setShoppingCartDrawerIsOpen(true)}
 										>
 											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
 												<BiShoppingBag size="20" />
