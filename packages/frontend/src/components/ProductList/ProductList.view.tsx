@@ -5,7 +5,6 @@ import { createFragmentContainer, fetchQuery, graphql } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 import styled from 'styled-components';
 
-import { useClearWishlistMutation } from '../../mutations/wishlist';
 import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
 import { CategoryFilterRangeSelect } from '../CategoryFilterRangeSelect';
 import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
@@ -109,8 +108,6 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 	const [selectedFilters, setSelectedFilters] = useState<{ filter: string; code: string; display: string }[]>([]);
 
-	const { commit: clearWishlist } = useClearWishlistMutation();
-
 	const handleCategoryFilterOpen = (id: string) => () => {
 		setCurrentlyOpenedFilter(id);
 	};
@@ -163,7 +160,6 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 	return (
 		<div>
-			<button onClick={() => clearWishlist()}>REMOVE ALL</button>
 			<FiltersContainer>
 				<CategoryFilterSingleSelect
 					title="Sortera på"
