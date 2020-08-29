@@ -50,19 +50,34 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 		}
 	});
 
-	const discount = Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100);
-
 	return (
 		<React.Fragment>
 			<div style={{ marginBottom: '8px' }}>
 				<span style={{ fontWeight: 'bold', borderBottom: '2px solid black' }}>{product.brand}</span>
 			</div>
 			<h1 style={{ fontSize: '28px', margin: '0', marginBottom: '8px' }}>{product.name}</h1>
-			<div style={{ color: 'red', marginBottom: '4px' }}>{discount}% rabatt</div>
+			<div style={{ color: 'red', marginBottom: '4px' }}>
+				{selectedConfiguration !== null
+					? Math.round(
+							((selectedConfiguration.originalPrice - selectedConfiguration.specialPrice) /
+								selectedConfiguration.originalPrice) *
+								100,
+					  )
+					: Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100)}
+				% rabatt
+			</div>
 			<div style={{ marginBottom: '16px' }}>
-				<span style={{ color: 'red' }}>{product.specialPrice.toFixed(2).replace('.', ',')} kr</span>
+				<span style={{ color: 'red' }}>
+					{selectedConfiguration !== null
+						? selectedConfiguration.specialPrice.toFixed(2).replace('.', ',')
+						: product.specialPrice.toFixed(2).replace('.', ',')}{' '}
+					kr
+				</span>
 				<span style={{ marginLeft: '8px', color: 'grey', textDecoration: 'line-through' }}>
-					{product.originalPrice.toFixed(2).replace('.', ',')} kr
+					{selectedConfiguration !== null
+						? selectedConfiguration.originalPrice.toFixed(2).replace('.', ',')
+						: product.originalPrice.toFixed(2).replace('.', ',')}{' '}
+					kr
 				</span>
 			</div>
 			<div style={{ marginBottom: '16px' }}>
@@ -272,6 +287,7 @@ export default createFragmentContainer(ProductDetailsView, {
 				id
 				size
 				quantity
+				originalPrice
 				specialPrice
 			}
 		}
