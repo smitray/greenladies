@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useRemoveFromCartMutation } from '../../mutations/shopping-cart';
 
 import { ShoppingCartModal_cart } from './__generated__/ShoppingCartModal_cart.graphql';
@@ -13,6 +14,7 @@ interface ShoppingCartDrawerView {
 
 const ShoppingCartModalView = ({ cart }: ShoppingCartDrawerView) => {
 	const { commit: removeFromCart } = useRemoveFromCartMutation();
+	const { close: closeShoppingCartModal } = useShoppingCartModal();
 
 	const itemCost = cart.items.edges.reduce((prev, { node: item }) => prev + item.amount * item.product.specialPrice, 0);
 	const shippingCost = itemCost > 999 ? 0 : 59;
@@ -146,6 +148,7 @@ const ShoppingCartModalView = ({ cart }: ShoppingCartDrawerView) => {
 							width: '100%',
 							cursor: 'pointer',
 						}}
+						onClick={() => closeShoppingCartModal()}
 					>
 						TILL VARUKORGEN
 					</a>
