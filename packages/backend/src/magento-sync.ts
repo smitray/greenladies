@@ -45,6 +45,7 @@ export interface VirtualProduct {
 	sku: string;
 	name: string;
 	quantity: number;
+	brand: string;
 	price: {
 		originalPrice: number;
 		specialPrice: number;
@@ -52,15 +53,39 @@ export interface VirtualProduct {
 	};
 	colors: string[];
 	size: string;
+	parentId: string;
 }
 
 async function transformConfigurableProduct(product: MagentoConfigurableProduct): Promise<ConfigurableProduct> {
 	const virtualProducts = await getConfigurableProductVirtualProducts(product.sku);
+	if (virtualProducts[0].__type !== 'VirtualProduct') {
+		throw new Error('Only virtual products should be returned');
+	}
 
 	return {
 		...product,
-		sizes: [...new Set(virtualProducts.map(virtualProduct => virtualProduct.size))],
-		colors: [...new Set(virtualProducts.flatMap(virtualProduct => virtualProduct.colors))],
+		sizes: [
+			...new Set(
+				virtualProducts.map(virtualProduct => {
+					if (virtualProduct.__type !== 'VirtualProduct') {
+						throw new Error('Only virtual products should be returned');
+					}
+
+					return virtualProduct.size;
+				}),
+			),
+		],
+		colors: [
+			...new Set(
+				virtualProducts.flatMap(virtualProduct => {
+					if (virtualProduct.__type !== 'VirtualProduct') {
+						throw new Error('Only virtual products should be returned');
+					}
+
+					return virtualProduct.colors;
+				}),
+			),
+		],
 		price: virtualProducts[0].price.originalPrice,
 		specialPrice: virtualProducts[0].price.specialPrice,
 		currency: virtualProducts[0].price.currency,
@@ -68,7 +93,10 @@ async function transformConfigurableProduct(product: MagentoConfigurableProduct)
 }
 
 function transformVirtualProduct(product: MagentoVirtualProduct): VirtualProduct {
-	return product;
+	return {
+		...product,
+		parentId: '',
+	};
 }
 
 async function transformProduct(product: MagentoProduct): Promise<Product> {
@@ -83,8 +111,9 @@ async function transformProduct(product: MagentoProduct): Promise<Product> {
 }
 
 async function saveProductsInCache(products: Product[]) {
+	const redisConn = getRedisCacheConnection();
 	const saveProducts = new Promise((resolve, reject) => {
-		getRedisCacheConnection().mset(
+		redisConn.mset(
 			products.reduce<string[]>((prevEntries, product) => {
 				const entries: string[] = [];
 				// Product id => product
@@ -110,8 +139,9 @@ async function saveProductsInCache(products: Product[]) {
 		);
 	});
 
+	const productIds = products.filter(product => product.__type === 'ConfigurableProduct').map(product => product.id);
 	const saveProductIds = new Promise((resolve, reject) => {
-		getRedisCacheConnection().set('productIds', JSON.stringify(products.map(product => product.id)), (err, reply) => {
+		redisConn.set('productIds', JSON.stringify(productIds), (err, reply) => {
 			if (err) {
 				reject(err);
 			}
@@ -120,7 +150,38 @@ async function saveProductsInCache(products: Product[]) {
 		});
 	});
 
-	return Promise.all([saveProducts, saveProductIds]);
+	const updateParentIdsOnVirtualProducts = saveProducts.then(() => {
+		productIds.map(productId => {
+			redisConn.get('Product:id:' + productId, (_error, configurableProductValue) => {
+				if (configurableProductValue) {
+					const configurableProduct = JSON.parse(configurableProductValue);
+					const virtualProductIds: string[] = configurableProduct.virtualProductIds;
+					redisConn.mget(
+						virtualProductIds.map(id => 'Product:id:' + id),
+						(_error, virtualProductsValue) => {
+							if (virtualProductsValue) {
+								redisConn.mset(
+									virtualProductsValue.reduce<string[]>((prev, current) => {
+										const virtualProduct = JSON.parse(current);
+										return [
+											...prev,
+											'Product:id:' + virtualProduct.id,
+											JSON.stringify({
+												...virtualProduct,
+												parentId: productId,
+											}),
+										];
+									}, []),
+								);
+							}
+						},
+					);
+				}
+			});
+		});
+	});
+
+	return Promise.all([saveProducts, updateParentIdsOnVirtualProducts, saveProductIds]);
 }
 
 async function syncMagnetoProducts() {

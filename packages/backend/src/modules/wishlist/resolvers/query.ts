@@ -1,4 +1,5 @@
 import { WishlistModuleResolversType } from '..';
+import { Product } from '../../../magento-sync';
 import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../../product/product.provider';
 
@@ -40,12 +41,46 @@ const resolvers: WishlistModuleResolversType = {
 			}
 
 			const products = await Promise.all(
-				request.session.wishlist.map(productId => injector.get(ProductProvider).getProductById(productId)),
+				request.session.wishlist.map(productId =>
+					injector
+						.get(ProductProvider)
+						.getProductById(productId)
+						.catch(() => productId),
+				),
 			);
+
+			const { foundProducts, notFoundProductsIds } = products.reduce<{
+				foundProducts: Product[];
+				notFoundProductsIds: string[];
+			}>(
+				(prev, current) => {
+					if (typeof current === 'string') {
+						return {
+							foundProducts: prev.foundProducts,
+							notFoundProductsIds: [...prev.notFoundProductsIds, current],
+						};
+					}
+
+					return {
+						foundProducts: [...prev.foundProducts, current],
+						notFoundProductsIds: prev.notFoundProductsIds,
+					};
+				},
+				{
+					foundProducts: [],
+					notFoundProductsIds: [],
+				},
+			);
+
+			if (notFoundProductsIds.length > 0) {
+				request.session.wishlist = request.session.wishlist.filter(
+					productId => notFoundProductsIds.findIndex(notFoundProductId => notFoundProductId === productId) === -1,
+				);
+			}
 
 			return {
 				products: {
-					...connectionFromArray(products, args),
+					...connectionFromArray(foundProducts, args),
 					availableFilters: {
 						brands: [],
 						colors: [],

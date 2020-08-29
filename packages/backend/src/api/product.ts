@@ -433,7 +433,7 @@ export async function getConfigurableProductVirtualProducts(sku: string) {
 		`/rest/default/V1/configurable-products/${sku}/children`,
 	);
 
-	return Promise.all(products.map(transformVirtualProduct));
+	return Promise.all(products.map(({ sku }) => getProductBySku(sku)));
 }
 
 async function attributeValueToLabel(attributeCode: string, value: string) {
@@ -527,6 +527,7 @@ export interface VirtualProduct {
 	id: string;
 	sku: string;
 	name: string;
+	brand: string;
 	quantity: number;
 	price: {
 		originalPrice: number;
@@ -582,11 +583,15 @@ async function transformVirtualProduct(product: MagentoFullProduct): Promise<Vir
 
 	const stock = await getProductStock(product.sku);
 
+	const brandAttribute = getCustomAttribute(product.custom_attributes, 'mgs_brand', true);
+	const brand = await attributeValueToLabel('mgs_brand', brandAttribute);
+
 	return {
 		__type: 'VirtualProduct',
 		id: product.id.toString(),
 		sku: product.sku,
 		name: product.name,
+		brand,
 		quantity: stock.qty,
 		price: {
 			originalPrice: product.price,

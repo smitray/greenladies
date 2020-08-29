@@ -61,6 +61,14 @@ const resolvers: ProductModuleResolversType = {
 
 			throw new Error('Invalid product');
 		},
+		parent: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getProduct({ id });
+			if (product.__type === 'VirtualProduct') {
+				return { id: product.parentId };
+			}
+
+			throw new Error('Invalid product');
+		},
 	},
 };
 

@@ -7,6 +7,7 @@ type ProductConfiguration implements Node {
 	currency: String!
 	size: String!
 	colors: [String!]!
+	parent: Product!
 }
 
 type Product implements Node {
