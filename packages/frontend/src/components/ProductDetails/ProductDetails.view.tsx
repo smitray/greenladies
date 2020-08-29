@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaAngleDown, FaAngleUp, FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaAngleDown, FaAngleUp, FaCheck, FaHeart, FaRegHeart } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
@@ -34,6 +34,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 	const [materialOpen, setMaterialOpen] = useState(false);
 	const [selectSizeOpen, setSelectSizeOpen] = useState(false);
 
+	const [cartAddSuccess, setCartAddSuccess] = useState(false);
 	const [selectedConfiguration, setSelectedConfiguration] = useState<
 		ProductDetails_product['virtualProducts'][0] | null
 	>(null);
@@ -188,8 +189,8 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 				<button
 					style={{
 						padding: '16px',
-						border: '2px solid black',
-						background: 'black',
+						border: cartAddSuccess ? '2px solid green' : '2px solid black',
+						background: cartAddSuccess ? 'green' : 'black',
 						borderRadius: '5px',
 						flexGrow: 1,
 						display: 'flex',
@@ -201,7 +202,13 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 						if (selectedConfiguration === null) {
 							setSelectSizeOpen(true);
 						} else {
-							addToCart(selectedConfiguration.id);
+							if (!cartAddSuccess) {
+								addToCart(selectedConfiguration.id);
+								setCartAddSuccess(true);
+								setTimeout(() => {
+									setCartAddSuccess(false);
+								}, 2000);
+							}
 						}
 					}}
 				>
@@ -215,7 +222,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 						Handla
 					</span>
 					<div style={{ height: '16px', width: '16px' }}>
-						<BiShoppingBag size="16" color="white" />
+						{cartAddSuccess ? <FaCheck size="16" color="white" /> : <BiShoppingBag size="16" color="white" />}
 					</div>
 				</button>
 				<button
