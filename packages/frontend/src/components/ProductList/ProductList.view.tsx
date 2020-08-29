@@ -108,6 +108,17 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 
 	const [selectedFilters, setSelectedFilters] = useState<{ filter: string; code: string; display: string }[]>([]);
 
+	useEffect(() => {
+		setSelectedFilters([]);
+		setSelectedBrands([]);
+		setSelectedColors([]);
+		setSelectedSizes([]);
+		setLowerPrice(category.products.availableFilters.price.from);
+		setUpperPrice(category.products.availableFilters.price.to);
+		setAvailableFilters(category.products.availableFilters);
+		setProducts(category.products.edges.map(({ node: product }) => product));
+	}, [category]);
+
 	const handleCategoryFilterOpen = (id: string) => () => {
 		setCurrentlyOpenedFilter(id);
 	};

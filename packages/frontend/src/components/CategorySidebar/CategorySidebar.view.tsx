@@ -134,7 +134,9 @@ const CategorySidebarView: React.FC<Props> = ({ category }) => {
 		<div>
 			<div style={{ marginBottom: '8px' }}>
 				<Link href="/categories/[key]" as={`/categories/${categoryTree.urlKey}`}>
-					<strong style={{ fontSize: '16px' }}>{categoryTree.name}</strong>
+					<a style={{ color: 'black', textDecoration: 'none' }}>
+						<strong style={{ fontSize: '16px' }}>{categoryTree.name}</strong>
+					</a>
 				</Link>
 				<CategoryProductCount>({categoryTree.productCount})</CategoryProductCount>
 			</div>
