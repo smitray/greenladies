@@ -12,4 +12,6 @@ RUN yarn --production=false
 RUN yarn --cwd packages/frontend build
 RUN yarn --production=true
 
+EXPOSE 3000
+
 CMD yarn --cwd packages/frontend start

@@ -303,6 +303,7 @@ export const NavbarView = ({
 																right: '-8px',
 																width: '16px',
 																height: '16px',
+																fontWeight: 'bold',
 															}}
 														>
 															{total}
@@ -401,6 +402,7 @@ export const NavbarView = ({
 																right: '-8px',
 																width: '16px',
 																height: '16px',
+																fontWeight: 'bold',
 															}}
 														>
 															{total}
