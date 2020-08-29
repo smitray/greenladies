@@ -3,7 +3,6 @@ import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
-import { update } from 'relay-runtime/lib/handlers/connection/ConnectionHandler';
 import styled from 'styled-components';
 
 import { MyNextPage } from '../lib/types';
