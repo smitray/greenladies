@@ -14,7 +14,11 @@ const ADD_PRODUCT_TO_CART = graphql`
 					id
 					amount
 					product {
+						id
 						name
+						parent {
+							id
+						}
 					}
 				}
 				cursor

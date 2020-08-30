@@ -632,7 +632,7 @@ function transformProduct(product: MagentoFullProduct): Promise<Product> {
 	switch (product.type_id) {
 		case 'configurable':
 			return transformConfigurableProduct(product);
-		case 'virtual':
+		case 'simple':
 			return transformVirtualProduct(product);
 		default:
 			throw new Error('Invalid product type: ' + product.type_id);
@@ -647,7 +647,7 @@ export async function getProducts({ page = 1, pageSize = 10 }) {
 	const { data } = await magentoAdminRequester.get<{ items: MagentoFullProduct[] }>(
 		'/rest/default/V1/products?' + stringify(query),
 	);
-	const products = data.items.filter(p => ['configurable', 'virtual'].includes(p.type_id));
+	const products = data.items.filter(p => ['configurable', 'simple'].includes(p.type_id));
 
 	return Promise.all(products.map(product => transformProduct(product)));
 }

@@ -17,6 +17,8 @@ const resolvers: ShoppingCartModuleResolversType = {
 					};
 				}
 
+				request.session.guestShoppingCart.klarna = undefined;
+
 				const cartId = request.session.guestShoppingCart.cartId;
 
 				const product = await injector
@@ -53,6 +55,8 @@ const resolvers: ShoppingCartModuleResolversType = {
 				throw new Error('There is no cart available');
 			}
 
+			request.session.guestShoppingCart.klarna = undefined;
+
 			const cartId = request.session.guestShoppingCart.cartId;
 
 			const item = await injector.get(ShoppingCartProvider).updateGuestShoppingCartProductQuantity({
@@ -82,6 +86,8 @@ const resolvers: ShoppingCartModuleResolversType = {
 			if (!request.session.guestShoppingCart) {
 				throw new Error('There is no cart available');
 			}
+
+			request.session.guestShoppingCart.klarna = undefined;
 
 			const cartId = request.session.guestShoppingCart.cartId;
 

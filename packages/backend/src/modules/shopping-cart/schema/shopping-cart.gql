@@ -1,4 +1,5 @@
 type ShoppingCart {
 	items(first: Int, after: String, last: Int, before: String): ShoppingCartItemConnection!
 	klarnaCartSnippet: String!
+	klarnaConfirmSnippet: String!
 }

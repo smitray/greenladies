@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Link from 'next/link';
 import { FaTrashAlt } from 'react-icons/fa';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
@@ -156,20 +157,24 @@ const Cart: MyNextPage = () => {
 					<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
 					<div style={{ fontWeight: 'bold' }}>{(itemCost + shippingCost).toFixed(2).replace(',', '.')} kr</div>
 				</div>
-				<button
-					style={{
-						background: 'orange',
-						width: '100%',
-						border: 'none',
-						outline: 'none',
-						padding: '12px',
-						color: 'white',
-						fontWeight: 'bold',
-						cursor: 'pointer',
-					}}
-				>
-					GÅ TILL CHECKOUT
-				</button>
+				<Link href="/checkout" passHref>
+					<a
+						style={{
+							display: 'block',
+							textDecoration: 'none',
+							background: 'orange',
+							width: '100%',
+							padding: '12px',
+							color: 'white',
+							fontWeight: 'bold',
+							cursor: 'pointer',
+							fontSize: '14px',
+							textAlign: 'center',
+						}}
+					>
+						GÅ TILL CHECKOUT
+					</a>
+				</Link>
 			</div>
 		</CenterWrapper>
 	);

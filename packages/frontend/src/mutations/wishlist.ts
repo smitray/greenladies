@@ -11,6 +11,7 @@ const WISHLIST_ADD_TO_WISHLIST_MUTATION = graphql`
 		addProductToWishlist(input: { product: { id: $productId } }) {
 			productEdge {
 				node {
+					node
 					inWishlist
 				}
 				cursor
@@ -29,11 +30,6 @@ export const useAddToWishlistMutation = () => {
 					productId,
 				},
 				updater: storeProxy => {
-					const productRecord = storeProxy.get(productId);
-					if (productRecord) {
-						productRecord.setValue(true, 'inWishlist');
-					}
-
 					const newEdge = storeProxy.getRootField('addProductToWishlist')?.getLinkedRecord('productEdge') || null;
 					const rootProxy = storeProxy.getRoot();
 					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
@@ -60,6 +56,7 @@ const WISHLIST_REMOVE_FROM_WISHLIST_MUTATION = graphql`
 		removeProductFromWishlist(input: { product: { id: $productId } }) {
 			productEdge {
 				node {
+					id
 					inWishlist
 				}
 				cursor
@@ -80,11 +77,6 @@ export const useRemoveFromWishlistMutation = () => {
 					productId,
 				},
 				updater: storeProxy => {
-					const productRecord = storeProxy.get(productId);
-					if (productRecord) {
-						productRecord.setValue(false, 'inWishlist');
-					}
-
 					const rootProxy = storeProxy.getRoot();
 					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
 					if (wishlistProxy) {
