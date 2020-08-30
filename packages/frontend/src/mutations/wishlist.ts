@@ -11,7 +11,7 @@ const WISHLIST_ADD_TO_WISHLIST_MUTATION = graphql`
 		addProductToWishlist(input: { product: { id: $productId } }) {
 			productEdge {
 				node {
-					node
+					id
 					inWishlist
 				}
 				cursor

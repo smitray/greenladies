@@ -17,7 +17,7 @@ const CenterWrapper = styled.div`
 	align-items: flex-start;
 `;
 
-const Cart: MyNextPage = () => {
+const Checkout: MyNextPage = () => {
 	const { shoppingCart } = useLazyLoadQuery<CheckoutQuery>(CHECKOUT_QUERY, {}, { fetchPolicy: 'store-only' });
 
 	const itemCost = shoppingCart.items.edges.reduce(
@@ -61,10 +61,10 @@ const Cart: MyNextPage = () => {
 	);
 };
 
-Cart.getInitialProps = async ({ relayEnvironment }) => {
+Checkout.getInitialProps = async ({ relayEnvironment }) => {
 	await fetchQuery<CheckoutQuery>(relayEnvironment, CHECKOUT_QUERY, {});
 
 	return {};
 };
 
-export default Cart;
+export default Checkout;
