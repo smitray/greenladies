@@ -6,7 +6,6 @@ declare global {
 				klarna?: {
 					orderId: string;
 					cartSnippet: string;
-					confirmSnippet?: string;
 				};
 			};
 			wishlist?: string[];

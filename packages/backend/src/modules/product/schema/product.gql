@@ -25,7 +25,7 @@ type Product implements Node {
 	material: String!
 	image: String!
 	images: [String!]!
-	virtualProducts: [ProductConfiguration!]!
+	productConfigurations: [ProductConfiguration!]!
 	originalPrice: Float!
 	specialPrice: Float!
 	currency: String!

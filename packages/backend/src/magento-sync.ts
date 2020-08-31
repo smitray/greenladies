@@ -28,7 +28,7 @@ export interface ConfigurableProduct {
 	material: string;
 	image: string;
 	images: string[];
-	virtualProductIds: string[];
+	productConfigurationIds: string[];
 	sizes: string[];
 	colors: string[];
 	price: number;
@@ -85,8 +85,8 @@ export async function syncMagentoProductsAndCategories() {
 						}
 					}
 
-					for (const virtualProductId of product.virtualProductIds) {
-						productConfigurationParentIds.set(virtualProductId, product.id);
+					for (const productConfigurationId of product.productConfigurationIds) {
+						productConfigurationParentIds.set(productConfigurationId, product.id);
 					}
 				}
 				break;
@@ -122,15 +122,15 @@ export async function syncMagentoProductsAndCategories() {
 	const skuToConfigurableProductMap = new Map(configurableProducts.map(product => [product.sku, product]));
 	const idToProductConfigurationMap = new Map(productConfigurations.map(product => [product.id, product]));
 
-	const categories = magentoCategories.map<Category>(category => {
+	const transformedCategories = magentoCategories.map<Category>(category => {
 		return {
 			...category,
 			productIds: categoriesProductIds.get(category.id) || [],
 		};
 	});
 
-	const configurableProducts1 = configurableProducts.map<ConfigurableProduct>(product => {
-		const productConfigurations1 = product.virtualProductIds.map(id => {
+	const transformedConfigurableProducts = configurableProducts.map<ConfigurableProduct>(product => {
+		const productConfigurationsLocal = product.productConfigurationIds.map(id => {
 			const productConfiguration = idToProductConfigurationMap.get(id);
 			if (!productConfiguration) {
 				throw new Error(`Product configuration ${id} for product ${product.id} could not be found`);
@@ -148,12 +148,12 @@ export async function syncMagentoProductsAndCategories() {
 			return relatedProduct.id;
 		});
 
-		const firstProductConfiguration = productConfigurations1[0];
+		const firstProductConfiguration = productConfigurationsLocal[0];
 
 		return {
 			...product,
-			colors: [...new Set(productConfigurations1.flatMap(configuration => configuration.colors))],
-			sizes: [...new Set(productConfigurations1.map(configuration => configuration.size))],
+			colors: [...new Set(productConfigurationsLocal.flatMap(configuration => configuration.colors))],
+			sizes: [...new Set(productConfigurationsLocal.map(configuration => configuration.size))],
 			price: firstProductConfiguration.price.originalPrice,
 			specialPrice: firstProductConfiguration.price.specialPrice,
 			currency: firstProductConfiguration.price.currency,
@@ -161,7 +161,7 @@ export async function syncMagentoProductsAndCategories() {
 		};
 	});
 
-	const productConfigurations1 = productConfigurations.map<ProductConfiguration>(configuration => {
+	const transformedProductConfigurations = productConfigurations.map<ProductConfiguration>(configuration => {
 		const parentId = productConfigurationParentIds.get(configuration.id);
 		if (!parentId) {
 			throw new Error(`Could not get parent for configuration ${configuration.id}`);
@@ -182,14 +182,14 @@ export async function syncMagentoProductsAndCategories() {
 	const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
 	const redisCache = getRedisCache();
 	const redisCategories = redisCache.setMany(
-		categories.flatMap<any>(category => [
+		transformedCategories.flatMap<any>(category => [
 			{ key: `Category:id:${category.id}`, value: category, expiresInSeconds: ONE_DAY_IN_SECONDS },
 			{ key: `Category:urlKey:${category.urlKey}`, value: category.id, expiresInSeconds: ONE_DAY_IN_SECONDS },
 		]),
 	);
 
 	const redisConfigurableProducts = redisCache.setMany(
-		configurableProducts1.flatMap<any>(product => [
+		transformedConfigurableProducts.flatMap<any>(product => [
 			{ key: `ConfigurableProduct:id:${product.id}`, value: product, expiresInSeconds: ONE_DAY_IN_SECONDS },
 			{ key: `ConfigurableProduct:sku:${product.sku}`, value: product.id, expiresInSeconds: ONE_DAY_IN_SECONDS },
 			{ key: `ConfigurableProduct:urlKey:${product.urlKey}`, value: product.id, expiresInSeconds: ONE_DAY_IN_SECONDS },
@@ -197,7 +197,7 @@ export async function syncMagentoProductsAndCategories() {
 	);
 
 	const redisProductConfigurations = redisCache.setMany(
-		productConfigurations1.flatMap<any>(configuration => [
+		transformedProductConfigurations.flatMap<any>(configuration => [
 			{
 				key: `ProductConfiguration:id:${configuration.id}`,
 				value: configuration,
@@ -213,7 +213,7 @@ export async function syncMagentoProductsAndCategories() {
 
 	const redisAllConfigurableProductIds = redisCache.set(
 		'allConfigurableProductIds',
-		configurableProducts1.map(({ id }) => id),
+		transformedConfigurableProducts.map(({ id }) => id),
 		ONE_DAY_IN_SECONDS,
 	);
 

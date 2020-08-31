@@ -25,8 +25,8 @@ export function getRedisCache() {
 						return reject(err);
 					}
 
-					if (!value) {
-						return reject(new Error('Not found'));
+					if (value === null) {
+						return reject(new Error('Not found: ' + key));
 					}
 
 					return resolve(JSON.parse(value) as T);

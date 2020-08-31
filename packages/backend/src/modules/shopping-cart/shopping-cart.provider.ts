@@ -35,7 +35,7 @@ export class ShoppingCartProvider {
 		productId: string;
 		quantity: number;
 	}) {
-		const product = await this.productProvider.getConfigurableProduct({ id: productId });
+		const product = await this.productProvider.getProductConfiguration({ id: productId });
 
 		return addProductToGuestShoppingCart({
 			cartId,

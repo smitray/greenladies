@@ -36,7 +36,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 
 	const [cartAddSuccess, setCartAddSuccess] = useState(false);
 	const [selectedConfiguration, setSelectedConfiguration] = useState<
-		ProductDetails_product['virtualProducts'][0] | null
+		ProductDetails_product['productConfigurations'][0] | null
 	>(null);
 
 	useEffect(() => {
@@ -142,7 +142,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 							}}
 						>
 							<ul style={{ padding: '8px 0', margin: '0' }}>
-								{product.virtualProducts.map(virtualProduct => {
+								{product.productConfigurations.map(virtualProduct => {
 									const isSelected = virtualProduct.id === selectedConfiguration?.id;
 									const soldOut = virtualProduct.quantity === 0;
 
@@ -294,7 +294,7 @@ export default createFragmentContainer(ProductDetailsView, {
 			fullDescription
 			washingDescription
 			inWishlist
-			virtualProducts {
+			productConfigurations {
 				id
 				size
 				quantity

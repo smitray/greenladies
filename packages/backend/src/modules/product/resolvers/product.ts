@@ -63,9 +63,9 @@ const resolvers: ProductModuleResolversType = {
 
 			return product.images.map(path => `${protocol}://magento.${DOMAIN}/media/catalog/product${path}`);
 		},
-		virtualProducts: async ({ id }, _args, { injector }) => {
+		productConfigurations: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
-			return product.virtualProductIds.map(virtualProductId => ({ id: virtualProductId }));
+			return product.productConfigurationIds.map(virtualProductId => ({ id: virtualProductId }));
 		},
 		originalPrice: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });

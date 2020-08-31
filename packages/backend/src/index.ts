@@ -10,7 +10,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import { createApolloServer } from './create-apollo-server';
 import { createGreenLadiesAttributeSet } from './create-attribute-set';
 import { syncMagentoProductsAndCategories } from './magento-sync';
-import { getRedisCacheConnection } from './redis-connection';
+import { getRedisCache, getRedisCacheConnection } from './redis-connection';
 import { base64 } from './utils/base64';
 
 const RedisSessionStore = RedisSession(session);
@@ -41,112 +41,139 @@ const sessionOptions: SessionOptions = {
 
 	app.use(session(sessionOptions));
 
+	app.post('/api/klarna/order-validation', (req, res) => {
+		console.log(req);
+		// TODO: this is called when the customer presses buy, but before they are redirected, this is where we create the order
+		// cannot take more than 3000ms
+		return res.status(200);
+	});
+
 	app.get('/api/klarna/order-confirmation/:orderId', async (req, res) => {
-		const KLARNA_USER_ID = String(process.env.KLARNA_USER_ID);
-		const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
-
-		const KLARNA_API = String(process.env.KLARNA_API);
-		const { data: order } = await axios.get(KLARNA_API + '/checkout/v3/orders/' + req.params.orderId, {
-			headers: {
-				Authorization: `Basic ${base64(KLARNA_USER_ID + ':' + KLARNA_PASSWORD)}`,
-			},
-		});
-		// ERROR: order doesn't exist
-
-		if (!req.session?.guestShoppingCart?.klarna) {
-			throw new Error('No cart available');
+		if (!req.session?.guestShoppingCart) {
+			return res.send({ error: 'No cart available' });
 		}
 
-		// Create magento order
-		const client = new GraphQLClient('http://magento2/graphql');
-		await client.request(
-			gql`
-				mutation PlaceOrderMutation(
-					$setShippingAddressesOnCartInput: SetShippingAddressesOnCartInput!
-					$setBillingAddressOnCartInput: SetBillingAddressOnCartInput!
-					$setShippingMethodsOnCartInput: SetShippingMethodsOnCartInput!
-					$setGuestEmailOnCartInput: SetGuestEmailOnCartInput!
-					$setPaymentMethodOnCartInput: SetPaymentMethodOnCartInput!
-					$placeOrderInput: PlaceOrderInput!
-				) {
-					setShippingAddressesOnCart(input: $setShippingAddressesOnCartInput) {
-						cart {
-							shipping_addresses {
-								firstname
-								lastname
-								company
-								street
-								city
-								region {
-									code
-									label
-								}
-								postcode
-								telephone
-								country {
-									code
-									label
-								}
-							}
-						}
-					}
-					setBillingAddressOnCart(input: $setBillingAddressOnCartInput) {
-						cart {
-							billing_address {
-								firstname
-								lastname
-								company
-								street
-								city
-								region {
-									code
-									label
-								}
-								postcode
-								telephone
-								country {
-									code
-									label
+		const KLARNA_USER_ID = String(process.env.KLARNA_USER_ID);
+		const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
+		const KLARNA_API = String(process.env.KLARNA_API);
+
+		let order: any | null = null;
+		try {
+			const { data } = await axios.get(KLARNA_API + '/checkout/v3/orders/' + req.params.orderId, {
+				headers: {
+					Authorization: `Basic ${base64(KLARNA_USER_ID + ':' + KLARNA_PASSWORD)}`,
+				},
+			});
+			order = data;
+		} catch (error) {
+			return res.send({ error: 'Klarna order not found' });
+		}
+
+		try {
+			const client = new GraphQLClient('http://magento2/graphql');
+			await client.request(
+				gql`
+					mutation PlaceOrderMutation(
+						$setShippingAddressesOnCartInput: SetShippingAddressesOnCartInput!
+						$setBillingAddressOnCartInput: SetBillingAddressOnCartInput!
+						$setShippingMethodsOnCartInput: SetShippingMethodsOnCartInput!
+						$setGuestEmailOnCartInput: SetGuestEmailOnCartInput!
+						$setPaymentMethodOnCartInput: SetPaymentMethodOnCartInput!
+						$placeOrderInput: PlaceOrderInput!
+					) {
+						setShippingAddressesOnCart(input: $setShippingAddressesOnCartInput) {
+							cart {
+								shipping_addresses {
+									firstname
+									lastname
+									company
+									street
+									city
+									region {
+										code
+										label
+									}
+									postcode
+									telephone
+									country {
+										code
+										label
+									}
 								}
 							}
 						}
-					}
-					setShippingMethodsOnCart(input: $setShippingMethodsOnCartInput) {
-						cart {
-							shipping_addresses {
-								selected_shipping_method {
-									carrier_code
-									method_code
-									carrier_title
-									method_title
+						setBillingAddressOnCart(input: $setBillingAddressOnCartInput) {
+							cart {
+								billing_address {
+									firstname
+									lastname
+									company
+									street
+									city
+									region {
+										code
+										label
+									}
+									postcode
+									telephone
+									country {
+										code
+										label
+									}
 								}
 							}
 						}
-					}
-					setGuestEmailOnCart(input: $setGuestEmailOnCartInput) {
-						cart {
-							email
+						setShippingMethodsOnCart(input: $setShippingMethodsOnCartInput) {
+							cart {
+								shipping_addresses {
+									selected_shipping_method {
+										carrier_code
+										method_code
+										carrier_title
+										method_title
+									}
+								}
+							}
 						}
-					}
-					setPaymentMethodOnCart(input: $setPaymentMethodOnCartInput) {
-						cart {
-							selected_payment_method {
-								code
+						setGuestEmailOnCart(input: $setGuestEmailOnCartInput) {
+							cart {
+								email
+							}
+						}
+						setPaymentMethodOnCart(input: $setPaymentMethodOnCartInput) {
+							cart {
+								selected_payment_method {
+									code
+								}
+							}
+						}
+						placeOrder(input: $placeOrderInput) {
+							order {
+								order_number
 							}
 						}
 					}
-					placeOrder(input: $placeOrderInput) {
-						order {
-							order_number
-						}
-					}
-				}
-			`,
-			{
-				setShippingAddressesOnCartInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-					shipping_addresses: [
-						{
+				`,
+				{
+					setShippingAddressesOnCartInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
+						shipping_addresses: [
+							{
+								address: {
+									city: order.billing_address.city,
+									country_code: order.purchase_country,
+									firstname: order.billing_address.given_name,
+									lastname: order.billing_address.family_name,
+									postcode: order.billing_address.postal_code,
+									street: [order.billing_address.street_address],
+									telephone: order.billing_address.phone,
+								},
+							},
+						],
+					},
+					setBillingAddressOnCartInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
+						billing_address: {
 							address: {
 								city: order.billing_address.city,
 								country_code: order.purchase_country,
@@ -157,50 +184,40 @@ const sessionOptions: SessionOptions = {
 								telephone: order.billing_address.phone,
 							},
 						},
-					],
-				},
-				setBillingAddressOnCartInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-					billing_address: {
-						address: {
-							city: order.billing_address.city,
-							country_code: order.purchase_country,
-							firstname: order.billing_address.given_name,
-							lastname: order.billing_address.family_name,
-							postcode: order.billing_address.postal_code,
-							street: [order.billing_address.street_address],
-							telephone: order.billing_address.phone,
+					},
+					setShippingMethodsOnCartInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
+						shipping_methods: [
+							{
+								carrier_code: 'flatrate',
+								method_code: 'flatrate',
+							},
+						],
+					},
+					setGuestEmailOnCartInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
+						email: order.billing_address.email,
+					},
+					setPaymentMethodOnCartInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
+						payment_method: {
+							code: 'checkmo',
 						},
 					},
-				},
-				setShippingMethodsOnCartInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-					shipping_methods: [
-						{
-							carrier_code: 'flatrate',
-							method_code: 'flatrate',
-						},
-					],
-				},
-				setGuestEmailOnCartInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-					email: order.billing_address.email,
-				},
-				setPaymentMethodOnCartInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-					payment_method: {
-						code: 'checkmo',
+					placeOrderInput: {
+						cart_id: req.session.guestShoppingCart.cartId,
 					},
 				},
-				placeOrderInput: {
-					cart_id: req.session.guestShoppingCart.cartId,
-				},
-			},
-		);
+			);
+		} catch (error) {
+			// Could not create order
+			return res.redirect('/order-failure');
+		}
 
-		req.session.guestShoppingCart.klarna.confirmSnippet = order.html_snippet;
+		const redisCache = getRedisCache();
+		await redisCache.set(`klarnaOrderConfirmSnippet:${order.order_id}`, order.html_snippet, 60 * 60 * 24 * 7);
 
-		res.redirect('/order-success');
+		return res.redirect('/order-success/' + order.order_id);
 	});
 
 	syncMagentoProductsAndCategories()
