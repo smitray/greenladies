@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import './api/shopping-cart';
 
 import axios from 'axios';
 import RedisSession from 'connect-redis';
@@ -7,9 +6,10 @@ import express from 'express';
 import session, { SessionOptions } from 'express-session';
 import { gql, GraphQLClient } from 'graphql-request';
 
+import { getGuestShoppingCartItems } from './api/shopping-cart';
 import { createApolloServer } from './create-apollo-server';
 import { createGreenLadiesAttributeSet } from './create-attribute-set';
-import { syncMagentoProductsAndCategories } from './magento-sync';
+import { getProductConfiguration, syncMagentoProductsAndCategories, updateProductConfiguration } from './magento-sync';
 import { getRedisCache, getRedisCacheConnection } from './redis-connection';
 import { base64 } from './utils/base64';
 
@@ -68,6 +68,8 @@ const sessionOptions: SessionOptions = {
 		} catch (error) {
 			return res.send({ error: 'Klarna order not found' });
 		}
+
+		const items = await getGuestShoppingCartItems(req.session.guestShoppingCart.cartId);
 
 		try {
 			const client = new GraphQLClient('http://magento2/graphql');
@@ -216,6 +218,18 @@ const sessionOptions: SessionOptions = {
 
 		const redisCache = getRedisCache();
 		await redisCache.set(`klarnaOrderConfirmSnippet:${order.order_id}`, order.html_snippet, 60 * 60 * 24 * 7);
+
+		await Promise.all(
+			items.map(async item => {
+				const configuration = await getProductConfiguration({ sku: item.sku });
+				await updateProductConfiguration({
+					...configuration,
+					quantity: configuration.quantity - item.qty,
+				});
+			}),
+		);
+
+		req.session.guestShoppingCart = undefined;
 
 		return res.redirect('/order-success/' + order.order_id);
 	});

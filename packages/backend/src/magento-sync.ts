@@ -283,6 +283,11 @@ export async function getProductConfiguration({ id, sku }: { id?: string | null;
 	}
 }
 
+export function updateProductConfiguration(configuration: ProductConfiguration) {
+	const redisCache = getRedisCache();
+	return redisCache.set(`ProductConfiguration:id:${configuration.id}`, configuration);
+}
+
 export async function getConfigurableProducts() {
 	const redisCache = getRedisCache();
 	const configurableProductIds = await redisCache.get<string[]>(`allConfigurableProductIds`);
