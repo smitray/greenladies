@@ -19,6 +19,10 @@ const resolvers: CategoryModuleResolversType = {
 
 			return { id: String(category.id) };
 		},
+		categories: async (_parent, _args, { injector }) => {
+			const categories = await injector.get(CategoryProvider).getCategoryIds();
+			return categories.map(id => ({ id }));
+		},
 	},
 };
 

@@ -67,6 +67,7 @@ export async function syncMagentoProductsAndCategories() {
 
 	const magentoProducts = await getProducts({ pageSize: 1000000 });
 
+	const brands = new Set<string>();
 	const productConfigurationParentIds = new Map<string, string>();
 	const categoriesProductIds = new Map<string, string[]>();
 	const configurableProducts: MagentoConfigurableProduct[] = [];
@@ -75,6 +76,7 @@ export async function syncMagentoProductsAndCategories() {
 		switch (product.__type) {
 			case 'ConfigurableProduct':
 				{
+					brands.add(product.brand);
 					configurableProducts.push(product);
 					for (const categoryId of product.categoryIds) {
 						const categoryProductIds = categoriesProductIds.get(categoryId);
@@ -217,11 +219,21 @@ export async function syncMagentoProductsAndCategories() {
 		ONE_DAY_IN_SECONDS,
 	);
 
+	const redisBrands = redisCache.set('allBrandNames', [...brands], ONE_DAY_IN_SECONDS);
+
+	const redisAllCategoryIds = redisCache.set(
+		'allCategoryIds',
+		transformedCategories.map(category => category.id),
+		ONE_DAY_IN_SECONDS,
+	);
+
 	await Promise.all([
 		redisCategories,
 		redisConfigurableProducts,
 		redisProductConfigurations,
 		redisAllConfigurableProductIds,
+		redisBrands,
+		redisAllCategoryIds,
 	]);
 }
 
@@ -292,4 +304,14 @@ export async function getConfigurableProducts() {
 	const redisCache = getRedisCache();
 	const configurableProductIds = await redisCache.get<string[]>(`allConfigurableProductIds`);
 	return redisCache.getMany<ConfigurableProduct>(configurableProductIds);
+}
+
+export function getBrands() {
+	const redisCache = getRedisCache();
+	return redisCache.get<string[]>('allBrandNames');
+}
+
+export function getCategoryIds() {
+	const redisCache = getRedisCache();
+	return redisCache.get<string[]>('allCategoryIds');
 }

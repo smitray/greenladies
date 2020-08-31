@@ -1,6 +1,6 @@
 import { Injectable, ProviderScope } from '@graphql-modules/di';
 
-import { getCategory } from '../../magento-sync';
+import { getCategory, getCategoryIds } from '../../magento-sync';
 
 @Injectable({ scope: ProviderScope.Request })
 export class CategoryProvider {
@@ -10,5 +10,9 @@ export class CategoryProvider {
 
 	getCategoryByUrlKey(urlKey: string) {
 		return getCategory({ urlKey });
+	}
+
+	getCategoryIds() {
+		return getCategoryIds();
 	}
 }
