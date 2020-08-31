@@ -23,7 +23,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 				const product = await injector
 					.get(ProductProvider)
-					.getProduct(transformGlobaIdInObject('ProductConfiguration', input.product));
+					.getConfigurableProduct(transformGlobaIdInObject('ProductConfiguration', input.product));
 
 				const item = await injector.get(ShoppingCartProvider).addProductToGuestShoppingCart({
 					cartId,
@@ -65,7 +65,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 				quantity: input.quantity,
 			});
 
-			const product = await injector.get(ProductProvider).getProduct({ sku: item.sku });
+			const product = await injector.get(ProductProvider).getConfigurableProduct({ sku: item.sku });
 
 			return {
 				shoppingCartItemEdge: {

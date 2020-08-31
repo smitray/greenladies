@@ -1,5 +1,5 @@
 import { WishlistModuleResolversType } from '..';
-import { Product } from '../../../magento-sync';
+import { ConfigurableProduct } from '../../../magento-sync';
 import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../../product/product.provider';
 
@@ -44,13 +44,13 @@ const resolvers: WishlistModuleResolversType = {
 				request.session.wishlist.map(productId =>
 					injector
 						.get(ProductProvider)
-						.getProductById(productId)
+						.getConfigurableProduct({ id: productId })
 						.catch(() => productId),
 				),
 			);
 
 			const { foundProducts, notFoundProductsIds } = products.reduce<{
-				foundProducts: Product[];
+				foundProducts: ConfigurableProduct[];
 				notFoundProductsIds: string[];
 			}>(
 				(prev, current) => {

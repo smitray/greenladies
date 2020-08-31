@@ -13,7 +13,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const processedItems = await Promise.all(
 				items.map(async item => {
-					const product = await injector.get(ProductProvider).getProductBySku(item.sku);
+					const product = await injector.get(ProductProvider).getConfigurableProduct({ sku: item.sku });
 					return {
 						id: item.item_id.toString(),
 						product: {
@@ -102,7 +102,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			return request.session.guestShoppingCart.klarna.cartSnippet;
 		},
-		klarnaConfirmSnippet: async (_parent, _args, { injector, request }) => {
+		klarnaConfirmSnippet: async (_parent, _args, { request }) => {
 			if (!request.session) {
 				throw new Error('There is no session available');
 			}

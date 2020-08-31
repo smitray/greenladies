@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
@@ -20,6 +20,24 @@ const CenterWrapper = styled.div`
 const Checkout: MyNextPage = () => {
 	const { shoppingCart } = useLazyLoadQuery<CheckoutQuery>(CHECKOUT_QUERY, {}, { fetchPolicy: 'store-only' });
 
+	const ref = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (ref.current) {
+			const scriptsTags = ref.current.getElementsByTagName('script');
+			// This is necessary otherwise the scripts tags are not going to be evaluated
+			for (let i = 0; i < scriptsTags.length; i++) {
+				const parentNode = scriptsTags[i].parentNode;
+				const newScriptTag = document.createElement('script');
+				newScriptTag.type = 'text/javascript';
+				newScriptTag.text = scriptsTags[i].text;
+				if (parentNode) {
+					parentNode.removeChild(scriptsTags[i]);
+					parentNode.appendChild(newScriptTag);
+				}
+			}
+		}
+	}, [ref]);
+
 	const itemCost = shoppingCart.items.edges.reduce(
 		(prev, { node: item }) => prev + item.amount * item.product.specialPrice,
 		0,
@@ -32,7 +50,7 @@ const Checkout: MyNextPage = () => {
 			<div style={{ flexGrow: 1 }}>
 				<div style={{ background: 'white', padding: '24px' }}>
 					<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Betalning</h1>
-					<div dangerouslySetInnerHTML={{ __html: shoppingCart.klarnaCartSnippet }}></div>
+					<div ref={ref} dangerouslySetInnerHTML={{ __html: shoppingCart.klarnaCartSnippet }}></div>
 				</div>
 			</div>
 			<div style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>

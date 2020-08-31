@@ -56,6 +56,11 @@ export async function createGreenLadiesAttributeSet() {
 		required: false,
 	});
 	await createAttribute({
+		type: 'text',
+		code: 'material',
+		required: false,
+	});
+	await createAttribute({
 		type: 'dropdown',
 		code: 'condition',
 		options: ['new', 'vintage'],
@@ -80,6 +85,11 @@ export async function createGreenLadiesAttributeSet() {
 	});
 	await addAttributeToAttributeSet({
 		code: 'washing_description',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'material',
 		setId,
 		groupId,
 	});

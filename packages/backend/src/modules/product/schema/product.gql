@@ -22,9 +22,9 @@ type Product implements Node {
 	shortDescription: String!
 	washingDescription: String!
 	condition: String!
+	material: String!
 	image: String!
 	images: [String!]!
-	configurationAttributes: [String!]!
 	virtualProducts: [ProductConfiguration!]!
 	originalPrice: Float!
 	specialPrice: Float!

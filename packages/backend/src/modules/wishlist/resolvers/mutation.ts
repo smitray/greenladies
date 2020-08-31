@@ -11,7 +11,7 @@ const resolvers: WishlistModuleResolversType = {
 
 			const product = await injector
 				.get(ProductProvider)
-				.getProduct(transformGlobaIdInObject('Product', input.product));
+				.getConfigurableProduct(transformGlobaIdInObject('Product', input.product));
 
 			if (!request.session.wishlist) {
 				request.session.wishlist = [product.id];
@@ -33,7 +33,7 @@ const resolvers: WishlistModuleResolversType = {
 
 			const product = await injector
 				.get(ProductProvider)
-				.getProduct(transformGlobaIdInObject('Product', input.product));
+				.getConfigurableProduct(transformGlobaIdInObject('Product', input.product));
 
 			if (request.session.wishlist) {
 				request.session.wishlist = request.session.wishlist.filter(productId => productId !== product.id);

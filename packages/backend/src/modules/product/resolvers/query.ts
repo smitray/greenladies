@@ -4,13 +4,9 @@ import { ProductProvider } from '../product.provider';
 const resolvers: ProductModuleResolversType = {
 	Query: {
 		product: async (_parent, { where }, { injector }) => {
-			const product = await injector.get(ProductProvider).getProduct(where);
+			const product = await injector.get(ProductProvider).getConfigurableProduct(where);
 
-			if (product.__type === 'ConfigurableProduct') {
-				return { id: String(product.id) };
-			}
-
-			throw new Error('Product not found');
+			return { id: String(product.id) };
 		},
 	},
 };

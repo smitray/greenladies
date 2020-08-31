@@ -1,5 +1,5 @@
 import { ProductModuleResolversType } from '..';
-import { Product } from '../../../magento-sync';
+import { ConfigurableProduct } from '../../../magento-sync';
 import { connectionFromArray } from '../../../utils/relay';
 import { CategoryProvider } from '../../category/category.provider';
 import { ProductProvider } from '../product.provider';
@@ -22,7 +22,7 @@ const resolvers: ProductModuleResolversType = {
 		products: async ({ id }, args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 			const products = await Promise.all(
-				category.productIds.map(id => injector.get(ProductProvider).getProduct({ id })),
+				category.productIds.map(id => injector.get(ProductProvider).getConfigurableProduct({ id })),
 			);
 			if (products.length === 0) {
 				return {
@@ -39,52 +39,36 @@ const resolvers: ProductModuleResolversType = {
 				};
 			}
 
-			let availableProductsByBrands: Product[] | null = null;
-			let availableProductsByPrice: Product[] | null = null;
-			let availableProductsByColors: Product[] | null = null;
-			let availableProductsBySizes: Product[] | null = null;
-			let filteredProducts: Product[] | null = null;
+			let availableProductsByBrands: ConfigurableProduct[] | null = null;
+			let availableProductsByPrice: ConfigurableProduct[] | null = null;
+			let availableProductsByColors: ConfigurableProduct[] | null = null;
+			let availableProductsBySizes: ConfigurableProduct[] | null = null;
+			let filteredProducts: ConfigurableProduct[] | null = null;
 			const { orderBy, filters } = args;
 			if (filters) {
 				const productsFilteredByBrands = filters.brand_in
 					? products.filter(product => {
-							if (product.__type === 'ConfigurableProduct') {
-								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-								return filters.brand_in!.includes(product.brand);
-							}
-
-							return false;
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							return filters.brand_in!.includes(product.brand);
 					  })
 					: products;
 				const productsFilteredByColors = filters.color_in
 					? products.filter(product => {
-							if (product.__type === 'ConfigurableProduct') {
-								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-								return setIntersection(new Set(filters.color_in!), new Set(product.colors)).size > 0;
-							}
-
-							return false;
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							return setIntersection(new Set(filters.color_in!), new Set(product.colors)).size > 0;
 					  })
 					: products;
 				const productsFilteredByPrice = filters.price_between
 					? products.filter(product => {
-							if (product.__type === 'ConfigurableProduct') {
-								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-								const { from, to } = filters.price_between!;
-								return product.price >= from && product.price <= to;
-							}
-
-							return false;
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							const { from, to } = filters.price_between!;
+							return product.price >= from && product.price <= to;
 					  })
 					: products;
 				const productsFilteredBySizes = filters.size_in
 					? products.filter(product => {
-							if (product.__type === 'ConfigurableProduct') {
-								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-								return setIntersection(new Set(filters.size_in!), new Set(product.sizes)).size > 0;
-							}
-
-							return false;
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							return setIntersection(new Set(filters.size_in!), new Set(product.sizes)).size > 0;
 					  })
 					: products;
 
@@ -192,30 +176,14 @@ const resolvers: ProductModuleResolversType = {
 					case 'created_DESC':
 						break;
 					case 'price_ASC':
-						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
-							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
-								return left.price - right.price;
-							}
-
-							throw new Error('This should not happen');
-						});
+						filteredAndOrderedProducts = filteredProducts.sort((left, right) => left.price - right.price);
 						break;
 					case 'price_DESC':
-						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
-							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
-								return right.price - left.price;
-							}
-
-							throw new Error('This should not happen');
-						});
+						filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.price - left.price);
 						break;
 					case 'discount_DESC':
 						filteredAndOrderedProducts = filteredProducts.sort((left, right) => {
-							if (left.__type === 'ConfigurableProduct' && right.__type === 'ConfigurableProduct') {
-								return left.specialPrice / left.price - right.specialPrice / right.price;
-							}
-
-							throw new Error('This should not happen');
+							return left.specialPrice / left.price - right.specialPrice / right.price;
 						});
 						break;
 				}
@@ -224,55 +192,21 @@ const resolvers: ProductModuleResolversType = {
 			return {
 				...connectionFromArray(filteredAndOrderedProducts, args),
 				availableFilters: {
-					brands: [
-						...new Set(
-							availableProductsByBrands.map(product => {
-								if (product.__type === 'ConfigurableProduct') {
-									return product.brand;
-								}
-
-								throw new Error('This should not happen');
-							}),
-						),
-					],
-					colors: [
-						...new Set(
-							availableProductsByColors.flatMap(product => {
-								if (product.__type === 'ConfigurableProduct') {
-									return product.colors;
-								}
-
-								throw new Error('This should not happen');
-							}),
-						),
-					],
+					brands: [...new Set(availableProductsByBrands.map(product => product.brand))],
+					colors: [...new Set(availableProductsByColors.flatMap(product => product.colors))],
 					price:
 						availableProductsByPrice.length === 0
 							? { from: 0, to: 0 }
 							: availableProductsByPrice.reduce(
 									(prev, product) => {
-										if (product.__type === 'ConfigurableProduct') {
-											return {
-												from: Math.min(prev.from, product.price),
-												to: Math.max(prev.to, product.price),
-											};
-										}
-
-										throw new Error('This should not happen');
+										return {
+											from: Math.min(prev.from, product.price),
+											to: Math.max(prev.to, product.price),
+										};
 									},
 									{ from: 1000000000, to: -1000000000 },
 							  ),
-					sizes: [
-						...new Set(
-							availableProductsBySizes.flatMap(product => {
-								if (product.__type === 'ConfigurableProduct') {
-									return product.sizes;
-								}
-
-								throw new Error('This should not happen');
-							}),
-						),
-					],
+					sizes: [...new Set(availableProductsBySizes.flatMap(product => product.sizes))],
 				},
 			};
 		},

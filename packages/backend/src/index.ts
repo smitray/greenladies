@@ -53,6 +53,10 @@ const sessionOptions: SessionOptions = {
 		});
 		// ERROR: order doesn't exist
 
+		if (!req.session?.guestShoppingCart?.klarna) {
+			throw new Error('No cart available');
+		}
+
 		// Create magento order
 		const client = new GraphQLClient('http://magento2/graphql');
 		await client.request(
