@@ -88,6 +88,27 @@ const resolvers: ShoppingCartModuleResolversType = {
 										? `${protocol}://${DOMAIN}/api/klarna/order-validation`
 										: undefined,
 							},
+							shipping_options: [
+								orderAmount > 99900
+									? {
+											id: 'dhl-free',
+											name: 'DHL Gratis frakt',
+											price: 0,
+											tax_amount: 0,
+											tax_rate: 2500,
+											preselected: true,
+											shipping_method: 'Postal',
+									  }
+									: {
+											id: 'dhl',
+											name: 'DHL',
+											price: 5900,
+											tax_amount: Math.round(5900 - (5900 * 10000) / (10000 + 2500)),
+											tax_rate: 2500,
+											preselected: true,
+											shipping_method: 'Postal',
+									  },
+							],
 						},
 						{
 							headers: {
