@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
+import dynamic from 'next/dynamic';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -17,9 +18,11 @@ const CenterWrapper = styled.div`
 	align-items: flex-start;
 `;
 
-const Checkout: MyNextPage = () => {
-	const { shoppingCart } = useLazyLoadQuery<CheckoutQuery>(CHECKOUT_QUERY, {}, { fetchPolicy: 'store-only' });
+interface CheckoutIframeProps {
+	snippet: string;
+}
 
+const CheckoutIframe = ({ snippet }: CheckoutIframeProps) => {
 	const ref = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (ref.current) {
@@ -38,6 +41,16 @@ const Checkout: MyNextPage = () => {
 		}
 	}, [ref]);
 
+	return <div ref={ref} dangerouslySetInnerHTML={{ __html: snippet }}></div>;
+};
+
+const CheckoutIframeDynamic = dynamic(() => Promise.resolve(CheckoutIframe), {
+	ssr: false,
+});
+
+const Checkout: MyNextPage = () => {
+	const { shoppingCart } = useLazyLoadQuery<CheckoutQuery>(CHECKOUT_QUERY, {}, { fetchPolicy: 'store-only' });
+
 	const itemCost = shoppingCart.items.edges.reduce(
 		(prev, { node: item }) => prev + item.amount * item.product.specialPrice,
 		0,
@@ -48,9 +61,9 @@ const Checkout: MyNextPage = () => {
 	return (
 		<CenterWrapper>
 			<div style={{ flexGrow: 1 }}>
-				<div style={{ background: 'white', padding: '24px' }}>
+				<div style={{ background: 'white', padding: '24px', flexBasis: '640px' }}>
 					<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Betalning</h1>
-					<div ref={ref} dangerouslySetInnerHTML={{ __html: shoppingCart.klarnaCartSnippet }}></div>
+					<CheckoutIframeDynamic snippet={shoppingCart.klarnaCartSnippet} />
 				</div>
 			</div>
 			<div style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>

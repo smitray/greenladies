@@ -14,8 +14,12 @@ const CenterWrapper = styled.div`
 	align-items: flex-start;
 `;
 
-const OrderSuccess: MyNextPage = () => {
-	return <CenterWrapper>success</CenterWrapper>;
+const OrderFailure: MyNextPage = () => {
+	return (
+		<CenterWrapper>
+			<div>Något gick fel med din order</div>
+		</CenterWrapper>
+	);
 };
 
-export default OrderSuccess;
+export default OrderFailure;

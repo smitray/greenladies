@@ -140,7 +140,7 @@ export interface ConfigurableProduct {
 	material: string;
 	image: string;
 	images: string[];
-	virtualProductIds: string[];
+	productConfigurationIds: string[];
 	relatedProductSkus: string[];
 	categoryIds: string[];
 }
@@ -191,7 +191,7 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 		material: getCustomAttribute(product.custom_attributes, 'material', false),
 		image: product.media_gallery_entries.length > 0 ? product.media_gallery_entries[0].file : '',
 		images: product.media_gallery_entries.map(galleryEntry => galleryEntry.file),
-		virtualProductIds: product.extension_attributes.configurable_product_links.map(id => id.toString()),
+		productConfigurationIds: product.extension_attributes.configurable_product_links.map(id => id.toString()),
 		relatedProductSkus: product.product_links
 			.filter(link => link.link_type === 'related' && link.linked_product_type === 'configurable')
 			.map(link => link.linked_product_sku),
