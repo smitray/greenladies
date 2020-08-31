@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PhotoSwipe } from 'react-photoswipe';
 import { createFragmentContainer, graphql } from 'react-relay';
@@ -13,6 +13,10 @@ const ProductImageGalleryView = ({ product }: ProductImageGalleryViewProps) => {
 	const [selectedImage, setSelectedImage] = useState<{ index: number; src: string }>({ index: 0, src: product.image });
 	const [galleryIsOpen, setGalleryIsOpen] = useState(false);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+	useEffect(() => {
+		setSelectedImage({ index: 0, src: product.image });
+	}, [product]);
 
 	return (
 		<div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>

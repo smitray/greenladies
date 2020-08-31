@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaRegHeart, FaSearch } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
-import { ShoppingCartDrawer } from '../ShoppingCartDrawer';
+import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
+import { useClickOutside } from '../../hooks/use-click-outside';
+import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
@@ -58,8 +60,19 @@ export const NavbarView = ({
 	handleMegaMenuUnfocus,
 }: NavbarViewProps) => {
 	const [wishlistDrawerIsOpen, setWishlistDrawerIsOpen] = useState(false);
-	const [shoppingCartDrawerIsOpen, setShoppingCartDrawerIsOpen] = useState(false);
+	const {
+		isOpen: shoppingCartModalIsOpen,
+		open: openShoppingCartModal,
+		close: closeShoppingCartModal,
+	} = useShoppingCartModal();
 	const relayEnvironment = useRelayEnvironment();
+	const cartModalWrapperRef = useRef(null);
+	const [shoppingCartModalButtonFocus, setShoppingCartModalButtonFocus] = useState(false);
+	useClickOutside(cartModalWrapperRef, () => {
+		if (!shoppingCartModalButtonFocus) {
+			closeShoppingCartModal();
+		}
+	});
 	const { categories }: NavbarProps = {
 		categories: [
 			{
@@ -222,25 +235,21 @@ export const NavbarView = ({
 	return (
 		<Wrapper>
 			<CenterWrapper>
-				<Row>
-					<Group style={{ marginLeft: '-20px' }}>
-						{categories.map((category, index) => {
-							return (
-								<li key={index}>
-									<Link href="/">
-										<ItemWrapper
-											onMouseEnter={() => handleTopLevelItemFocus(index)}
-											onMouseLeave={handleTopLevelItemUnfocus}
-										>
-											<Item>
-												<ItemText>{category.category.name}</ItemText>
-											</Item>
-										</ItemWrapper>
-									</Link>
-								</li>
-							);
-						})}
-					</Group>
+				<Row style={{ flexDirection: 'row-reverse', position: 'relative', padding: '8px' }}>
+					<div
+						style={{
+							position: 'absolute',
+							top: '0',
+							right: '0',
+							bottom: '0',
+							left: '0',
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<div>LOGO</div>
+					</div>
 					<Group>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
 							<QueryRenderer<NavbarWishlistQuery>
@@ -303,6 +312,7 @@ export const NavbarView = ({
 																right: '-8px',
 																width: '16px',
 																height: '16px',
+																fontWeight: 'bold',
 															}}
 														>
 															{total}
@@ -349,7 +359,7 @@ export const NavbarView = ({
 													}
 												}
 											}
-											...ShoppingCartDrawer_cart
+											...ShoppingCartModal_cart
 										}
 									}
 								`}
@@ -367,46 +377,69 @@ export const NavbarView = ({
 
 										return (
 											<React.Fragment>
-												<ShoppingCartDrawer
-													cart={props.shoppingCart}
-													open={shoppingCartDrawerIsOpen}
-													onCloseRequest={() => setShoppingCartDrawerIsOpen(false)}
-												/>
 												<button
 													style={{
-														display: 'flex',
-														flexDirection: 'column',
-														justifyContent: 'center',
-														alignItems: 'center',
-														cursor: 'pointer',
+														position: 'relative',
 														background: 'none',
 														border: 'none',
 														outline: 'none',
-														padding: 'none',
+														padding: '0',
+														margin: '0 0 0 8px',
 													}}
-													onClick={() => setShoppingCartDrawerIsOpen(true)}
+													onClick={() => {
+														if (shoppingCartModalButtonFocus) {
+															if (shoppingCartModalIsOpen) {
+																closeShoppingCartModal();
+															} else {
+																openShoppingCartModal();
+															}
+														}
+													}}
 												>
-													<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-														<BiShoppingBag size="20" />
-														<div
-															style={{
-																position: 'absolute',
-																background: 'black',
-																color: 'white',
-																borderRadius: '100%',
-																fontSize: '10px',
-																lineHeight: '16px',
-																textAlign: 'center',
-																top: '0',
-																right: '-8px',
-																width: '16px',
-																height: '16px',
-															}}
-														>
-															{total}
+													<div
+														style={{
+															display: 'flex',
+															flexDirection: 'column',
+															justifyContent: 'center',
+															alignItems: 'center',
+															cursor: 'pointer',
+														}}
+														onMouseEnter={() => setShoppingCartModalButtonFocus(true)}
+														onMouseLeave={() => setShoppingCartModalButtonFocus(false)}
+													>
+														<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+															<BiShoppingBag size="20" />
+															<div
+																style={{
+																	position: 'absolute',
+																	background: 'black',
+																	color: 'white',
+																	borderRadius: '100%',
+																	fontSize: '10px',
+																	lineHeight: '16px',
+																	textAlign: 'center',
+																	top: '0',
+																	right: '-8px',
+																	width: '16px',
+																	height: '16px',
+																	fontWeight: 'bold',
+																}}
+															>
+																{total}
+															</div>
 														</div>
+														<div style={{ fontSize: '12px' }}>Varukorg</div>
 													</div>
-													<div style={{ fontSize: '12px' }}>Varukorg</div>
+													<div
+														style={{ position: 'absolute', marginTop: '8px', right: '0', zIndex: 30 }}
+														ref={cartModalWrapperRef}
+													>
+														{shoppingCartModalIsOpen && (
+															<div style={{ border: '2px solid lightgrey', background: 'white' }}>
+																<ShoppingCartModal cart={props.shoppingCart} />
+															</div>
+														)}
+													</div>
 												</button>
 											</React.Fragment>
 										);
@@ -425,7 +458,6 @@ export const NavbarView = ({
 												outline: 'none',
 												padding: 'none',
 											}}
-											onClick={() => setShoppingCartDrawerIsOpen(true)}
 										>
 											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
 												<BiShoppingBag size="20" />
@@ -439,6 +471,63 @@ export const NavbarView = ({
 					</Group>
 				</Row>
 			</CenterWrapper>
+			<Row style={{ borderTop: '1px solid lightgrey', borderBottom: '1px solid lightgrey', display: 'block' }}>
+				<CenterWrapper style={{ display: 'block' }}>
+					<Row>
+						<Group style={{ marginLeft: '-12px', flexGrow: 1 }}>
+							{categories.map((category, index) => {
+								return (
+									<li key={index}>
+										<Link href="/">
+											<ItemWrapper
+												onMouseEnter={() => handleTopLevelItemFocus(index)}
+												onMouseLeave={handleTopLevelItemUnfocus}
+											>
+												<Item active={index === currentlySelectedTopLevelItemIndex}>
+													<ItemText>{category.category.name}</ItemText>
+												</Item>
+											</ItemWrapper>
+										</Link>
+									</li>
+								);
+							})}
+						</Group>
+						<Group
+							style={{
+								flexBasis: '30%',
+								borderLeft: '1px solid lightgrey',
+								borderRight: '1px solid lightgrey',
+								position: 'relative',
+							}}
+						>
+							<input
+								style={{
+									border: 'none',
+									outline: 'none',
+									width: '100%',
+									paddingLeft: '48px',
+								}}
+								type="text"
+								placeholder="Sök produkter eller märken"
+							/>
+							<div
+								style={{
+									position: 'absolute',
+									left: '16px',
+									bottom: '0',
+									top: '0',
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<div style={{ width: '16px', height: '16px' }}>
+									<FaSearch size="16" color="grey" />
+								</div>
+							</div>
+						</Group>
+					</Row>
+				</CenterWrapper>
+			</Row>
 			<MegaMenuWrapper
 				open={currentlySelectedTopLevelItemIndex !== null}
 				onMouseEnter={handleMegaMenuFocus}

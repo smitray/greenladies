@@ -3,7 +3,11 @@ declare global {
 		interface Session {
 			guestShoppingCart?: {
 				cartId: string;
-				klarnaCartSnippet?: string;
+				klarna?: {
+					orderId: string;
+					cartSnippet: string;
+					confirmSnippet?: string;
+				};
 			};
 			wishlist?: string[];
 		}

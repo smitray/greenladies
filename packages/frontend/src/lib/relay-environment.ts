@@ -46,7 +46,7 @@ async function fetchQueryClient(operation: RequestParameters, variables: Variabl
 		return fromCache;
 	}
 
-	const response = await fetch(String(process.env.GRAPHQL_API_ENDPOINT), {
+	const response = await fetch('/api/graphql', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

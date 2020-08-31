@@ -13,7 +13,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const processedItems = await Promise.all(
 				items.map(async item => {
-					const product = await injector.get(ProductProvider).getProductBySku(item.sku);
+					const product = await injector.get(ProductProvider).getConfigurableProduct({ sku: item.sku });
 					return {
 						id: item.item_id.toString(),
 						product: {
@@ -37,7 +37,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const cartId = request.session.guestShoppingCart.cartId;
 
-			if (!request.session.guestShoppingCart.klarnaCartSnippet) {
+			if (!request.session.guestShoppingCart.klarna) {
 				try {
 					const items = await injector.get(ShoppingCartProvider).getGuestShoppingCartItems(cartId);
 					const orderItems = items.map(item => {
@@ -64,7 +64,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 					const KLARNA_USER_ID = String(process.env.KLARNA_USER_ID);
 					const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
-					const HOST = String(process.env.HOST);
+					const DOMAIN = String(process.env.DOMAIN);
 
 					const KLARNA_API = String(process.env.KLARNA_API);
 					const { data: order } = await axios.post(
@@ -77,9 +77,9 @@ const resolvers: ShoppingCartModuleResolversType = {
 							order_tax_amount: orderTax,
 							order_lines: orderItems,
 							merchant_urls: {
-								terms: `${HOST}/terms`,
-								checkout: `${HOST}/checkout/{checkout.order.id}`,
-								confirmation: `${HOST}/order-confirmation/{checkout.order.id}`,
+								terms: `http://${DOMAIN}/terms`,
+								checkout: `http://${DOMAIN}/checkout`,
+								confirmation: `http://${DOMAIN}/api/klarna/order-confirmation/{checkout.order.id}`,
 								push: 'https://www.example.com/api/push?order_id={checkout.order.id}',
 							},
 						},
@@ -90,13 +90,32 @@ const resolvers: ShoppingCartModuleResolversType = {
 						},
 					);
 
-					request.session.guestShoppingCart.klarnaCartSnippet = order.html_snippet as string;
+					request.session.guestShoppingCart.klarna = {
+						orderId: order.order_id,
+						cartSnippet: order.html_snippet,
+					};
 				} catch (error) {
+					console.log(error);
 					throw new Error('Could not create Klarna order');
 				}
 			}
 
-			return request.session.guestShoppingCart.klarnaCartSnippet;
+			return request.session.guestShoppingCart.klarna.cartSnippet;
+		},
+		klarnaConfirmSnippet: async (_parent, _args, { request }) => {
+			if (!request.session) {
+				throw new Error('There is no session available');
+			}
+
+			if (!request.session.guestShoppingCart) {
+				throw new Error('There is no cart available');
+			}
+
+			if (!request.session.guestShoppingCart.klarna?.confirmSnippet) {
+				throw new Error('Not available');
+			}
+
+			return request.session.guestShoppingCart.klarna.confirmSnippet;
 		},
 	},
 };

@@ -12,6 +12,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
+import { ShoppingCartModalProvider } from '../contexts/shopping-cart-model-context';
 import { createRelayEnvironment } from '../lib/relay-environment';
 
 type ServerState = { [key: string]: RelayRecord };
@@ -29,6 +30,7 @@ export declare type MyAppType = NextComponentType<AppContextType, MyAppInitialPr
 const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
+	  font-family: 'Cerebri Sans', sans-serif;
   }
 
   body {
@@ -46,12 +48,14 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 
 	return (
 		<RelayEnvironmentProvider environment={environment}>
-			<React.Fragment>
-				<GlobalStyles />
-				<MessageBar />
-				<Navbar />
-				<Component {...pageProps} />
-			</React.Fragment>
+			<ShoppingCartModalProvider>
+				<React.Fragment>
+					<GlobalStyles />
+					<MessageBar />
+					<Navbar />
+					<Component {...pageProps} />
+				</React.Fragment>
+			</ShoppingCartModalProvider>
 		</RelayEnvironmentProvider>
 	);
 };

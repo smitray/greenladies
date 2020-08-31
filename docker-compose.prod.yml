@@ -42,7 +42,7 @@ services:
       - ${MAGENTO_DATA_FOLDER}:/var/www/html
     labels:
       - traefik.enable=true
-      - traefik.http.routers.magento.rule=Host(`magento.${DOMAIN}`)
+      - traefik.http.routers.magento.rule=Host(`magento.${DOMAIN}`)&&(PathPrefix(`/admin`)||PathPrefix(`/media`)||PathPrefix(`/static`))
       - traefik.http.routers.magento.entryPoints=https
       - traefik.http.routers.magento.tls=true
       - traefik.http.routers.magento.tls.certresolver=letsencrypt

@@ -48,7 +48,7 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 						<ProductImage src={product.image} />
 					</div>
 					<ProductTagsContainer>
-						<ProductTagCondition>NY</ProductTagCondition>
+						<ProductTagCondition>{product.condition === 'new' ? 'NY' : 'VINTAGE'}</ProductTagCondition>
 						{discount > 0 && <ProductTagDiscount>-{discount}%</ProductTagDiscount>}
 					</ProductTagsContainer>
 					<ProductWishlist
@@ -90,6 +90,7 @@ export default createFragmentContainer(ProductCardView, {
 			brand
 			inWishlist
 			image
+			condition
 		}
 	`,
 });

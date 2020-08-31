@@ -7,11 +7,19 @@ import {
 
 export async function createGreenLadiesAttributeSet() {
 	await createAttribute({
+		type: 'dropdown',
 		code: 'color',
 		required: true,
-		options: ['black', 'blue'],
+		options: ['black', 'blue', 'darkgreen'],
 	});
 	await createAttribute({
+		type: 'dropdown',
+		code: 'mgs_brand',
+		required: true,
+		options: ['Alice Bizous', 'Lee', 'ESPRIT', 'Rosebud'],
+	});
+	await createAttribute({
+		type: 'dropdown',
 		code: 'size',
 		required: false,
 		options: [
@@ -22,17 +30,41 @@ export async function createGreenLadiesAttributeSet() {
 			'42',
 			'44',
 			'46',
-			'W27L30',
-			'W28L30',
-			'W29L30',
-			'W29L32',
-			'W30L30',
-			'W30L32',
-			'W31L30',
-			'W31L32',
-			'W32L30',
-			'W33L32',
+			'W27 L30',
+			'W27 L31',
+			'W28 L28',
+			'W28 L30',
+			'W29 L30',
+			'W29 L32',
+			'W30 L30',
+			'W30 L32',
+			'W30 L33',
+			'W31 L28',
+			'W31 L30',
+			'W31 L31',
+			'W31 L32',
+			'W31 L33',
+			'W32 L30',
+			'W32 L33',
+			'W33 L32',
+			'W33 L33',
 		],
+	});
+	await createAttribute({
+		type: 'text',
+		code: 'washing_description',
+		required: false,
+	});
+	await createAttribute({
+		type: 'text',
+		code: 'material',
+		required: false,
+	});
+	await createAttribute({
+		type: 'dropdown',
+		code: 'condition',
+		options: ['new', 'vintage'],
+		required: true,
 	});
 	const { attribute_set_id: setId } = await createAttributeSet({ name: 'Green Ladies' });
 	const { attribute_group_id: groupId } = await createAttributeSetGroup(parseInt(setId, 10), { name: 'Attributes' });
@@ -43,6 +75,26 @@ export async function createGreenLadiesAttributeSet() {
 	});
 	await addAttributeToAttributeSet({
 		code: 'size',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'condition',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'washing_description',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'material',
+		setId,
+		groupId,
+	});
+	await addAttributeToAttributeSet({
+		code: 'mgs_brand',
 		setId,
 		groupId,
 	});

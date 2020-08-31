@@ -16,13 +16,15 @@ export async function createAttributeSet({ name, skeletonId = 4 }: { name: strin
 }
 
 export async function createAttribute({
+	type,
 	code,
 	required,
 	options,
 }: {
+	type: 'text' | 'dropdown';
 	code: string;
 	required: boolean;
-	options: string[];
+	options?: string[];
 }) {
 	const { data } = await magentoAdminRequester.post('/rest/default/V1/products/attributes', {
 		attribute: {
@@ -31,9 +33,9 @@ export async function createAttribute({
 			is_required: required,
 			scope: 'global',
 			frontend_labels: null,
-			frontend_input: 'select',
+			frontend_input: type === 'text' ? 'text' : 'select',
 			default_frontend_label: code,
-			options: options.map(option => ({ label: option })),
+			options: type === 'text' ? undefined : options?.map(option => ({ label: option })) || [],
 		},
 	});
 

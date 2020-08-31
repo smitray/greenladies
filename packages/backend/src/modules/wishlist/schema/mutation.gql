@@ -21,3 +21,7 @@ type RemoveProductFromWishlistPayload {
 type Mutation {
 	removeProductFromWishlist(input: RemoveProductFromWishlistInput!): RemoveProductFromWishlistPayload!
 }
+
+type Mutation {
+	clearWishlist: Boolean!
+}

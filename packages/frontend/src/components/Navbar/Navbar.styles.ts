@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.nav`
-	padding: 15px 0;
+	padding-bottom: 24px;
 `;
 
 export const CenterWrapper = styled.div`
@@ -22,25 +22,18 @@ export const Group = styled.ul`
 	padding: 0;
 `;
 
-export const Item = styled.div`
-	padding: 20px 0;
+interface ItemProps {
+	active: boolean;
+}
+
+export const Item = styled.div<ItemProps>`
+	padding: 16px 0 15px 0;
 	position: relative;
 	font-size: 15px;
+	border-bottom: 1px solid ${({ active }) => (active ? 'black' : 'white')};
 
-	&::after {
-		content: '';
-		position: absolute;
-		display: block;
-		left: 0;
-		right: 0;
-
-		margin-top: 5px;
-		background: black;
-		height: 2px;
-		opacity: 0;
-		transform: scaleX(0);
-
-		transition: all 300ms;
+	&:hover {
+		border-bottom: 1px solid black;
 	}
 `;
 
@@ -51,7 +44,7 @@ export const ItemText = styled.span`
 
 export const ItemWrapper = styled.a`
 	display: block;
-	padding: 0 20px;
+	padding: 0 12px;
 	cursor: pointer;
 
 	&:hover ${Item}::after {

@@ -7,6 +7,7 @@ type ProductConfiguration implements Node {
 	currency: String!
 	size: String!
 	colors: [String!]!
+	parent: Product!
 }
 
 type Product implements Node {
@@ -20,11 +21,13 @@ type Product implements Node {
 	fullDescription: String!
 	shortDescription: String!
 	washingDescription: String!
+	condition: String!
+	material: String!
 	image: String!
 	images: [String!]!
-	configurationAttributes: [String!]!
 	virtualProducts: [ProductConfiguration!]!
 	originalPrice: Float!
 	specialPrice: Float!
 	currency: String!
+	relatedProducts(first: Int, after: String, last: Int, before: String): ProductConnection!
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { NavbarView } from './Navbar.view';
 
-const TIMEOUT_MS = 300;
+const TIMEOUT_MS = 100;
 
 export const NavbarLogic = () => {
 	const [currentlySelectedTopLevelItemIndex, setCurrentlySelectedTopLevelItemIndex] = useState<number | null>(null);

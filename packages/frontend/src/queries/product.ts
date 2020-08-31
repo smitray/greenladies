@@ -7,6 +7,10 @@ export const PRODUCT_QUERY = graphql`
 		product(where: $where) {
 			...ProductImageGallery_product
 			...ProductDetails_product
+			relatedProducts(first: 25) {
+				totalCount
+				...ProductCarousel_products
+			}
 		}
 	}
 `;

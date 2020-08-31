@@ -3,6 +3,7 @@ import { useMutation } from 'react-relay/hooks';
 import { ConnectionHandler } from 'relay-runtime';
 
 import { wishlistAddToWishlistMutation } from './__generated__/wishlistAddToWishlistMutation.graphql';
+import { wishlistClearWishlistMutation } from './__generated__/wishlistClearWishlistMutation.graphql';
 import { wishlistRemoveFromWishlistMutation } from './__generated__/wishlistRemoveFromWishlistMutation.graphql';
 
 const WISHLIST_ADD_TO_WISHLIST_MUTATION = graphql`
@@ -10,6 +11,7 @@ const WISHLIST_ADD_TO_WISHLIST_MUTATION = graphql`
 		addProductToWishlist(input: { product: { id: $productId } }) {
 			productEdge {
 				node {
+					id
 					inWishlist
 				}
 				cursor
@@ -28,17 +30,17 @@ export const useAddToWishlistMutation = () => {
 					productId,
 				},
 				updater: storeProxy => {
-					const productRecord = storeProxy.get(productId);
-					if (productRecord) {
-						productRecord.setValue(true, 'inWishlist');
-					}
-
 					const newEdge = storeProxy.getRootField('addProductToWishlist')?.getLinkedRecord('productEdge') || null;
 					const rootProxy = storeProxy.getRoot();
 					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
 					if (wishlistProxy) {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection && newEdge) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(totalCount + 1, 'totalCount');
+							}
+
 							ConnectionHandler.insertEdgeAfter(connection, newEdge);
 						}
 					}
@@ -54,6 +56,7 @@ const WISHLIST_REMOVE_FROM_WISHLIST_MUTATION = graphql`
 		removeProductFromWishlist(input: { product: { id: $productId } }) {
 			productEdge {
 				node {
+					id
 					inWishlist
 				}
 				cursor
@@ -74,17 +77,62 @@ export const useRemoveFromWishlistMutation = () => {
 					productId,
 				},
 				updater: storeProxy => {
-					const productRecord = storeProxy.get(productId);
-					if (productRecord) {
-						productRecord.setValue(false, 'inWishlist');
-					}
-
 					const rootProxy = storeProxy.getRoot();
 					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
 					if (wishlistProxy) {
 						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
 						if (connection) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(totalCount - 1, 'totalCount');
+							}
+
 							ConnectionHandler.deleteNode(connection, productId);
+						}
+					}
+				},
+			});
+		},
+		pending,
+	};
+};
+
+const CLEAR_WISHLIST_MUTATION = graphql`
+	mutation wishlistClearWishlistMutation {
+		clearWishlist
+	}
+`;
+
+export const useClearWishlistMutation = () => {
+	const [commitClearWishlist, pending] = useMutation<wishlistClearWishlistMutation>(CLEAR_WISHLIST_MUTATION);
+
+	return {
+		commit: () => {
+			commitClearWishlist({
+				variables: {},
+				updater: storeProxy => {
+					const rootProxy = storeProxy.getRoot();
+					const wishlistProxy = rootProxy.getLinkedRecord('wishlist');
+					if (wishlistProxy) {
+						const connection = ConnectionHandler.getConnection(wishlistProxy, 'Wishlist_products');
+						if (connection) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(0, 'totalCount');
+							}
+
+							const productIdsInConnection =
+								connection.getLinkedRecords('edges')?.map(edge => edge.getLinkedRecord('node')?.getValue('id')) || [];
+
+							productIdsInConnection.forEach(id => {
+								if (typeof id === 'string') {
+									ConnectionHandler.deleteNode(connection, id);
+									const productRecord = storeProxy.get(id);
+									if (productRecord) {
+										productRecord.setValue(false, 'inWishlist');
+									}
+								}
+							});
 						}
 					}
 				},

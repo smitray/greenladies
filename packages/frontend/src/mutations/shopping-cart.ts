@@ -14,7 +14,11 @@ const ADD_PRODUCT_TO_CART = graphql`
 					id
 					amount
 					product {
+						id
 						name
+						parent {
+							id
+						}
 					}
 				}
 				cursor
@@ -38,6 +42,11 @@ export const useAddToCartMutation = () => {
 					if (cartProxy && newEdge) {
 						const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
 						if (connection) {
+							const totalCount = connection.getValue('totalCount');
+							if (typeof totalCount === 'number') {
+								connection.setValue(totalCount + 1, 'totalCount');
+							}
+
 							const connectionEdges = connection.getLinkedRecords('edges');
 							const itemInCart =
 								connectionEdges?.findIndex(
@@ -112,6 +121,11 @@ export const useRemoveFromCartMutation = () => {
 						if (cartProxy) {
 							const connection = ConnectionHandler.getConnection(cartProxy, 'ShoppingCart_items');
 							if (connection) {
+								const totalCount = connection.getValue('totalCount');
+								if (typeof totalCount === 'number') {
+									connection.setValue(totalCount - 1, 'totalCount');
+								}
+
 								ConnectionHandler.deleteNode(connection, itemId);
 							}
 						}
