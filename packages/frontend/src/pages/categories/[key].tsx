@@ -8,6 +8,7 @@ import { CategorySidebar } from '../../components/CategorySidebar';
 import { ProductsWithFilters } from '../../components/ProductsWithFilters';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
+import { initializeSelectedFilters, OrderBy, parseOrderBy } from '../../utils/products-filtering-and-ordering';
 
 const CenterWrapper = styled.div`
 	max-width: 1240px;
@@ -15,82 +16,6 @@ const CenterWrapper = styled.div`
 	margin: 0 auto;
 	display: flex;
 `;
-
-const parseOrderBy = (orderBy: any) => {
-	if (orderBy === 'popularity_DESC') {
-		return 'popularity_DESC';
-	}
-
-	if (orderBy === 'created_DESC') {
-		return 'created_DESC';
-	}
-
-	if (orderBy === 'price_ASC') {
-		return 'price_ASC';
-	}
-
-	if (orderBy === 'price_DESC') {
-		return 'price_DESC';
-	}
-
-	if (orderBy === 'discount_DESC') {
-		return 'discount_DESC';
-	}
-
-	return 'popularity_DESC';
-};
-
-type OrderBy = 'popularity_DESC' | 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
-
-function colorCodeToDisplay(code: string) {
-	switch (code) {
-		case 'black':
-			return 'Svart';
-		case 'darkgreen':
-			return 'Mörkgrön';
-		case 'blue':
-			return 'Blå';
-		default:
-			return 'Vit';
-	}
-}
-
-const initializeSelectedFilters = (
-	brands: string[],
-	sizes: string[],
-	colors: string[],
-	lowerPrice: number | null,
-	upperPrice: number | null,
-) => {
-	return [
-		...brands.map(brand => ({
-			filter: 'brand',
-			code: brand,
-			display: brand,
-		})),
-		...sizes.map(size => ({
-			filter: 'size',
-			code: size,
-			display: size,
-		})),
-		...colors.map(color => ({
-			filter: 'color',
-			code: color,
-			display: colorCodeToDisplay(color),
-		})),
-		...(lowerPrice !== null || upperPrice !== null
-			? [
-					{
-						filter: 'price',
-						code: 'price',
-						display: `${lowerPrice !== null ? `${lowerPrice} kr ` : ''}-${
-							upperPrice !== null ? ` ${upperPrice} kr` : ''
-						}`,
-					},
-			  ]
-			: []),
-	];
-};
 
 interface Props {
 	categoryUrlKey: string;
