@@ -4,13 +4,13 @@ import { createFragmentContainer, graphql } from 'react-relay';
 
 import { ProductCard } from '../ProductCard';
 
-import { ProductList_products } from './__generated__/ProductList_products.graphql';
+import { ProductGrid_products } from './__generated__/ProductGrid_products.graphql';
 
 interface ProductListViewProps {
-	products: ProductList_products;
+	products: ProductGrid_products;
 }
 
-const ProductListView = ({ products }: ProductListViewProps) => {
+const ProductGridView = ({ products }: ProductListViewProps) => {
 	return (
 		<div>
 			{products.edges.length > 0 && (
@@ -31,9 +31,9 @@ const ProductListView = ({ products }: ProductListViewProps) => {
 	);
 };
 
-export default createFragmentContainer(ProductListView, {
+export default createFragmentContainer(ProductGridView, {
 	products: graphql`
-		fragment ProductList_products on ProductConnection @argumentDefinitions(filters: { type: "ProductFiltersInput" }) {
+		fragment ProductGrid_products on ProductConnection @argumentDefinitions(filters: { type: "ProductFiltersInput" }) {
 			edges {
 				node {
 					id

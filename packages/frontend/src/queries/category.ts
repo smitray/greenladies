@@ -10,7 +10,7 @@ export const CATEGORY_QUERY = graphql`
 			urlKey
 			products(orderBy: $orderBy, filters: $filters) {
 				...ProductFilters_products
-				...ProductList_products @arguments(filters: $filters)
+				...ProductsWithFilters_products @arguments(filters: $filters)
 			}
 			...CategorySidebar_category @arguments(filters: $filters)
 		}
