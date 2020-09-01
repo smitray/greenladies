@@ -129,11 +129,17 @@ const Cart: MyNextPage = () => {
 				</div>
 				<div style={{ background: 'white', padding: '24px', marginTop: '12px' }}>
 					<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi skickar med</h1>
-					DHL
+					<img src="/images/dhl.jpg" alt="" />
 				</div>
 				<div style={{ background: 'white', padding: '24px', marginTop: '12px' }}>
 					<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi accepterar</h1>
-					Samma som i footern
+					<div>
+						<img style={{ marginLeft: '8px', height: '48px' }} src="/images/klarna.jpg" alt="" />
+						<img style={{ marginLeft: '8px', height: '48px' }} src="/images/visa.png" alt="" />
+						<img style={{ marginLeft: '8px', height: '48px' }} src="/images/mastercard.png" alt="" />
+						<img style={{ marginLeft: '8px', height: '48px' }} src="/images/amex.png" alt="" />
+						<img style={{ marginLeft: '8px', height: '48px' }} src="/images/faktura.png" alt="" />
+					</div>
 				</div>
 			</div>
 			<div style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>
@@ -162,7 +168,7 @@ const Cart: MyNextPage = () => {
 						style={{
 							display: 'block',
 							textDecoration: 'none',
-							background: 'orange',
+							background: '#024b3f',
 							width: '100%',
 							padding: '12px',
 							color: 'white',

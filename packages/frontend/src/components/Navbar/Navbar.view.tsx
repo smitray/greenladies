@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaRegHeart, FaSearch } from 'react-icons/fa';
+import { FaRegHeart } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
@@ -248,7 +248,11 @@ export const NavbarView = ({
 							alignItems: 'center',
 						}}
 					>
-						<div>LOGO</div>
+						<Link href="/" passHref>
+							<a>
+								<img src="/images/greenladies-logo.png" alt="" style={{ height: '24px' }} />
+							</a>
+						</Link>
 					</div>
 					<Group>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
@@ -492,7 +496,7 @@ export const NavbarView = ({
 								);
 							})}
 						</Group>
-						<Group
+						{/* <Group
 							style={{
 								flexBasis: '30%',
 								borderLeft: '1px solid lightgrey',
@@ -524,7 +528,7 @@ export const NavbarView = ({
 									<FaSearch size="16" color="grey" />
 								</div>
 							</div>
-						</Group>
+						</Group> */}
 					</Row>
 				</CenterWrapper>
 			</Row>

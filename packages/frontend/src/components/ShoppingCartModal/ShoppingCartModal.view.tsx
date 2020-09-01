@@ -135,24 +135,42 @@ const ShoppingCartModalView = ({ cart }: ShoppingCartDrawerView) => {
 						{(itemCost + shippingCost).toFixed(2).replace('.', ',')} kr
 					</div>
 				</div>
-				<Link href="/cart" passHref>
-					<a
+				{cart.items.totalCount === 0 ? (
+					<div
 						style={{
 							display: 'block',
 							textDecoration: 'none',
-							background: 'orange',
+							background: 'rgba(2, 75, 53, 0.5)',
 							color: 'white',
 							fontSize: '14px',
 							fontWeight: 'bold',
 							padding: '12px',
 							width: '100%',
-							cursor: 'pointer',
+							cursor: 'not-allowed',
 						}}
-						onClick={() => closeShoppingCartModal()}
 					>
 						TILL VARUKORGEN
-					</a>
-				</Link>
+					</div>
+				) : (
+					<Link href="/cart" passHref>
+						<a
+							style={{
+								display: 'block',
+								textDecoration: 'none',
+								background: '#024b3f',
+								color: 'white',
+								fontSize: '14px',
+								fontWeight: 'bold',
+								padding: '12px',
+								width: '100%',
+								cursor: 'pointer',
+							}}
+							onClick={() => closeShoppingCartModal()}
+						>
+							TILL VARUKORGEN
+						</a>
+					</Link>
+				)}
 			</div>
 		</div>
 	);

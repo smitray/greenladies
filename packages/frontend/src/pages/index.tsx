@@ -8,17 +8,17 @@ const CenterWrapper = styled.div`
 	max-width: 1240px;
 	padding: 0 40px;
 	margin: 0 auto;
-	padding: 24px;
+	padding: 0 40px;
 	display: flex;
 	align-items: flex-start;
 `;
 
-const OrderFailure: MyNextPage = () => {
+const Index: MyNextPage = () => {
 	return (
 		<CenterWrapper>
-			<div>Något gick fel med din order</div>
+			<div>Hem</div>
 		</CenterWrapper>
 	);
 };
 
-export default OrderFailure;
+export default Index;
