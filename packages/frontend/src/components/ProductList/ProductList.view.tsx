@@ -391,7 +391,14 @@ const ProductListView: React.FC<Props> = ({ category }) => {
 				</FiltersContainer>
 			)}
 			{products.length > 0 && (
-				<div style={{ display: 'grid', gap: '24px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
+				<div
+					style={{
+						display: 'grid',
+						gap: '24px',
+						gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+						marginBottom: '32px',
+					}}
+				>
 					{products.map(product => (
 						<ProductCard key={product.id} product={product} />
 					))}

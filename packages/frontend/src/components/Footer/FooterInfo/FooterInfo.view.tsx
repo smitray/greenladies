@@ -1,6 +1,9 @@
 import React from 'react';
 
 import Link from 'next/link';
+import { BiCalendar } from 'react-icons/bi';
+import { FaTruck } from 'react-icons/fa';
+import { RiArrowGoBackFill } from 'react-icons/ri';
 import styled from 'styled-components';
 
 const CenterWrapper = styled.div`
@@ -9,16 +12,11 @@ const CenterWrapper = styled.div`
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
-	gap: 16px;
+	gap: 16px 32px;
 `;
 
-interface GridBoxProps {
-	firstInRow?: boolean;
-}
-
-const GridBox = styled.div<GridBoxProps>`
+const GridBox = styled.div`
 	height: 180px;
-	border-left: ${({ firstInRow }) => (firstInRow ? 'none' : '1px solid grey')};
 `;
 
 const GridBoxTitle = styled.div`
@@ -26,6 +24,7 @@ const GridBoxTitle = styled.div`
 	font-weight: bold;
 	font-size: 12px;
 	margin-bottom: 24px;
+	color: #3a3a3a;
 `;
 
 const List = styled.ul`
@@ -36,38 +35,51 @@ const List = styled.ul`
 
 const ListItem = styled.li`
 	padding: 4px 0;
-`;
-
-const ListItemLink = styled.a`
-	color: grey;
+	color: #444444;
 	text-decoration: none;
 	font-size: 14px;
 `;
 
+const ListItemLink = styled.a`
+	color: #444444;
+	text-decoration: none;
+	font-size: 14px;
+`;
+
+const GridImageContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 8px;
+`;
+
+const GridImage = styled.img`
+	width: 100%;
+`;
+
 export const FooterInfoView = () => {
 	return (
-		<div style={{ background: 'lightgrey' }}>
+		<div style={{ background: '#eceaeb' }}>
 			<CenterWrapper>
-				<GridBox firstInRow>
+				<GridBox>
 					<GridBoxTitle>Vanliga frågor</GridBoxTitle>
 					<List>
 						<ListItem>
-							<Link href="/kundservice">
+							<Link href="/kundservice" passHref>
 								<ListItemLink>Köpvillkor</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice">
+							<Link href="/kundservice" passHref>
 								<ListItemLink>Beställa</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice">
+							<Link href="/kundservice" passHref>
 								<ListItemLink>Betalning</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice">
+							<Link href="/kundservice" passHref>
 								<ListItemLink>Leveranstid</ListItemLink>
 							</Link>
 						</ListItem>
@@ -77,17 +89,17 @@ export const FooterInfoView = () => {
 					<GridBoxTitle>Populära kategorier</GridBoxTitle>
 					<List>
 						<ListItem>
-							<Link href="/categories/[key]" as="/categories/jeans">
+							<Link href="/categories/[key]" as="/categories/jeans" passHref>
 								<ListItemLink>Jeans</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/categories/[key]" as="/categories/klanningar">
+							<Link href="/categories/[key]" as="/categories/klanningar" passHref>
 								<ListItemLink>Klänningar</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/categories/[key]" as="/categories/sjalar">
+							<Link href="/categories/[key]" as="/categories/sjalar" passHref>
 								<ListItemLink>Sjalar</ListItemLink>
 							</Link>
 						</ListItem>
@@ -95,21 +107,84 @@ export const FooterInfoView = () => {
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Utvalda märken och designers</GridBoxTitle>
+					<List>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>Baum Und Pferdgarten</ListItemLink>
+							</Link>
+						</ListItem>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>Stefanel</ListItemLink>
+							</Link>
+						</ListItem>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>ESPRIT</ListItemLink>
+							</Link>
+						</ListItem>
+					</List>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Inspiration</GridBoxTitle>
+					<List>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>Höstnyheter</ListItemLink>
+							</Link>
+						</ListItem>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>Vardagsfavoriter</ListItemLink>
+							</Link>
+						</ListItem>
+						<ListItem>
+							<Link href="#" passHref>
+								<ListItemLink>Stilinspiration</ListItemLink>
+							</Link>
+						</ListItem>
+					</List>
 				</GridBox>
-				<GridBox firstInRow>
+				<GridBox>
 					<GridBoxTitle>Betalningsalternativ</GridBoxTitle>
+					<GridImageContainer>
+						<GridImage src="/images/klarna.jpg" />
+						<GridImage src="/images/visa.png" />
+						<GridImage src="/images/mastercard.png" />
+						<GridImage src="/images/amex.png" />
+						<GridImage src="/images/faktura.png" />
+					</GridImageContainer>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Vi skickar med</GridBoxTitle>
+					<GridImageContainer>
+						<GridImage src="/images/dhl.jpg" />
+					</GridImageContainer>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Enkel onlineshopping</GridBoxTitle>
+					<List>
+						<ListItem style={{ display: 'flex', alignItems: 'center' }}>
+							<FaTruck size="20" />
+							<span style={{ marginLeft: '8px' }}>Klimatkompenserad frakt</span>
+						</ListItem>
+						<ListItem style={{ display: 'flex', alignItems: 'center' }}>
+							<RiArrowGoBackFill size="20" />
+							<span style={{ marginLeft: '8px' }}>Snabb och fri frakt över 999kr</span>
+						</ListItem>
+						<ListItem style={{ display: 'flex', alignItems: 'center' }}>
+							<BiCalendar size="20" />
+
+							<span style={{ marginLeft: '8px' }}>14 dagar öppet köp</span>
+						</ListItem>
+					</List>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Trygg e-handel</GridBoxTitle>
+					<GridImageContainer>
+						<GridImage src="/images/verified-by-visa.jpg" />
+						<GridImage src="/images/mastercard-securecode.png" />
+					</GridImageContainer>
 				</GridBox>
 			</CenterWrapper>
 		</div>

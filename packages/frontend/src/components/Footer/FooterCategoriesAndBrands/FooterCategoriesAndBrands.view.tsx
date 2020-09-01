@@ -10,11 +10,14 @@ interface FooterCategoriesAndBrandsViewProps {
 }
 
 const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewProps) => {
+	const sortedCategories = query.categories.slice().sort((left, right) => left.name.localeCompare(right.name));
+	const sortedBrands = query.brands.slice().sort();
+
 	return (
 		<div style={{ padding: '24px', textAlign: 'center' }}>
 			<h1 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0' }}>KATEGORIER | MÄRKEN & DESIGNERS</h1>
 			<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '16px' }}>
-				{query.categories.map((category, index) => (
+				{sortedCategories.map((category, index) => (
 					<React.Fragment key={category.id}>
 						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
 						<Link href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
@@ -26,7 +29,7 @@ const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewP
 				))}
 			</div>
 			<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-				{query.brands.map((brand, index) => (
+				{sortedBrands.map((brand, index) => (
 					<React.Fragment key={index}>
 						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
 						<div style={{ padding: '2px 8px', fontSize: '14px' }}>{brand}</div>

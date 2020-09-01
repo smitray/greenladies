@@ -11,7 +11,7 @@ const CenterWrapper = styled.div`
 
 export const FooterEmailSignupView = () => {
 	return (
-		<div>
+		<div style={{ background: 'url(/images/email-signup.jpg)' }}>
 			<CenterWrapper>
 				<div style={{ maxWidth: '500px', padding: '24px', background: 'white' }}>
 					<h1 style={{ margin: '0 0 16px 0', fontSize: '24px' }}>Vad sägs om 10% rabatt på nästa beställning?</h1>
@@ -33,16 +33,17 @@ export const FooterEmailSignupView = () => {
 						/>
 					</div>
 					<button
+						disabled
 						style={{
 							width: '200px',
 							padding: '12px',
-							background: 'black',
+							background: 'grey',
 							border: 'none',
 							outline: 'none',
 							color: 'white',
 							fontSize: '14px',
 							fontWeight: 'bold',
-							cursor: 'pointer',
+							cursor: 'not-allowed',
 							marginBottom: '16px',
 						}}
 					>
