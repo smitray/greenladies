@@ -46,31 +46,42 @@ const resolvers: ProductModuleResolversType = {
 			let filteredProducts: ConfigurableProduct[] | null = null;
 			const { orderBy, filters } = args;
 			if (filters) {
-				const productsFilteredByBrands = filters.brand_in
-					? products.filter(product => {
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-							return filters.brand_in!.includes(product.brand);
-					  })
-					: products;
-				const productsFilteredByColors = filters.color_in
-					? products.filter(product => {
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-							return setIntersection(new Set(filters.color_in!), new Set(product.colors)).size > 0;
-					  })
-					: products;
+				const productsFilteredByBrands =
+					filters.brand_in && filters.brand_in.length > 0
+						? products.filter(product => {
+								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+								return filters.brand_in!.includes(product.brand);
+						  })
+						: products;
+				const productsFilteredByColors =
+					filters.color_in && filters.color_in.length > 0
+						? products.filter(product => {
+								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+								return setIntersection(new Set(filters.color_in!), new Set(product.colors)).size > 0;
+						  })
+						: products;
 				const productsFilteredByPrice = filters.price_between
 					? products.filter(product => {
 							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 							const { from, to } = filters.price_between!;
-							return product.price >= from && product.price <= to;
+							if (from && product.price < from) {
+								return false;
+							}
+
+							if (to && product.price > to) {
+								return false;
+							}
+
+							return true;
 					  })
 					: products;
-				const productsFilteredBySizes = filters.size_in
-					? products.filter(product => {
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-							return setIntersection(new Set(filters.size_in!), new Set(product.sizes)).size > 0;
-					  })
-					: products;
+				const productsFilteredBySizes =
+					filters.size_in && filters.size_in.length > 0
+						? products.filter(product => {
+								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+								return setIntersection(new Set(filters.size_in!), new Set(product.sizes)).size > 0;
+						  })
+						: products;
 
 				const productIdsFilteredByBrands = new Set(productsFilteredByBrands.map(({ id }) => id));
 				const productIdsFilteredByPrice = new Set(productsFilteredByPrice.map(({ id }) => id));

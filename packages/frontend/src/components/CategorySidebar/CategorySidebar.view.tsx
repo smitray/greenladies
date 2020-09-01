@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
@@ -18,7 +19,7 @@ interface InputCategory {
 	id: string;
 	name: string;
 	urlKey: string;
-	products: {
+	categoryProducts: {
 		totalCount: number;
 	};
 	parent?: InputCategory | null;
@@ -30,7 +31,7 @@ function inputToOutputCategory(category: InputCategory): Category {
 		id: category.id,
 		name: category.name,
 		urlKey: category.urlKey,
-		productCount: category.products.totalCount,
+		productCount: category.categoryProducts.totalCount,
 		children: (category.children || []).map(child => {
 			return inputToOutputCategory(child);
 		}),
@@ -44,7 +45,7 @@ function createCategoryTree(category: CategorySidebar_category): Category {
 			id: root.parent.id,
 			name: root.parent.name,
 			urlKey: root.parent.urlKey,
-			products: root.parent.products,
+			categoryProducts: root.parent.categoryProducts,
 			children: root.parent.children?.map(child => (child.name === root.name ? root : child)),
 			parent: root.parent.parent,
 		};
@@ -90,31 +91,48 @@ const CategoryProductCount = styled.span`
 	margin-left: 4px;
 `;
 
+const filterObjectByKeys = (allowedKeys: string[], object: Record<string, any>): Record<string, any> => {
+	return Object.keys(object)
+		.filter(key => allowedKeys.includes(key))
+		.reduce((prev, current) => {
+			return {
+				...prev,
+				[current]: object[current],
+			};
+		}, {});
+};
+
 interface CategorySidebarRecursiveProps {
 	category: Category;
 	currentCategoryId: string;
+	query: Record<string, any>;
 }
 
-const CategorySidebarRecursive: React.FC<CategorySidebarRecursiveProps> = ({ category, currentCategoryId }) => {
+const CategorySidebarRecursive: React.FC<CategorySidebarRecursiveProps> = ({ category, currentCategoryId, query }) => {
 	return (
 		<React.Fragment>
 			{category.productCount > 0 ? (
 				<React.Fragment>
-					<Link href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
+					<Link
+						href={{ pathname: '/categories/[key]', query }}
+						as={{ pathname: `/categories/${category.urlKey}`, query }}
+						passHref
+					>
 						<CategorySidebarLink selected={category.id === currentCategoryId}>{category.name}</CategorySidebarLink>
 					</Link>
 					<CategoryProductCount>({category.productCount})</CategoryProductCount>
 				</React.Fragment>
 			) : (
 				<CategorySidebarNoLink>
-					{category.name} <CategoryProductCount>(0)</CategoryProductCount>
+					{category.name}
+					<CategoryProductCount>(0)</CategoryProductCount>
 				</CategorySidebarNoLink>
 			)}
 			{category.children.length > 0 && (
 				<CategorySidebarList>
 					{category.children.map(childCategory => (
 						<li key={childCategory.id} style={{ padding: '4px 0' }}>
-							<CategorySidebarRecursive category={childCategory} currentCategoryId={currentCategoryId} />
+							<CategorySidebarRecursive category={childCategory} currentCategoryId={currentCategoryId} query={query} />
 						</li>
 					))}
 				</CategorySidebarList>
@@ -130,10 +148,19 @@ interface Props {
 const CategorySidebarView: React.FC<Props> = ({ category }) => {
 	const categoryTree = createCategoryTree(category);
 
+	const { query } = useRouter();
+
+	const processedQuery = useMemo(() => {
+		return filterObjectByKeys(['orderBy', 'brands', 'sizes', 'colors', 'price'], query);
+	}, [query]);
+
 	return (
 		<div>
 			<div style={{ marginBottom: '8px' }}>
-				<Link href="/categories/[key]" as={`/categories/${categoryTree.urlKey}`}>
+				<Link
+					href={{ pathname: '/categories/[key]', query: processedQuery }}
+					as={{ pathname: `/categories/${categoryTree.urlKey}`, query: processedQuery }}
+				>
 					<a style={{ color: 'black', textDecoration: 'none' }}>
 						<strong style={{ fontSize: '16px' }}>{categoryTree.name}</strong>
 					</a>
@@ -143,7 +170,7 @@ const CategorySidebarView: React.FC<Props> = ({ category }) => {
 			<ul style={{ margin: '0', padding: '0', listStyle: 'none' }}>
 				{categoryTree.children.map(child => (
 					<li key={child.id} style={{ padding: '4px 0' }}>
-						<CategorySidebarRecursive category={child} currentCategoryId={category.id} />
+						<CategorySidebarRecursive category={child} currentCategoryId={category.id} query={processedQuery} />
 					</li>
 				))}
 			</ul>
@@ -153,18 +180,18 @@ const CategorySidebarView: React.FC<Props> = ({ category }) => {
 
 export default createFragmentContainer(CategorySidebarView, {
 	category: graphql`
-		fragment CategorySidebar_category on Category {
+		fragment CategorySidebar_category on Category @argumentDefinitions(filters: { type: "ProductFiltersInput" }) {
 			id
 			name
 			urlKey
-			products {
+			categoryProducts: products(filters: $filters) {
 				totalCount
 			}
 			children {
 				id
 				name
 				urlKey
-				products {
+				categoryProducts: products(filters: $filters) {
 					totalCount
 				}
 			}
@@ -172,14 +199,14 @@ export default createFragmentContainer(CategorySidebarView, {
 				id
 				name
 				urlKey
-				products {
+				categoryProducts: products(filters: $filters) {
 					totalCount
 				}
 				children {
 					id
 					name
 					urlKey
-					products {
+					categoryProducts: products(filters: $filters) {
 						totalCount
 					}
 				}
@@ -187,14 +214,14 @@ export default createFragmentContainer(CategorySidebarView, {
 					id
 					name
 					urlKey
-					products {
+					categoryProducts: products(filters: $filters) {
 						totalCount
 					}
 					children {
 						id
 						name
 						urlKey
-						products {
+						categoryProducts: products(filters: $filters) {
 							totalCount
 						}
 					}
@@ -202,14 +229,14 @@ export default createFragmentContainer(CategorySidebarView, {
 						id
 						name
 						urlKey
-						products {
+						categoryProducts: products(filters: $filters) {
 							totalCount
 						}
 						children {
 							id
 							name
 							urlKey
-							products {
+							categoryProducts: products(filters: $filters) {
 								totalCount
 							}
 						}
