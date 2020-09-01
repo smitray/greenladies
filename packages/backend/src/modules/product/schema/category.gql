@@ -7,8 +7,8 @@ enum OrderProductsInput {
 }
 
 input RangeInput {
-	from: Float!
-	to: Float!
+	from: Float
+	to: Float
 }
 
 input ProductFiltersInput {

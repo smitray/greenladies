@@ -5,5 +5,7 @@ input CategoryWhereUniqueInput {
 
 type Query {
 	category(where: CategoryWhereUniqueInput!): Category!
+	specialCategory(where: CategoryWhereUniqueInput!): Category!
 	categories: [Category!]!
+	rootCategories: [Category!]!
 }
