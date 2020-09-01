@@ -116,7 +116,7 @@ const ProductsWithFiltersView = ({
 			}`;
 		}
 
-		router.replace(`${router.pathname}?${stringify(query)}`, `/categories/${router.query.key}?${stringify(query)}`);
+		router.replace(`${router.pathname}?${stringify(query)}`, `${router.asPath.split('?')[0]}?${stringify(query)}`);
 	}, [selectedOrderBy, selectedBrands, selectedSizes, selectedColors, selectedUpperPrice, selectedLowerPrice]);
 
 	return (

@@ -52,6 +52,7 @@ export interface Category {
 	id: string;
 	name: string;
 	urlKey: string;
+	includeInMenu: boolean;
 	parentId: string;
 	childrenIds: string[];
 }
@@ -61,6 +62,7 @@ function transformCategory(category: MagentoFullCategory): Category {
 		id: category.id.toString(),
 		name: category.name,
 		urlKey: getCustomAttribute(category.custom_attributes, 'url_key', true),
+		includeInMenu: category.include_in_menu,
 		parentId: category.parent_id.toString(),
 		childrenIds: category.children
 			.split(',')
@@ -69,13 +71,17 @@ function transformCategory(category: MagentoFullCategory): Category {
 	};
 }
 
-export async function getCategory(id: number) {
+async function getCategory(id: number) {
 	const { data: category } = await magentoAdminRequester.get<MagentoFullCategory>('/rest/default/V1/categories/' + id);
 
 	return transformCategory(category);
 }
 
 function flattenCategories(category: MagentoSimpleCategory): MagentoSimpleCategory[] {
+	if (!category.is_active) {
+		return [];
+	}
+
 	return [category, ...category.children_data.flatMap(flattenCategories)];
 }
 

@@ -57,6 +57,7 @@ export interface Category {
 	id: string;
 	name: string;
 	urlKey: string;
+	includeInMenu: boolean;
 	parentId: string;
 	childrenIds: string[];
 	productIds: string[];
@@ -190,6 +191,12 @@ export async function syncMagentoProductsAndCategories() {
 		]),
 	);
 
+	const redisRootCategories = redisCache.set(
+		'rootCategoryIds',
+		transformedCategories.filter(category => category.parentId === '2').map(category => category.id),
+		ONE_DAY_IN_SECONDS,
+	);
+
 	const redisConfigurableProducts = redisCache.setMany(
 		transformedConfigurableProducts.flatMap<any>(product => [
 			{ key: `ConfigurableProduct:id:${product.id}`, value: product, expiresInSeconds: ONE_DAY_IN_SECONDS },
@@ -229,6 +236,7 @@ export async function syncMagentoProductsAndCategories() {
 
 	await Promise.all([
 		redisCategories,
+		redisRootCategories,
 		redisConfigurableProducts,
 		redisProductConfigurations,
 		redisAllConfigurableProductIds,
@@ -258,6 +266,11 @@ export async function getCategory({
 	} else {
 		throw new Error('Provide one of id, sku, and urlKey');
 	}
+}
+
+export async function getRootCategoryIds() {
+	const redisCache = getRedisCache();
+	return redisCache.get<string[]>('rootCategoryIds');
 }
 
 export async function getConfigurableProduct({
@@ -303,7 +316,7 @@ export function updateProductConfiguration(configuration: ProductConfiguration) 
 export async function getConfigurableProducts() {
 	const redisCache = getRedisCache();
 	const configurableProductIds = await redisCache.get<string[]>(`allConfigurableProductIds`);
-	return redisCache.getMany<ConfigurableProduct>(configurableProductIds);
+	return redisCache.getMany<ConfigurableProduct>(configurableProductIds.map(id => `ConfigurableProduct:id:${id}`));
 }
 
 export function getBrands() {

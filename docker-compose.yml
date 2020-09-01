@@ -50,7 +50,7 @@ services:
       - ${MAGENTO_DATA_FOLDER}:/var/www/html
     labels:
       - traefik.enable=true
-      - traefik.http.routers.magento.rule=Host(`magento.${DOMAIN}`)&&(PathPrefix(`/admin`)||PathPrefix(`/media`)||PathPrefix(`/static`))
+      - traefik.http.routers.magento.rule=Host(`magento.${DOMAIN}`)&&(PathPrefix(`/admin`)||PathPrefix(`/media`)||PathPrefix(`/static`)||PathPrefix(`/rest`))
       - traefik.http.routers.magento.entryPoints=https
       - traefik.http.services.magento.loadbalancer.server.port=80
 

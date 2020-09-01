@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { filterObjectByKeys } from '../../utils/object';
+
 import { CategorySidebar_category } from './__generated__/CategorySidebar_category.graphql';
 
 interface Category {
@@ -90,17 +92,6 @@ const CategoryProductCount = styled.span`
 	color: grey;
 	margin-left: 4px;
 `;
-
-const filterObjectByKeys = (allowedKeys: string[], object: Record<string, any>): Record<string, any> => {
-	return Object.keys(object)
-		.filter(key => allowedKeys.includes(key))
-		.reduce((prev, current) => {
-			return {
-				...prev,
-				[current]: object[current],
-			};
-		}, {});
-};
 
 interface CategorySidebarRecursiveProps {
 	category: Category;

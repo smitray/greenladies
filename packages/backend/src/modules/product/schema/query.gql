@@ -5,4 +5,12 @@ input ProductWhereUniqueInput {
 
 type Query {
 	product(where: ProductWhereUniqueInput!): Product!
+	products(
+		first: Int
+		after: String
+		last: Int
+		before: String
+		orderBy: OrderProductsInput
+		filters: ProductFiltersInput
+	): ProductConnection!
 }
