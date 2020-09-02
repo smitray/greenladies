@@ -5,6 +5,7 @@ import { stringify } from 'query-string';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { useDidUpdateEffect } from '../../hooks/use-did-update-effect';
+import { colorCodeToDisplay } from '../../utils/products-filtering-and-ordering';
 import { ProductFilters } from '../ProductFilters';
 import { ProductGrid } from '../ProductGrid';
 import { ProductSelectedFilters } from '../ProductSelectedFilters';
@@ -42,19 +43,6 @@ const parseOrderBy = (orderBy: any): OrderBy => {
 
 	return 'popularity_DESC';
 };
-
-function colorCodeToDisplay(code: string) {
-	switch (code) {
-		case 'black':
-			return 'Svart';
-		case 'darkgreen':
-			return 'Mörkgrön';
-		case 'blue':
-			return 'Blå';
-		default:
-			return 'Vit';
-	}
-}
 
 interface ProductsWithFiltersViewProps {
 	products: ProductsWithFilters_products;

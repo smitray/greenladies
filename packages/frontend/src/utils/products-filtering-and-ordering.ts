@@ -25,9 +25,22 @@ export const parseOrderBy = (orderBy: any) => {
 export type OrderBy = 'popularity_DESC' | 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
 
 const colorCodeDisplayMapping: Record<string, string> = {
+	beige: 'Beige',
 	black: 'Svart',
-	darkgreen: 'Mörkgrön',
 	blue: 'Blå',
+	brown: 'Brun',
+	darkgreen: 'Mörkgrön',
+	gold: 'Guld',
+	green: 'Grön',
+	grey: 'Grå',
+	multi: 'Flerfärgad',
+	orange: 'Orange',
+	pink: 'Rosa',
+	purple: 'Lila',
+	red: 'Röd',
+	silver: 'Silver',
+	white: 'Vit',
+	yellow: 'Gul',
 };
 
 export function colorCodeToDisplay(code: string) {

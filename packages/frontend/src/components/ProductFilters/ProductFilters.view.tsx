@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { colorCodeToDisplay } from '../../utils/products-filtering-and-ordering';
 import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
 import { CategoryFilterRangeSelect } from '../CategoryFilterRangeSelect';
 import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
@@ -29,27 +30,47 @@ const ColorSquare = styled.div<ColorSquareProps>`
 
 function colorCodeToSquare(code: string) {
 	switch (code) {
+		case 'beige':
+			return <ColorSquare color="beige" />;
 		case 'black':
 			return <ColorSquare color="black" />;
-		case 'darkgreen':
-			return <ColorSquare color="darkgreen" />;
 		case 'blue':
 			return <ColorSquare color="blue" />;
-		default:
-			return 'white';
-	}
-}
-
-function colorCodeToDisplay(code: string) {
-	switch (code) {
-		case 'black':
-			return 'Svart';
+		case 'brown':
+			return <ColorSquare color="brown" />;
 		case 'darkgreen':
-			return 'Mörkgrön';
-		case 'blue':
-			return 'Blå';
+			return <ColorSquare color="darkgreen" />;
+		case 'gold':
+			return <ColorSquare color="gold" />;
+		case 'green':
+			return <ColorSquare color="green" />;
+		case 'grey':
+			return <ColorSquare color="grey" />;
+		case 'multi':
+			return (
+				<div style={{ width: '14px', height: '14px', marginRight: '4px', display: 'flex', flexWrap: 'wrap' }}>
+					<div style={{ width: '7px', height: '7px', background: 'red' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'green' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'blue' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'yellow' }}></div>
+				</div>
+			);
+		case 'orange':
+			return <ColorSquare color="orange" />;
+		case 'pink':
+			return <ColorSquare color="pink" />;
+		case 'purple':
+			return <ColorSquare color="purple" />;
+		case 'red':
+			return <ColorSquare color="red" />;
+		case 'silver':
+			return <ColorSquare color="silver" />;
+		case 'white':
+			return <ColorSquare color="white" />;
+		case 'yellow':
+			return <ColorSquare color="yellow" />;
 		default:
-			return 'Vit';
+			return <ColorSquare color="white" />;
 	}
 }
 
