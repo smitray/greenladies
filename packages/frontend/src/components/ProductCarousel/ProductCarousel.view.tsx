@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { useElementDimensions } from '../../hooks/use-element-dimensions';
 import { ProductCard } from '../ProductCard';
 
 import { ProductCarousel_products } from './__generated__/ProductCarousel_products.graphql';
@@ -16,25 +17,16 @@ const CAROUSEL_ITEMS_IN_VIEW = 4;
 const UPPER_ITEM_INDEX_OFFSET = CAROUSEL_ITEMS_IN_VIEW - 1;
 
 const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps) => {
-	const refs = useMemo(
-		() =>
-			products.edges.reduce<React.RefObject<HTMLLIElement>[]>((acc, _value, index) => {
-				acc[index] = React.createRef();
-				return acc;
-			}, []),
-		[products.edges],
-	);
 	const [index, setIndex] = useState(0);
+	const wrapperElement = useRef<HTMLDivElement>(null);
+	const { width: wrapperWidth } = useElementDimensions(wrapperElement);
 
+	const [initialRender, setInitialRender] = useState(true);
 	useEffect(() => {
-		setIndex(0);
-		const ref = refs[0];
-		if (ref) {
-			if (ref.current) {
-				// ref.current.scrollIntoView();
-			}
-		}
-	}, [refs]);
+		setTimeout(() => setInitialRender(false), 50);
+	}, []);
+
+	const elementWidth = useMemo(() => (wrapperWidth - 2 * sidePadding) / 4, [wrapperWidth, sidePadding]);
 
 	return (
 		<div style={{ position: 'relative' }}>
@@ -52,12 +44,7 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 						cursor: 'pointer',
 					}}
 					onClick={() => {
-						const nextIndex = index - 1;
 						setIndex(index => index - 1);
-						const ref = refs[nextIndex];
-						if (ref.current) {
-							ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-						}
 					}}
 				>
 					<div style={{ width: '32px', height: '32px' }}>
@@ -79,12 +66,7 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 						cursor: 'pointer',
 					}}
 					onClick={() => {
-						const nextIndex = index + UPPER_ITEM_INDEX_OFFSET + 1;
 						setIndex(index => index + 1);
-						const ref = refs[nextIndex];
-						if (ref.current) {
-							ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-						}
 					}}
 				>
 					<div style={{ width: '32px', height: '32px' }}>
@@ -92,31 +74,45 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 					</div>
 				</button>
 			)}
-			<ul
+			<div
+				ref={wrapperElement}
 				style={{
 					position: 'relative',
-					display: 'flex',
 					overflow: 'hidden',
-					scrollPadding: `0 ${sidePadding}px`,
-					padding: `16px ${sidePadding}px`,
-					margin: '0 -8px',
-					listStyle: 'none',
 				}}
 			>
-				{products.edges.map(({ node: product }, index) => {
-					return (
-						<li
-							id={index.toString()}
-							key={index}
-							ref={refs[index]}
-							style={{ flexShrink: 0, flexBasis: '25%', maxWidth: '25%', padding: '0 8px' }}
-						>
-							<ProductCard product={product} />
-						</li>
-					);
-				})}
-				<li key={index} ref={refs[index]} style={{ flexShrink: 0, flexBasis: '1000px', padding: '0 8px' }}></li>
-			</ul>
+				<div>
+					<ul
+						style={{
+							display: 'flex',
+							width: sidePadding + elementWidth * products.edges.length + 'px',
+							listStyle: 'none',
+							margin: '0',
+							padding: '0',
+							transform: `translateX(${sidePadding}px) translateX(-${elementWidth * index}px)`,
+							transition: initialRender ? 'all 0ms' : 'all 300ms',
+						}}
+					>
+						{products.edges.map(({ node: product }, index) => {
+							return (
+								<li
+									id={index.toString()}
+									key={index}
+									style={{
+										width: elementWidth + 'px',
+										flexBasis: elementWidth + 'px',
+										flexGrow: 0,
+										flexShrink: 0,
+										padding: '0 8px',
+									}}
+								>
+									<ProductCard product={product} />
+								</li>
+							);
+						})}
+					</ul>
+				</div>
+			</div>
 		</div>
 	);
 };
