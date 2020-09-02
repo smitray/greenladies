@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.nav`
-	padding-bottom: 24px;
+	padding-bottom: 0px;
 `;
 
 export const CenterWrapper = styled.div`

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import Link from 'next/link';
 import Drawer from 'rc-drawer';
 import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
@@ -73,61 +74,65 @@ const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerVi
 						}}
 					>
 						{wishlist.products.edges.map(({ node: product }) => (
-							<div key={product.id}>
-								<div
-									style={{
-										display: 'block',
-										position: 'relative',
-										background: '#f6f6f6',
-										width: '100%',
-										paddingTop: '131.4%',
-										marginBottom: '8px',
-									}}
-								>
-									{isEditingState && (
-										<button
+							<Link key={product.id} href="/products/[key]" as={`/products/${product.urlKey}`}>
+								<a style={{ display: 'block', textDecoration: 'none', color: 'black' }} onClick={() => requestClose()}>
+									<div>
+										<div
 											style={{
-												position: 'absolute',
-												top: '8px',
-												right: '8px',
-												padding: '6px',
-												border: 'none',
-												background: 'none',
-												outline: 'none',
-												cursor: 'pointer',
-												zIndex: 10,
-											}}
-											onClick={() => removeFromWishlist(product.id)}
-										>
-											<div style={{ width: '16px', height: '16px' }}>
-												<FaRegTrashAlt size="16" />
-											</div>
-										</button>
-									)}
-									<div
-										style={{
-											position: 'absolute',
-											top: '0',
-											right: '0',
-											bottom: '0',
-											left: '0',
-										}}
-									>
-										<img
-											src={product.image}
-											alt=""
-											style={{
+												display: 'block',
+												position: 'relative',
+												background: '#f6f6f6',
 												width: '100%',
-												height: '100%',
+												paddingTop: '131.4%',
+												marginBottom: '8px',
 											}}
-										/>
+										>
+											{isEditingState && (
+												<button
+													style={{
+														position: 'absolute',
+														top: '8px',
+														right: '8px',
+														padding: '6px',
+														border: 'none',
+														background: 'none',
+														outline: 'none',
+														cursor: 'pointer',
+														zIndex: 10,
+													}}
+													onClick={() => removeFromWishlist(product.id)}
+												>
+													<div style={{ width: '16px', height: '16px' }}>
+														<FaRegTrashAlt size="16" />
+													</div>
+												</button>
+											)}
+											<div
+												style={{
+													position: 'absolute',
+													top: '0',
+													right: '0',
+													bottom: '0',
+													left: '0',
+												}}
+											>
+												<img
+													src={product.image}
+													alt=""
+													style={{
+														width: '100%',
+														height: '100%',
+													}}
+												/>
+											</div>
+										</div>
+										<div style={{ fontSize: '16px', textAlign: 'center' }}>{product.name}</div>
+										<div style={{ fontSize: '16px', fontWeight: 'bold', textAlign: 'center', color: 'red' }}>
+											{product.specialPrice} kr
+										</div>
 									</div>
-								</div>
-								<div style={{ fontSize: '16px', textAlign: 'center' }}>{product.name}</div>
-								<div style={{ fontSize: '16px', fontWeight: 'bold', textAlign: 'center', color: 'red' }}>
-									{product.specialPrice} kr
-								</div>
-							</div>
+								</a>
+							</Link>
 						))}
 					</div>
 				)}
@@ -144,6 +149,7 @@ export default createFragmentContainer(WishlistDrawerView, {
 					node {
 						id
 						name
+						urlKey
 						specialPrice
 						image
 					}

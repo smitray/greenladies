@@ -19,7 +19,6 @@ const ProductGridView = ({ products }: ProductListViewProps) => {
 						display: 'grid',
 						gap: '24px',
 						gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-						marginBottom: '32px',
 					}}
 				>
 					{products.edges.map(({ node: product }) => (

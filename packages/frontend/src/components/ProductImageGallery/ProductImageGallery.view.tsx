@@ -47,7 +47,7 @@ const ProductImageGalleryView = ({ product }: ProductImageGalleryViewProps) => {
 					/>
 				))}
 			</div>
-			<div style={{ flexBasis: '86%' }}>
+			<div style={{ flexBasis: '86%', position: 'relative' }}>
 				<img
 					src={selectedImage.src}
 					alt=""
@@ -57,6 +57,20 @@ const ProductImageGalleryView = ({ product }: ProductImageGalleryViewProps) => {
 						setGalleryIsOpen(true);
 					}}
 				/>
+				<div
+					style={{
+						position: 'absolute',
+						background: 'white',
+						color: 'green',
+						fontSize: '14px',
+						fontWeight: 'bold',
+						top: '8px',
+						padding: '2px 4px',
+						left: '0',
+					}}
+				>
+					{product.condition === 'new' ? 'NY' : 'VINTAGE'}
+				</div>
 			</div>
 			<PhotoSwipe
 				isOpen={galleryIsOpen}
@@ -86,6 +100,7 @@ export default createFragmentContainer(ProductImageGalleryView, {
 		fragment ProductImageGallery_product on Product {
 			image
 			images
+			condition
 		}
 	`,
 });

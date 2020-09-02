@@ -64,12 +64,14 @@ const Home: MyNextPage = () => {
 					</Link>
 				</div>
 			</div>
-			<div>
+			<div style={{ padding: '24px 0' }}>
 				<CenterWrapper>
-					<div>Underbara pasteller</div>
-					<div>Få inspiration till vårens favoritfärg</div>
+					<div>
+						<h1 style={{ margin: '0 0 16px 0' }}>Underbara pasteller</h1>
+						<div style={{ marginBottom: '24px', color: '#999999' }}>Få inspiration till vårens favoritfärg</div>
+					</div>
 				</CenterWrapper>
-				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 0) / 2} />
+				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 40) / 2} />
 			</div>
 			<div style={{ position: 'relative' }}>
 				<img src="/images/frontpage-2.jpg" alt="" style={{ width: '100%', display: 'block' }} />
@@ -109,12 +111,14 @@ const Home: MyNextPage = () => {
 					</Link>
 				</div>
 			</div>
-			<div>
+			<div style={{ padding: '24px 0' }}>
 				<CenterWrapper>
-					<div>Underbara pasteller</div>
-					<div>Få inspiration till vårens favoritfärg</div>
+					<div>
+						<h1 style={{ margin: '0 0 16px 0' }}>Nedsatta priser</h1>
+						<div style={{ marginBottom: '24px', color: '#999999' }}>De bästa fynden just nu</div>
+					</div>
 				</CenterWrapper>
-				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 0) / 2} />
+				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 40) / 2} />
 			</div>
 			<div style={{ position: 'relative' }}>
 				<img src="/images/frontpage-3.jpg" alt="" style={{ width: '100%', display: 'block' }} />
@@ -154,12 +158,8 @@ const Home: MyNextPage = () => {
 					</Link>
 				</div>
 			</div>
-			<div>
-				<CenterWrapper>
-					<div>Underbara pasteller</div>
-					<div>Få inspiration till vårens favoritfärg</div>
-				</CenterWrapper>
-				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 0) / 2} />
+			<div style={{ padding: '24px 0' }}>
+				<ProductCarousel products={category.products} sidePadding={Math.max(windowWidth - 1240, 40) / 2} />
 			</div>
 		</React.Fragment>
 	);

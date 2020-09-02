@@ -12,7 +12,7 @@ import { initializeSelectedFilters, OrderBy, parseOrderBy } from '../../utils/pr
 
 const CenterWrapper = styled.div`
 	max-width: 1240px;
-	padding: 0 40px;
+	padding: 24px 40px;
 	margin: 0 auto;
 	display: flex;
 `;
