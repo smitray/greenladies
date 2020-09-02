@@ -1,3 +1,5 @@
+import slug from 'limax';
+
 import { getCategories } from './api/category';
 import {
 	ConfigurableProduct as MagentoConfigurableProduct,
@@ -63,12 +65,17 @@ export interface Category {
 	productIds: string[];
 }
 
+export interface Brand {
+	id: string;
+	name: string;
+}
+
 export async function syncMagentoProductsAndCategories() {
 	const magentoCategories = await getCategories();
 
 	const magentoProducts = await getProducts({ pageSize: 1000000 });
 
-	const brands = new Set<string>();
+	const brands = new Map<string, Brand>();
 	const productConfigurationParentIds = new Map<string, string>();
 	const categoriesProductIds = new Map<string, string[]>();
 	const configurableProducts: MagentoConfigurableProduct[] = [];
@@ -77,7 +84,11 @@ export async function syncMagentoProductsAndCategories() {
 		switch (product.__type) {
 			case 'ConfigurableProduct':
 				{
-					brands.add(product.brand);
+					const brandId = slug(product.brand);
+					brands.set(brandId, {
+						id: brandId,
+						name: product.brand,
+					});
 					configurableProducts.push(product);
 					for (const categoryId of product.categoryIds) {
 						const categoryProductIds = categoriesProductIds.get(categoryId);
@@ -226,7 +237,22 @@ export async function syncMagentoProductsAndCategories() {
 		ONE_DAY_IN_SECONDS,
 	);
 
-	const redisBrands = redisCache.set('allBrandNames', [...brands], ONE_DAY_IN_SECONDS);
+	const redisBrands = redisCache.setMany(
+		[...brands.values()].flatMap<any>(brand => [
+			{
+				key: `Brand:id:${brand.id}`,
+				value: brand,
+				expiresInSeconds: ONE_DAY_IN_SECONDS,
+			},
+			{
+				key: `Brand:name:${brand.name}`,
+				value: brand.id,
+				expiresInSeconds: ONE_DAY_IN_SECONDS,
+			},
+		]),
+	);
+
+	const redisAllBrandIds = redisCache.set('allBrandIds', [...brands.keys()], ONE_DAY_IN_SECONDS);
 
 	const redisAllCategoryIds = redisCache.set(
 		'allCategoryIds',
@@ -241,6 +267,7 @@ export async function syncMagentoProductsAndCategories() {
 		redisProductConfigurations,
 		redisAllConfigurableProductIds,
 		redisBrands,
+		redisAllBrandIds,
 		redisAllCategoryIds,
 	]);
 }
@@ -319,9 +346,22 @@ export async function getConfigurableProducts() {
 	return redisCache.getMany<ConfigurableProduct>(configurableProductIds.map(id => `ConfigurableProduct:id:${id}`));
 }
 
-export function getBrands() {
+export async function getBrands() {
 	const redisCache = getRedisCache();
-	return redisCache.get<string[]>('allBrandNames');
+	const brandIds = await redisCache.get<string[]>('allBrandIds');
+	return redisCache.getMany<Brand>(brandIds.map(brandId => `Brand:id:${brandId}`));
+}
+
+export async function getBrand({ id, name }: { id?: string | null; name?: string | null }) {
+	const redisCache = getRedisCache();
+	if (id) {
+		return redisCache.get<ProductConfiguration>(`Brand:id:${id}`);
+	} else if (name) {
+		const id = await redisCache.get<string>(`Brand:name:${name}`);
+		return redisCache.get<ProductConfiguration>(`Brand:id:${id}`);
+	} else {
+		throw new Error('Provide one of id and sku');
+	}
 }
 
 export function getCategoryIds() {

@@ -1,0 +1,16 @@
+type SearchMeta {
+	indices: [Int!]!
+}
+
+type SearchResult {
+	node: Node!
+	meta: SearchMeta!
+}
+
+type SearchPayload {
+	results: [SearchResult!]!
+}
+
+type Query {
+	search(query: String!): SearchPayload!
+}

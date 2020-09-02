@@ -7,6 +7,7 @@ generates:
     config:
       typesPrefix: GQL
       mappers:
+        Brand: ./../types#Node
         Category: ./../types#Node
         Product: ./../types#Node
         ShoppingCart: ./../types#Node

@@ -11,7 +11,7 @@ interface FooterCategoriesAndBrandsViewProps {
 
 const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewProps) => {
 	const sortedCategories = query.categories.slice().sort((left, right) => left.name.localeCompare(right.name));
-	const sortedBrands = query.brands.slice().sort();
+	const sortedBrands = query.brands.slice().sort((left, right) => left.name.localeCompare(right.name));
 
 	return (
 		<div style={{ padding: '24px', textAlign: 'center' }}>
@@ -32,8 +32,10 @@ const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewP
 				{sortedBrands.map((brand, index) => (
 					<React.Fragment key={index}>
 						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
-						<Link href={`/categories/all?brands=${brand}`} as={`/categories/all?brands=${brand}`} passHref>
-							<a style={{ padding: '2px 8px', fontSize: '14px', textDecoration: 'none', color: 'black' }}>{brand}</a>
+						<Link href={`/categories/all?brands=${brand.name}`} as={`/categories/all?brands=${brand}`} passHref>
+							<a style={{ padding: '2px 8px', fontSize: '14px', textDecoration: 'none', color: 'black' }}>
+								{brand.name}
+							</a>
 						</Link>
 					</React.Fragment>
 				))}
@@ -45,7 +47,9 @@ const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewP
 export default createFragmentContainer(FooterCategoriesAndBrandsView, {
 	query: graphql`
 		fragment FooterCategoriesAndBrands_query on Query {
-			brands
+			brands {
+				name
+			}
 			categories {
 				id
 				name

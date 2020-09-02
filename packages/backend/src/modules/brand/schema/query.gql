@@ -1,3 +1,9 @@
+input BrandWhereUniqueInput {
+	id: ID
+	name: String
+}
+
 type Query {
-	brands: [String!]!
+	brands: [Brand!]!
+	brand(where: BrandWhereUniqueInput!): Brand!
 }

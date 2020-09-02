@@ -1,0 +1,4 @@
+type Brand implements Node {
+	id: ID!
+	name: String!
+}

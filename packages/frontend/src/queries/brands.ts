@@ -4,7 +4,10 @@ import { brandsQuery } from './__generated__/brandsQuery.graphql';
 
 export const BRANDS_QUERY = graphql`
 	query brandsQuery {
-		brands
+		brands {
+			id
+			name
+		}
 	}
 `;
 

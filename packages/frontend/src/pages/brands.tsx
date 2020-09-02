@@ -10,16 +10,16 @@ import { BRANDS_QUERY, BrandsQuery } from '../queries/brands';
 
 const CenterWrapper = styled.div`
 	max-width: 1240px;
-	padding: 0 40px;
+	padding: 24px 40px;
 	margin: 0 auto 16px auto;
 `;
 
 const Brands: MyNextPage = () => {
 	const { brands } = useLazyLoadQuery<BrandsQuery>(BRANDS_QUERY, {}, { fetchPolicy: 'store-only' });
-	const sectionMap = new Map<string, string[]>();
+	const sectionMap = new Map<string, BrandsQuery['response']['brands'][0][]>();
 
 	for (const brand of brands) {
-		const firstChar = brand.charAt(0).toLocaleLowerCase();
+		const firstChar = brand.name.charAt(0).toLocaleLowerCase();
 
 		const section = sectionMap.get(firstChar);
 		if (section) {
@@ -42,7 +42,7 @@ const Brands: MyNextPage = () => {
 							</div>
 							<div style={{ display: 'flex', flexGrow: 1, flexWrap: 'wrap' }}>
 								{brands.sort().map(brand => (
-									<Link key={brand} href={`/categories/all?brands=${brand}`} passHref>
+									<Link key={brand.id} href={`/categories/all?brands=${brand.name}`} passHref>
 										<a
 											style={{
 												flexBasis: '25%',
@@ -53,7 +53,7 @@ const Brands: MyNextPage = () => {
 												padding: '4px 0',
 											}}
 										>
-											{brand}
+											{brand.name}
 										</a>
 									</Link>
 								))}
