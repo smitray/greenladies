@@ -109,17 +109,17 @@ export const FooterInfoView = () => {
 					<GridBoxTitle>Utvalda märken och designers</GridBoxTitle>
 					<List>
 						<ListItem>
-							<Link href="#" passHref>
+							<Link href="/categories/all?brands=Baum And Pferdgarten" passHref>
 								<ListItemLink>Baum Und Pferdgarten</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="#" passHref>
+							<Link href="/categories/all?brands=Stefanel" passHref>
 								<ListItemLink>Stefanel</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="#" passHref>
+							<Link href="/categories/all?brands=ESPRIT" passHref>
 								<ListItemLink>ESPRIT</ListItemLink>
 							</Link>
 						</ListItem>
@@ -174,7 +174,6 @@ export const FooterInfoView = () => {
 						</ListItem>
 						<ListItem style={{ display: 'flex', alignItems: 'center' }}>
 							<BiCalendar size="20" />
-
 							<span style={{ marginLeft: '8px' }}>14 dagar öppet köp</span>
 						</ListItem>
 					</List>

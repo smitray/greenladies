@@ -32,7 +32,9 @@ const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewP
 				{sortedBrands.map((brand, index) => (
 					<React.Fragment key={index}>
 						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
-						<div style={{ padding: '2px 8px', fontSize: '14px' }}>{brand}</div>
+						<Link href={`/categories/all?brands=${brand}`} as={`/categories/all?brands=${brand}`} passHref>
+							<a style={{ padding: '2px 8px', fontSize: '14px', textDecoration: 'none', color: 'black' }}>{brand}</a>
+						</Link>
 					</React.Fragment>
 				))}
 			</div>
