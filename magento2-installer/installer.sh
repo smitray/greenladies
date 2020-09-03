@@ -39,3 +39,7 @@ bin/magento deploy:mode:set developer
 echo "--- Disabling 2fa ---"
 bin/magento module:disable Magento_TwoFactorAuth
 bin/magento cache:flush 
+
+echo "--- Installing MailChimp extension ---"
+composer require mailchimp/mc-magento2:102.3.41
+bin/magento setup:upgrade
