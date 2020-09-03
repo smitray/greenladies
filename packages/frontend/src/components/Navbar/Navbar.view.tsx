@@ -2,15 +2,17 @@ import React, { useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaRegHeart } from 'react-icons/fa';
-import { graphql, QueryRenderer } from 'react-relay';
+import { FaRegHeart, FaSearch } from 'react-icons/fa';
+import { fetchQuery, graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
+import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
 import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
+import { NavbarSearchQuery } from './__generated__/NavbarSearchQuery.graphql';
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
 import { NavbarWishlistQuery } from './__generated__/NavbarWishlistQuery.graphql';
 import { MegaMenu } from './MegaMenu';
@@ -24,6 +26,74 @@ import {
 	Row,
 	Wrapper,
 } from './Navbar.styles';
+
+const SearchLink = styled.a`
+	color: black;
+	text-decoration: none;
+	font-size: 14px;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: hidden;
+	padding: 8px 4px;
+`;
+
+const highlightResult = (result: string, indices: readonly number[]) => {
+	const intervals: JSX.Element[] = [];
+	let prevStartIndex = -1;
+	let prevIndex = -1;
+	indices.forEach((index, i, arr) => {
+		const isFirst = i === 0;
+		const isLast = i === arr.length - 1;
+
+		if (isFirst) {
+			if (index > 0) {
+				intervals.push(<span>{result.slice(0, index)}</span>);
+			}
+
+			prevStartIndex = index;
+		}
+
+		if (!isFirst && index - prevIndex > 1) {
+			intervals.push(<strong>{result.slice(prevStartIndex, prevIndex + 1)}</strong>);
+			intervals.push(<span>{result.slice(prevIndex + 1, index)}</span>);
+
+			prevStartIndex = index;
+		}
+
+		if (isLast) {
+			intervals.push(<strong>{result.slice(prevStartIndex, index + 1)}</strong>);
+			intervals.push(<span>{result.slice(index + 1)}</span>);
+		}
+
+		prevIndex = index;
+	});
+
+	return intervals;
+};
+
+const SEARCH_QUERY = graphql`
+	query NavbarSearchQuery($query: String!) {
+		search(query: $query) {
+			results {
+				node {
+					__typename
+					id
+					... on Product {
+						name
+						urlKey
+					}
+					... on Brand {
+						name
+					}
+				}
+				meta {
+					indices
+				}
+			}
+		}
+	}
+`;
 
 interface PromoBanner {
 	image: string | null;
@@ -73,6 +143,18 @@ export const NavbarView = ({
 			closeShoppingCartModal();
 		}
 	});
+	const [searchIsOpen, setSearchIsOpen] = useState(false);
+	const [searchQuery, setSearchQuery] = useState('');
+	const [searchResults, setSearchResults] = useState<NavbarSearchQuery['response']['search']['results'] | null>(null);
+	const searchInputHovered = useRef(false);
+	const searchDebounceTimeout = useRef<number | null>(null);
+	const searchResultEl = useRef<HTMLDivElement>(null);
+	useClickOutside(searchResultEl, () => {
+		if (!searchInputHovered.current) {
+			setSearchIsOpen(false);
+		}
+	});
+
 	const { categories }: NavbarProps = {
 		categories: [
 			{
@@ -496,39 +578,136 @@ export const NavbarView = ({
 								);
 							})}
 						</Group>
-						{/* <Group
+						<Group
 							style={{
-								flexBasis: '30%',
+								flexBasis: '300px',
 								borderLeft: '1px solid lightgrey',
 								borderRight: '1px solid lightgrey',
-								position: 'relative',
 							}}
 						>
-							<input
-								style={{
-									border: 'none',
-									outline: 'none',
-									width: '100%',
-									paddingLeft: '48px',
-								}}
-								type="text"
-								placeholder="Sök produkter eller märken"
-							/>
-							<div
-								style={{
-									position: 'absolute',
-									left: '16px',
-									bottom: '0',
-									top: '0',
-									display: 'flex',
-									alignItems: 'center',
-								}}
-							>
-								<div style={{ width: '16px', height: '16px' }}>
-									<FaSearch size="16" color="grey" />
+							<div style={{ position: 'relative', width: '100%' }}>
+								<input
+									style={{
+										border: 'none',
+										outline: 'none',
+										width: '100%',
+										paddingLeft: '48px',
+										height: '100%',
+									}}
+									type="text"
+									placeholder="Sök produkter eller märken"
+									value={searchQuery}
+									onChange={e => {
+										const query = e.target.value;
+										setSearchQuery(query);
+										if (searchDebounceTimeout.current !== null) {
+											clearTimeout(searchDebounceTimeout.current);
+											searchDebounceTimeout.current = null;
+										}
+
+										if (query !== '') {
+											searchDebounceTimeout.current = window.setTimeout(() => {
+												fetchQuery<NavbarSearchQuery>(relayEnvironment, SEARCH_QUERY, {
+													query,
+												}).then(({ search }) => {
+													setSearchResults(search.results);
+													setSearchIsOpen(true);
+												});
+											}, 1000);
+										}
+									}}
+									onFocus={() => {
+										if (searchResults !== null) {
+											setSearchIsOpen(true);
+										}
+									}}
+									onMouseEnter={() => (searchInputHovered.current = true)}
+									onMouseLeave={() => (searchInputHovered.current = false)}
+								/>
+								<div
+									style={{
+										position: 'absolute',
+										left: '16px',
+										bottom: '0',
+										top: '0',
+										display: 'flex',
+										alignItems: 'center',
+									}}
+								>
+									<div style={{ width: '16px', height: '16px' }}>
+										<FaSearch size="16" color="grey" />
+									</div>
+								</div>
+								<div
+									ref={searchResultEl}
+									style={{
+										position: 'absolute',
+										marginTop: '1px',
+										right: '-1px',
+										zIndex: 30,
+										width: '150%',
+										maxHeight: '500px',
+									}}
+								>
+									{searchIsOpen && searchResults !== null && (
+										<div
+											style={{
+												background: 'white',
+												borderRight: '1px solid lightgrey',
+												borderBottom: '1px solid lightgrey',
+												borderLeft: '1px solid lightgrey',
+												padding: '12px',
+											}}
+										>
+											{searchResults.length === 0 && (
+												<div style={{ color: '#999999', fontSize: '14px', textAlign: 'center', padding: '8px 0' }}>
+													Hittade inget som matchade din sökning
+												</div>
+											)}
+											{searchResults.length > 0 && (
+												<div>
+													{searchResults.map(result => {
+														if (result.node.__typename === 'Product') {
+															return (
+																<Link href="/products/[key]" as={`/products/${result.node.urlKey}`} passHref>
+																	<SearchLink onClick={() => setSearchIsOpen(false)}>
+																		Produkt:{' '}
+																		{
+																			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+																			highlightResult(result.node.name!, result.meta.indices)
+																		}
+																	</SearchLink>
+																</Link>
+															);
+														}
+
+														if (result.node.__typename === 'Brand') {
+															return (
+																<Link
+																	href={`/categories/all?brands=${result.node.name}`}
+																	as={`/categories/all?brands=${result.node.name}`}
+																	passHref
+																>
+																	<SearchLink onClick={() => setSearchIsOpen(false)}>
+																		Märke:{' '}
+																		{
+																			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+																			highlightResult(result.node.name!, result.meta.indices)
+																		}
+																	</SearchLink>
+																</Link>
+															);
+														}
+
+														return null;
+													})}
+												</div>
+											)}
+										</div>
+									)}
 								</div>
 							</div>
-						</Group> */}
+						</Group>
 					</Row>
 				</CenterWrapper>
 			</Row>
