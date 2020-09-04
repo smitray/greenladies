@@ -24,6 +24,9 @@ services:
       - KLARNA_API=${BACKEND_KLARNA_API}
       - KLARNA_USER_ID=${BACKEND_KLARNA_USER_ID}
       - KLARNA_PASSWORD=${BACKEND_KLARNA_PASSWORD}
+      - PG_DATABASE
+      - PG_PASSWORD
+      - PG_USERNAME
     volumes:
       - /usr/src/app/packages/backend/node_modules
       - ./packages/backend:/usr/src/app/packages/backend
@@ -41,6 +44,25 @@ services:
       - ${REDIS_UI_PORT}:7843
     volumes:
       - ./redis-ui/settings:/settings
+
+  postgres:
+    image: postgres:12.4
+    environment:
+      POSTGRES_DB: ${PG_DATABASE}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USERNAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - ${PGADMIN_PORT}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmindata:/usr/lib/pgadmin
 
   magento2:
     build:
@@ -95,3 +117,7 @@ services:
       - traefik.http.routers.api.rule=Host(`traefik.${DOMAIN}`)
       - traefik.http.routers.api.service=api@internal
       - traefik.http.routers.api.entryPoints=https
+
+volumes:
+  pgdata:
+  pgadmindata:
