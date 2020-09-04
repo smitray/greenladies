@@ -1,7 +1,7 @@
 version: '3'
 services:
   frontend:
-    image: repo.treescale.com/rosen/greenladies-frontend
+    image: ${REGISTRY_HOST}/greenladies-frontend
     build:
       context: .
       dockerfile: packages/frontend/Dockerfile
@@ -13,7 +13,7 @@ services:
       - traefik.http.routers.frontend.tls.certresolver=letsencrypt
 
   backend:
-    image: repo.treescale.com/rosen/greenladies-backend
+    image: ${REGISTRY_HOST}/greenladies-backend
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
@@ -34,7 +34,7 @@ services:
     image: redis:6.0.6
 
   magento2:
-    image: repo.treescale.com/rosen/greenladies-magento2
+    image: ${REGISTRY_HOST}/greenladies-magento2
     build:
       context: magento2
       dockerfile: Dockerfile
