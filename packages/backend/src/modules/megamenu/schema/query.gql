@@ -1,0 +1,37 @@
+type BrandLink {
+	brand: Brand!
+}
+
+type ProductLink {
+	product: Product!
+}
+
+type CategoryLink {
+	category: Category!
+}
+
+type CustomPageLink {
+	path: String!
+}
+
+union Link = BrandLink | ProductLink | CategoryLink | CustomPageLink
+
+type MegamenuToplevelItem {
+	name: String!
+	link: Link!
+	sections: [MegamenuSection!]!
+}
+
+type MegamenuSection {
+	name: String!
+	items: [MegamenuSectionItem!]!
+}
+
+type MegamenuSectionItem {
+	name: String!
+	link: Link!
+}
+
+type Query {
+	megamenu: [MegamenuToplevelItem!]!
+}

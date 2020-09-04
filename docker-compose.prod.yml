@@ -23,6 +23,11 @@ services:
       - KLARNA_API=${BACKEND_KLARNA_API}
       - KLARNA_USER_ID=${BACKEND_KLARNA_USER_ID}
       - KLARNA_PASSWORD=${BACKEND_KLARNA_PASSWORD}
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE
+      - PG_PASSWORD
+      - PG_USERNAME
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)

@@ -5,12 +5,18 @@ import RedisSession from 'connect-redis';
 import express from 'express';
 import session, { SessionOptions } from 'express-session';
 import { gql, GraphQLClient } from 'graphql-request';
+import { createConnection, getRepository } from 'typeorm';
 
 import { getGuestShoppingCartItems } from './api/shopping-cart';
 import { createApolloServer } from './create-apollo-server';
 import { createGreenLadiesAttributeSet } from './create-attribute-set';
+import { Link } from './entities/link';
+import { MegamenuSection } from './entities/megamenu-section';
+import { MegamenuSectionItem } from './entities/megamenu-section-item';
+import { MegamenuToplevelItem } from './entities/megamenu-toplevel-item';
 import { getProductConfiguration, syncMagentoProductsAndCategories, updateProductConfiguration } from './magento-sync';
 import { getRedisCache, getRedisCacheConnection } from './redis-connection';
+import typeormConfig from './typeorm-config';
 import { base64 } from './utils/base64';
 
 const RedisSessionStore = RedisSession(session);
@@ -31,6 +37,239 @@ const sessionOptions: SessionOptions = {
 
 (async function () {
 	const app = express();
+
+	await createConnection(typeormConfig);
+
+	if (process.env.NODE_ENV === 'development') {
+		const megamenuToplevelItemRepository = getRepository(MegamenuToplevelItem);
+		const megamenuSectionRepository = getRepository(MegamenuSection);
+		const megamenuSectionItemRepository = getRepository(MegamenuSectionItem);
+		const linkRepository = getRepository(Link);
+
+		const toplevelItems = await megamenuToplevelItemRepository.find();
+
+		const a = [
+			{
+				name: 'Kläder',
+				position: 0,
+				link: {
+					type: 'category',
+					to: '6',
+				},
+				sections: [
+					{
+						name: 'Alla kläder',
+						position: 0,
+						items: [
+							{
+								name: 'Byxor',
+								position: 0,
+								link: {
+									type: 'category',
+									to: '7',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 1,
+								link: {
+									type: 'category',
+									to: '8',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 2,
+								link: {
+									type: 'category',
+									to: '9',
+								},
+							},
+						],
+					},
+					{
+						name: 'Alla 123',
+						position: 1,
+						items: [
+							{
+								name: 'Byxor',
+								position: 0,
+								link: {
+									type: 'category',
+									to: '7',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 1,
+								link: {
+									type: 'category',
+									to: '8',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 2,
+								link: {
+									type: 'category',
+									to: '9',
+								},
+							},
+							{
+								name: 'Byxor',
+								position: 3,
+								link: {
+									type: 'category',
+									to: '7',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 4,
+								link: {
+									type: 'category',
+									to: '8',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 5,
+								link: {
+									type: 'category',
+									to: '9',
+								},
+							},
+						],
+					},
+					{
+						name: 'Alla kläder',
+						position: 2,
+						items: [
+							{
+								name: 'Byxor',
+								position: 0,
+								link: {
+									type: 'external',
+									to: 'http://google.com',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 1,
+								link: {
+									type: 'custom',
+									to: '/home/test',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 2,
+								link: {
+									type: 'product',
+									to: '1058',
+								},
+							},
+						],
+					},
+					{
+						name: 'Alla 123',
+						position: 3,
+						items: [
+							{
+								name: 'Byxor',
+								position: 0,
+								link: {
+									type: 'category',
+									to: '7',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 1,
+								link: {
+									type: 'category',
+									to: '8',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 2,
+								link: {
+									type: 'category',
+									to: '9',
+								},
+							},
+							{
+								name: 'Byxor',
+								position: 3,
+								link: {
+									type: 'category',
+									to: '7',
+								},
+							},
+							{
+								name: 'Jeans',
+								position: 4,
+								link: {
+									type: 'category',
+									to: '8',
+								},
+							},
+							{
+								name: 'Mer byxor',
+								position: 5,
+								link: {
+									type: 'category',
+									to: '9',
+								},
+							},
+						],
+					},
+				],
+			},
+		];
+		if (toplevelItems.length === 0) {
+			await Promise.all(
+				a.map(async toplevelItem => {
+					let link = linkRepository.create(toplevelItem.link);
+					link = await linkRepository.save(link);
+
+					const sections = await Promise.all(
+						toplevelItem.sections.map(async section => {
+							const items = await Promise.all(
+								section.items.map(async item => {
+									let link = linkRepository.create(item.link);
+									link = await linkRepository.save(link);
+
+									const r = megamenuSectionItemRepository.create({
+										name: item.name,
+										position: item.position,
+										link,
+									});
+									return megamenuSectionItemRepository.save(r);
+								}),
+							);
+
+							const r = megamenuSectionRepository.create({
+								name: section.name,
+								position: section.position,
+								items,
+							});
+							return megamenuSectionRepository.save(r);
+						}),
+					);
+
+					const r = megamenuToplevelItemRepository.create({
+						name: toplevelItem.name,
+						position: toplevelItem.position,
+						link,
+						sections,
+					});
+					return megamenuToplevelItemRepository.save(r);
+				}),
+			);
+		}
+	}
 
 	if (process.env.NODE_ENV === 'production') {
 		app.set('trust proxy', 1);
