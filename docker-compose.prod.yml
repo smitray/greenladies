@@ -33,6 +33,15 @@ services:
   redis-cache:
     image: redis:6.0.6
 
+  postgres:
+    image: postgres:12.4
+    environment:
+      POSTGRES_DB: ${PG_DATABASE}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USERNAME}
+    volumes:
+      - ${PG_DATA_FOLDER}:/var/lib/postgresql/data
+
   magento2:
     image: ${REGISTRY_HOST}/greenladies-magento2:latest
     build:
