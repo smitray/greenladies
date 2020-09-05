@@ -13,7 +13,7 @@ export const MegaMenuOuterListItem = styled.li`
 
 export const MegaMenuTitle = styled.h1`
 	margin-top: 0;
-	margin-bottom: 8px;
+	margin-bottom: 16px;
 `;
 
 export const MegaMenuChunkList = styled.ul`

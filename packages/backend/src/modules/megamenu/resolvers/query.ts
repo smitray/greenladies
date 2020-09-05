@@ -40,23 +40,25 @@ const resolvers: MegamenuModuleResolversType = {
 			const toplevelItems = await toplevelItemRepo.find({
 				relations: ['sections', 'sections.items'],
 			});
-			return toplevelItems.map(toplevelItem => {
-				return {
-					name: toplevelItem.name,
-					link: transformLink(toplevelItem.link),
-					sections: toplevelItem.sections.map(section => {
-						return {
-							name: section.name,
-							items: section.items.map(item => {
-								return {
-									name: item.name,
-									link: transformLink(item.link) as any,
-								};
-							}),
-						};
-					}),
-				};
-			});
+			return {
+				items: toplevelItems.map(toplevelItem => {
+					return {
+						name: toplevelItem.name,
+						link: transformLink(toplevelItem.link),
+						sections: toplevelItem.sections.map(section => {
+							return {
+								name: section.name,
+								items: section.items.map(item => {
+									return {
+										name: item.name,
+										link: transformLink(item.link) as any,
+									};
+								}),
+							};
+						}),
+					};
+				}),
+			};
 		},
 	},
 };

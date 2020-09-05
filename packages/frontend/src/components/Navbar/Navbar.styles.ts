@@ -40,12 +40,14 @@ export const Item = styled.div<ItemProps>`
 export const ItemText = styled.span`
 	font-family: 'Cerebri Sans', sans-serif;
 	display: block;
+	color: black;
 `;
 
 export const ItemWrapper = styled.a`
 	display: block;
 	padding: 0 12px;
 	cursor: pointer;
+	text-decoration: none;
 
 	&:hover ${Item}::after {
 		transform: scaleX(1);
@@ -64,6 +66,6 @@ export const MegaMenu = styled.div<MegaMenuProps>`
 	z-index: 100;
 	transition: all 300ms ease-in-out;
 	overflow: hidden;
-	height: 360px;
-	max-height: ${({ open }) => (open ? '360px' : '0')};
+	height: 300px;
+	max-height: ${({ open }) => (open ? '300px' : '0')};
 `;

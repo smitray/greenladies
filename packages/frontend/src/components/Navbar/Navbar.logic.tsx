@@ -1,10 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useRouter } from 'next/router';
+import { createFragmentContainer, graphql } from 'react-relay';
+
+import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
 import { NavbarView } from './Navbar.view';
 
 const TIMEOUT_MS = 100;
 
-export const NavbarLogic = () => {
+interface NavbarLogicProps {
+	megamenu: Navbar_megamenu;
+}
+
+const NavbarLogic = ({ megamenu }: NavbarLogicProps) => {
 	const [currentlySelectedTopLevelItemIndex, setCurrentlySelectedTopLevelItemIndex] = useState<number | null>(null);
 	const [megaMenuFocus, setMegaMenuFocus] = useState(false);
 	// Needed to avoid stale state in setTimeout callback
@@ -12,6 +20,14 @@ export const NavbarLogic = () => {
 
 	const currentlySelectedTopLevelItemIndexTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const megaMenuFocusTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	const { asPath } = useRouter();
+
+	// Close menu when navigating
+	useEffect(() => {
+		setCurrentlySelectedTopLevelItemIndex(null);
+		setMegaMenuFocus(false);
+	}, [asPath]);
 
 	// Update reference whenever state changes
 	useEffect(() => {
@@ -80,6 +96,7 @@ export const NavbarLogic = () => {
 
 	return (
 		<NavbarView
+			megamenu={megamenu}
 			currentlySelectedTopLevelItemIndex={currentlySelectedTopLevelItemIndex}
 			handleTopLevelItemFocus={handleTopLevelItemFocus}
 			handleTopLevelItemUnfocus={handleTopLevelItemUnfocus}
@@ -88,3 +105,17 @@ export const NavbarLogic = () => {
 		/>
 	);
 };
+
+export default createFragmentContainer(NavbarLogic, {
+	megamenu: graphql`
+		fragment Navbar_megamenu on Megamenu {
+			items {
+				name
+				link {
+					...Link_link
+				}
+				...MegaMenu_item
+			}
+		}
+	`,
+});

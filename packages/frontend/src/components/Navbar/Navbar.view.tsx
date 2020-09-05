@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { BiShoppingBag } from 'react-icons/bi';
 import { FaRegHeart, FaSearch } from 'react-icons/fa';
 import { fetchQuery, graphql, QueryRenderer } from 'react-relay';
@@ -9,9 +9,11 @@ import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
+import { Link } from '../Link';
 import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
+import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
 import { NavbarSearchQuery } from './__generated__/NavbarSearchQuery.graphql';
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
 import { NavbarWishlistQuery } from './__generated__/NavbarWishlistQuery.graphql';
@@ -95,26 +97,8 @@ const SEARCH_QUERY = graphql`
 	}
 `;
 
-interface PromoBanner {
-	image: string | null;
-	title: string;
-	subtitle: string;
-}
-
-interface NavbarProps {
-	categories: {
-		category: Category;
-		promoBanner: PromoBanner;
-	}[];
-}
-
-interface Category {
-	name: string;
-	href: string | null;
-	categories: Category[];
-}
-
 interface NavbarViewProps {
+	megamenu: Navbar_megamenu;
 	currentlySelectedTopLevelItemIndex: number | null;
 	handleTopLevelItemFocus: (index: number) => void;
 	handleTopLevelItemUnfocus: () => void;
@@ -123,6 +107,7 @@ interface NavbarViewProps {
 }
 
 export const NavbarView = ({
+	megamenu,
 	currentlySelectedTopLevelItemIndex,
 	handleTopLevelItemFocus,
 	handleTopLevelItemUnfocus,
@@ -155,164 +140,164 @@ export const NavbarView = ({
 		}
 	});
 
-	const { categories }: NavbarProps = {
-		categories: [
-			{
-				promoBanner: {
-					image: null,
-					title: 'Grönare Garderob',
-					subtitle: 'Upptäck mer',
-				},
-				category: {
-					href: null,
-					name: 'Kläder',
-					categories: [
-						{
-							href: null,
-							name: 'Alla kläder',
-							categories: [
-								{
-									href: null,
-									name: 'Klänningar & Tunikor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Toppar & Linnen',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Blusar & Skjortor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Tröjor & Stickat',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Kavaj & Kostym',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Jackor & Kappor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Byxor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Jeans',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Kjolar & Shorts',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Basplagg & Underkläder',
-									categories: [],
-								},
-							],
-						},
-						{
-							href: null,
-							name: 'Utvalt',
-							categories: [
-								{
-									href: null,
-									name: 'Nyheter',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Hållbara regnjackor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Nordiska designers',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Stilinspiration: Grön garderob',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Vintage',
-									categories: [],
-								},
-							],
-						},
-					],
-				},
-			},
-			{
-				promoBanner: {
-					image: null,
-					title: 'Grönare Garderob',
-					subtitle: 'Upptäck mer',
-				},
-				category: {
-					href: null,
-					name: 'Skor',
-					categories: [
-						{
-							href: null,
-							name: 'Alla damskor',
-							categories: [
-								{
-									href: null,
-									name: 'Sneakers & Lågskor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Högklackade skor',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Pumps',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Sandaler& Sandletter',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Ballerina',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Ankelboots',
-									categories: [],
-								},
-								{
-									href: null,
-									name: 'Stövlar',
-									categories: [],
-								},
-							],
-						},
-					],
-				},
-			},
-		],
-	};
+	// const { categories }: NavbarProps = {
+	// 	categories: [
+	// 		{
+	// 			promoBanner: {
+	// 				image: null,
+	// 				title: 'Grönare Garderob',
+	// 				subtitle: 'Upptäck mer',
+	// 			},
+	// 			category: {
+	// 				href: null,
+	// 				name: 'Kläder',
+	// 				categories: [
+	// 					{
+	// 						href: null,
+	// 						name: 'Alla kläder',
+	// 						categories: [
+	// 							{
+	// 								href: null,
+	// 								name: 'Klänningar & Tunikor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Toppar & Linnen',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Blusar & Skjortor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Tröjor & Stickat',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Kavaj & Kostym',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Jackor & Kappor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Byxor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Jeans',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Kjolar & Shorts',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Basplagg & Underkläder',
+	// 								categories: [],
+	// 							},
+	// 						],
+	// 					},
+	// 					{
+	// 						href: null,
+	// 						name: 'Utvalt',
+	// 						categories: [
+	// 							{
+	// 								href: null,
+	// 								name: 'Nyheter',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Hållbara regnjackor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Nordiska designers',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Stilinspiration: Grön garderob',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Vintage',
+	// 								categories: [],
+	// 							},
+	// 						],
+	// 					},
+	// 				],
+	// 			},
+	// 		},
+	// 		{
+	// 			promoBanner: {
+	// 				image: null,
+	// 				title: 'Grönare Garderob',
+	// 				subtitle: 'Upptäck mer',
+	// 			},
+	// 			category: {
+	// 				href: null,
+	// 				name: 'Skor',
+	// 				categories: [
+	// 					{
+	// 						href: null,
+	// 						name: 'Alla damskor',
+	// 						categories: [
+	// 							{
+	// 								href: null,
+	// 								name: 'Sneakers & Lågskor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Högklackade skor',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Pumps',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Sandaler& Sandletter',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Ballerina',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Ankelboots',
+	// 								categories: [],
+	// 							},
+	// 							{
+	// 								href: null,
+	// 								name: 'Stövlar',
+	// 								categories: [],
+	// 							},
+	// 						],
+	// 					},
+	// 				],
+	// 			},
+	// 		},
+	// 	],
+	// };
 
 	return (
 		<Wrapper>
@@ -330,11 +315,11 @@ export const NavbarView = ({
 							alignItems: 'center',
 						}}
 					>
-						<Link href="/" passHref>
+						<NextLink href="/" passHref>
 							<a>
 								<img src="/images/greenladies-logo.png" alt="" style={{ height: '24px' }} />
 							</a>
-						</Link>
+						</NextLink>
 					</div>
 					<Group>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
@@ -561,16 +546,16 @@ export const NavbarView = ({
 				<CenterWrapper style={{ display: 'block' }}>
 					<Row>
 						<Group style={{ marginLeft: '-12px', flexGrow: 1 }}>
-							{categories.map((category, index) => {
+							{megamenu.items.map((item, index) => {
 								return (
 									<li key={index}>
-										<Link href="/">
+										<Link link={item.link}>
 											<ItemWrapper
 												onMouseEnter={() => handleTopLevelItemFocus(index)}
 												onMouseLeave={handleTopLevelItemUnfocus}
 											>
 												<Item active={index === currentlySelectedTopLevelItemIndex}>
-													<ItemText>{category.category.name}</ItemText>
+													<ItemText>{item.name}</ItemText>
 												</Item>
 											</ItemWrapper>
 										</Link>
@@ -669,7 +654,7 @@ export const NavbarView = ({
 													{searchResults.map(result => {
 														if (result.node.__typename === 'Product') {
 															return (
-																<Link href="/products/[key]" as={`/products/${result.node.urlKey}`} passHref>
+																<NextLink href="/products/[key]" as={`/products/${result.node.urlKey}`} passHref>
 																	<SearchLink onClick={() => setSearchIsOpen(false)}>
 																		Produkt:{' '}
 																		{
@@ -677,13 +662,13 @@ export const NavbarView = ({
 																			highlightResult(result.node.name!, result.meta.indices)
 																		}
 																	</SearchLink>
-																</Link>
+																</NextLink>
 															);
 														}
 
 														if (result.node.__typename === 'Brand') {
 															return (
-																<Link
+																<NextLink
 																	href={`/categories/all?brands=${result.node.name}`}
 																	as={`/categories/all?brands=${result.node.name}`}
 																	passHref
@@ -695,7 +680,7 @@ export const NavbarView = ({
 																			highlightResult(result.node.name!, result.meta.indices)
 																		}
 																	</SearchLink>
-																</Link>
+																</NextLink>
 															);
 														}
 
@@ -716,9 +701,9 @@ export const NavbarView = ({
 				onMouseEnter={handleMegaMenuFocus}
 				onMouseLeave={handleMegaMenuUnfocus}
 			>
-				<CenterWrapper style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+				<CenterWrapper style={{ paddingTop: '32px', paddingBottom: '32px' }}>
 					{currentlySelectedTopLevelItemIndex != null && (
-						<MegaMenu category={categories[currentlySelectedTopLevelItemIndex].category} />
+						<MegaMenu item={megamenu.items[currentlySelectedTopLevelItemIndex]} />
 					)}
 				</CenterWrapper>
 			</MegaMenuWrapper>

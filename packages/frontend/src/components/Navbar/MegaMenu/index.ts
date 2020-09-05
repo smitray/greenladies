@@ -1,3 +1,3 @@
-import { MegaMenuView as MegaMenu } from './MegaMenu.view';
+import { default as MegaMenu } from './MegaMenu.view';
 
 export { MegaMenu };

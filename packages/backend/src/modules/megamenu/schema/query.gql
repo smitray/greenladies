@@ -16,10 +16,9 @@ type CustomPageLink {
 
 union Link = BrandLink | ProductLink | CategoryLink | CustomPageLink
 
-type MegamenuToplevelItem {
+type MegamenuSectionItem {
 	name: String!
 	link: Link!
-	sections: [MegamenuSection!]!
 }
 
 type MegamenuSection {
@@ -27,11 +26,16 @@ type MegamenuSection {
 	items: [MegamenuSectionItem!]!
 }
 
-type MegamenuSectionItem {
+type MegamenuToplevelItem {
 	name: String!
 	link: Link!
+	sections: [MegamenuSection!]!
+}
+
+type Megamenu {
+	items: [MegamenuToplevelItem!]!
 }
 
 type Query {
-	megamenu: [MegamenuToplevelItem!]!
+	megamenu: Megamenu!
 }

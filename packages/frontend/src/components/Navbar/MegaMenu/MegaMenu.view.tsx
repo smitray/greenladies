@@ -1,7 +1,10 @@
 import React from 'react';
 
-import Link from 'next/link';
+import { createFragmentContainer, graphql } from 'react-relay';
 
+import { Link } from '../../Link';
+
+import { MegaMenu_item } from './__generated__/MegaMenu_item.graphql';
 import {
 	MegaMenuChunkList,
 	MegaMenuChunkListItem,
@@ -13,19 +16,7 @@ import {
 	MegaMenuTitle,
 } from './MegaMenu.styles';
 
-// interface PromoBanner {
-// 	image: string | null;
-// 	title: string;
-// 	subtitle: string;
-// }
-
-interface Category {
-	name: string;
-	href: string | null;
-	categories: Category[];
-}
-
-function chunkArray<T>(array: T[], chunkSize = 5): T[][] {
+function chunkArray<T>(array: readonly T[], chunkSize = 5): T[][] {
 	const chunkedArray: T[][] = [];
 	for (let i = 0, j = array.length; i < j; i += chunkSize) {
 		chunkedArray.push(array.slice(i, i + chunkSize));
@@ -35,31 +26,31 @@ function chunkArray<T>(array: T[], chunkSize = 5): T[][] {
 }
 
 interface MegaMenuViewProps {
-	category: Category;
-	// promoBanner: PromoBanner;
+	item: MegaMenu_item;
 }
 
-export const MegaMenuView = ({ category }: MegaMenuViewProps) => {
+const MegaMenuView = ({ item }: MegaMenuViewProps) => {
 	return (
 		<MegaMenuOuterList>
-			{category.categories.map((category, index) => {
-				const chunks = chunkArray(category.categories);
+			{item.sections.map((section, index) => {
+				const chunks = chunkArray(section.items);
 
 				return (
-					<MegaMenuOuterListItem key={index} style={{ flexGrow: chunks.length }}>
+					<MegaMenuOuterListItem
+						key={index}
+						style={{ flexGrow: 0, flexShrink: 0, flexBasis: 25 * chunks.length + '%' }}
+					>
 						<MegaMenuTitle>
-							<Link href={category.href || '#'}>
-								<MegaMenuLink href={category.href || '#'}>{category.name}</MegaMenuLink>
-							</Link>
+							<MegaMenuLink>{section.name}</MegaMenuLink>
 						</MegaMenuTitle>
 						<MegaMenuChunkList>
-							{chunks.map((chunk, index) => (
-								<MegaMenuChunkListItem key={index}>
+							{chunks.map((chunk, chunkIndex) => (
+								<MegaMenuChunkListItem key={chunkIndex}>
 									<MegaMenuInnerList>
-										{chunk.map((category, index) => (
-											<MegaMenuInnerListItem key={index}>
-												<Link href={category.href || '#'}>
-													<MegaMenuLink href={category.href || '#'}>{category.name}</MegaMenuLink>
+										{chunk.map((item, itemIndex) => (
+											<MegaMenuInnerListItem key={itemIndex}>
+												<Link link={item.link}>
+													<MegaMenuLink>{item.name}</MegaMenuLink>
 												</Link>
 											</MegaMenuInnerListItem>
 										))}
@@ -73,3 +64,19 @@ export const MegaMenuView = ({ category }: MegaMenuViewProps) => {
 		</MegaMenuOuterList>
 	);
 };
+
+export default createFragmentContainer(MegaMenuView, {
+	item: graphql`
+		fragment MegaMenu_item on MegamenuToplevelItem {
+			sections {
+				name
+				items {
+					name
+					link {
+						...Link_link
+					}
+				}
+			}
+		}
+	`,
+});
