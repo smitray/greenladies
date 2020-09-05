@@ -41,23 +41,29 @@ const resolvers: MegamenuModuleResolversType = {
 				relations: ['sections', 'sections.items'],
 			});
 			return {
-				items: toplevelItems.map(toplevelItem => {
-					return {
-						name: toplevelItem.name,
-						link: transformLink(toplevelItem.link),
-						sections: toplevelItem.sections.map(section => {
-							return {
-								name: section.name,
-								items: section.items.map(item => {
+				items: toplevelItems
+					.sort((left, right) => left.position - right.position)
+					.map(toplevelItem => {
+						return {
+							name: toplevelItem.name,
+							link: transformLink(toplevelItem.link) as any,
+							sections: toplevelItem.sections
+								.sort((left, right) => left.position - right.position)
+								.map(section => {
 									return {
-										name: item.name,
-										link: transformLink(item.link) as any,
+										name: section.name,
+										items: section.items
+											.sort((left, right) => left.position - right.position)
+											.map(item => {
+												return {
+													name: item.name,
+													link: transformLink(item.link) as any,
+												};
+											}),
 									};
 								}),
-							};
-						}),
-					};
-				}),
+						};
+					}),
 			};
 		},
 	},
