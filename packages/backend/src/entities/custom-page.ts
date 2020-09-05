@@ -5,7 +5,7 @@ import { CustomPageSection } from './custom-page-section';
 
 @Entity()
 export class CustomPage extends BaseEntity {
-	@Column()
+	@Column({ unique: true })
 	path: string;
 
 	@OneToMany(() => CustomPageSection, section => section.page)

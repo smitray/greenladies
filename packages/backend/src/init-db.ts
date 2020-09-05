@@ -257,8 +257,8 @@ export async function initCustomPages() {
 		title: 'DENIM FEVER',
 		subtitle: 'SHOPPA',
 		link: banner1Link,
-		imagePath: 'frontpage-1.jpg',
-		mobileImagePath: 'frontpage-1.jpg',
+		imagePath: '/images/denim-fever-banner.jpg',
+		mobileImagePath: '/images/denim-fever-banner.jpg',
 	});
 
 	const section1 = await customPageSectionRepository.save({
@@ -284,8 +284,8 @@ export async function initCustomPages() {
 		title: 'Färgglada höstnyheter',
 		subtitle: 'SE MER',
 		link: banner2Link,
-		imagePath: 'frontpage-2.jpg',
-		mobileImagePath: 'frontpage-2.jpg',
+		imagePath: '/images/tennis-banner.jpg',
+		mobileImagePath: '/images/tennis-banner.jpg',
 	});
 
 	const section3 = await customPageSectionRepository.save({
@@ -311,8 +311,8 @@ export async function initCustomPages() {
 		title: 'Naturfärgade & mjuka vardagsfavoriter',
 		subtitle: 'UTFORSKA',
 		link: banner3Link,
-		imagePath: 'frontpage-3.jpg',
-		mobileImagePath: 'frontpage-3.jpg',
+		imagePath: '/images/natural-colors-banner.jpg',
+		mobileImagePath: '/images/natural-colors-banner.jpg',
 	});
 
 	const section5 = await customPageSectionRepository.save({
@@ -338,8 +338,8 @@ export async function initCustomPages() {
 		title: 'Utvalt VECKANS FAVORITER',
 		subtitle: 'SE MER',
 		link: banner4Link,
-		imagePath: 'frontpage-4.jpg',
-		mobileImagePath: 'frontpage-4.jpg',
+		imagePath: '/images/vintage-banner.jpg',
+		mobileImagePath: '/images/vintage-banner.jpg',
 	});
 
 	const section7 = await customPageSectionRepository.save({
@@ -427,12 +427,12 @@ Paket som inte har hämtats ut inom angiven tid återsänds och kunden debiteras
 		key: 'angerratt-och-retur',
 		title: 'Ångerrätt & retur',
 		body: `
-##### Digitala returer
+#### Digitala returer
 
 För att göra en retur måste du först registrera din retur digitalt via mail. Returkostnaden på 69 SEK står kunden för. Det gör du genom att maila hej@greenladies.se från den mailadressen som användes vid ditt köp samt ditt ordernummer. Ditt ordernummer finns i ditt orderbekräftelse-mail eller på din följesedel.
 När ni fullföljt stegen i den digitala returregistreringen så kommer Green Ladies inom 24 timmar att skicka en returetikett till dig via mail. Etiketten behöver du själva skriva ut och fästa på ditt paket. Om ni inte använder er av vår digitala retur-registrering måste vi dessvärre ta ut en administrativ avgift på 99 SEK. Om ni returnerar ert paket utan den returetikett vi tillhandahåller så står Green Ladies inte för några eventuella felaktigheter som kan uppstå på vägen, samt att det kan ta längre tid innan returen kommer fram och hanteras.
 
-##### Ångerrätt och returer
+#### Ångerrätt och returer
 
 Du har full retur- och bytesrätt inom 14 dagar från det att du mottagit varan, förutsatt att varan är oanvänd och returneras i oskadat skick och i förekommande fall i obruten originalförpackning samt att eventuell plombering och etiketter fortfarande sitter kvar.
 
@@ -466,22 +466,22 @@ Nedan information är en summering av hur vi i enlighet med dataskyddsförordnin
 	});
 
 	const tab7 = await customPageTabComponentSectionRepo.save({
-		key: 'om',
+		key: 'fullstandiga-kopvillkor',
 		title: 'Fullständiga köpvillkor',
 		body: `
-##### Allmänt
+#### Allmänt
 
 Vi som tillhandahåller www.greenladies.se är KUDETA eCommerce Group AB, med adress August Barks Gata 25, 421 32 Västra Frölunda, Sverige. Vårt organisationsnummer är 559165-2614.
 Har du några frågor eller funderingar är du välkommen att kontakta vår kundrådgivning via mail hej@greenladies.se. Vi besvarar ditt mail inom 24 timmar på vardagar.
 
-##### Betalning
+#### Betalning
 
 Alla priser som anges på www.greenladies.se anges i SEK och är inklusive moms (25 %). Avgifter tillkommer för paket som avbeställs, snabbleverans samt för ej uthämtade paket.
 
 I samarbete med Klarna erbjuder vi fakturabetalning, delbetalning, kontokortsbetalning samt direktbetalning. Denna betallösning kallas för Klarna Checkout. Genom att lämna information i kassan godkänner du Klarnas villkor. Genom att klicka på "Slutför köp" godkänner du våra allmänna villkor. Klarna Checkout presenterar viss information för dig så snart du är identifierad. Vilken information du behöver ange för att uppnå identifiering kan variera mellan olika köptillfällen och kunder. Någon kreditupplysning tas aldrig direkt i Klarna Checkout utan vid behov beroende på det betalningsalternativ du har valt. Kreditupplysningar som tas av Klarna påverkar inte din kreditvärdighet och kan inte ses av andra som begär kreditupplysning om dig, t.ex. banker.
 När du har identifierats uppvisar Klarna Checkout vilka alternativ som är tillgängliga för just dig. Faktura är förvalt som betalningsalternativ men du kan givetvis fritt välja något av de andra alternativen såsom direktbetalning via bank eller betalning med kort. Vilka alternativ du erbjuds kan växla från tid till annan. Du kan själv välja om du vill skydda din användning av Klarna Checkout med en PIN-kod.
 
-##### Frakt
+#### Frakt
 
 Vi kompenserar för alla koldioxidutsläpp som uppstår vid leveranser till och från Green Ladies.
 
@@ -489,17 +489,17 @@ Varorna skickas till det DHL Ombud / Utlämningsställe som ligger närmast den 
 
 Paket som inte har hämtats ut inom angiven tid återsänds och kunden debiteras en avgift på 250 SEK för kostnader av administration, frakt, returfrakt och hantering. Outlösta paket omfattas inte av ångerrätten.
 
-##### Avtal om köp
+#### Avtal om köp
 
 Avtal om köp upprättas när du har fått bekräftelse på din beställning av Green Ladies via e-post till den vid beställningen angivna e-postadressen. Bekräftelsen sker när vi hanterat er order. Vid beställning accepterar du samtliga av våra villkor. Green Ladies ingår ej avtal med personer som är minderåriga och saknar målsmans godkännande.
 
-##### Digitala returer
+#### Digitala returer
 
 För att göra en retur måste du först registrera din retur digitalt via mail. Returkostnaden på 69 SEK står kunden för. Det gör du genom att maila hej@greenladies.se från den mailadressen som användes vid ditt köp samt ditt ordernummer. Ditt ordernummer finns i ditt orderbekräftelse-mail eller på din följesedel.
 
 När ni fullföljt stegen i den digitala returregistreringen så kommer Green Ladies inom 24 timmar att skicka en returetikett till dig via mail. Etiketten behöver du själva skriva ut och fästa på ditt paket. Om ni inte använder er av vår digitala retur-registrering måste vi dessvärre ta ut en administrativ avgift på 99 SEK. Om ni returnerar ert paket utan den returetikett vi tillhandahåller så står Green Ladies inte för några eventuella felaktigheter som kan uppstå på vägen, samt att det kan ta längre tid innan returen kommer fram och hanteras.
 
-##### Ångerrätt och returer
+#### Ångerrätt och returer
 
 Du har full retur- och bytesrätt inom 14 dagar från det att du mottagit varan, förutsatt att varan är oanvänd och returneras i oskadat skick och i förekommande fall i obruten originalförpackning samt att eventuell plombering och etiketter fortfarande sitter kvar.
 
@@ -514,29 +514,29 @@ När du returnerar en vara står du för risken, därför är det viktigt att du
 För att möjliggöra en eventuell retur behöver du kunna påvisa köp därför rekommenderar vi att du sparar orderbekräftelse och betalningsreferens som kvitto på ditt köp.
 Återbetalning av en godkänd retur sker inom loppet av 30 dagar och betalas ut av Klarna.
 
-##### Reklamation
+#### Reklamation
 
 Konsumentköplagen ger dig rätt att reklamera en vara under förutsättning att varan var felaktig vid leveranstillfället. Om du tar emot en vara som det är något fel på vill vi att du så snart som möjligt kontaktar oss. Observera att du måste lämna ett meddelande till oss med information om felet inom skälig tid efter det att du upptäckt det. 
 
-##### Bedrägeri
+#### Bedrägeri
 
 Vi polisanmäler alla bedrägerier och dataintrång samt försök till sådana. Vi förbehåller oss rätten att neka eller häva ditt köp i det fall vi har skäl att misstänka bedrägeri.
 
-##### Tvister
+#### Tvister
 
 Vi är måna om att lösa eventuella frågor med dig som handlar hos Green Ladies. Vi håller en god ton och försöker nå en fredlig lösning. Vid tvister som vi inte lyckas lösa, rekommenderar vi att du vänder dig till Allmänna reklamationsnämnden, www.arn.se eller Box 174, 101 23 Stockholm. Du kan även använda den onlineplattform för klagomål som finns tillgänglig på EU-kommissionens webbplats: http://ec.europa.eu/odr.
 
 För information om vilka rättigheter du som har som konsument rekommenderar vi dig att besöka Konsumentverkets hemsida www.konsumentverket.se.
 
-##### Produktbilder
+#### Produktbilder
 
 På grund av att olika skärmar på dator, surfplatta och mobil har olika färgkalibrering kan det förekomma en variation i färgen på bilderna på artikeln och färgen i verkligheten. Vi har gjort vårt bästa för att ge en korrekt färgåtergivning av artiklarna på hemsidan.
 
-##### Force Majeure
+#### Force Majeure
 
 Vid eventuella omständigheter som skäligen står utanför Green Ladies kontroll (ex. ändrad lagstiftning, strejk, blockad, sabotage, krig, brand, naturkatastrof eller myndighetsåtgärder) kan Green Ladies förpliktelse att uppfylla köpeavtalet skjutas upp så länge som omständigheterna kräver. Överstiger denna försening 2 månader har både du och Green Ladies rätt till att häva köpeavtalet med omedelbar verkan utan någon skyldighet till skadestånd.
 
-##### Integritetspolicy
+#### Integritetspolicy
 
 Genom att handla hos Green Ladies accepterar du vår dataskyddspolicy och vår behandling av dina personuppgifter. Vi värnar om din personliga integritet och samlar inte in fler uppgifter än nödvändigt för att behandla din beställning. Vi säljer och delar aldrig dina uppgifter till tredjepart utan rättslig grund.
 
@@ -546,38 +546,38 @@ KUDETA eCommerce Group AB är ansvarig för behandlingen av personuppgifter som 
 
 Nedan information är en summering av hur vi i enlighet med dataskyddsförordningen (GDPR) lagrar och behandlar dina uppgifter. 
 
-##### Vad är en personuppgift?
+#### Vad är en personuppgift?
 
 En personuppgift är all information som direkt eller indirekt kan hänföras till en fysisk person.
 
-##### Vilka uppgifter lagrar vi?
+#### Vilka uppgifter lagrar vi?
 
 För att kunna hantera din beställning samt svara på frågor relaterat till din order lagrar vi ditt förnamn- och efternamn, adress, telefonnummer, e-postadress, ip-adress och köphistorik. 
 
 Dina uppgifter lagras så länge vi har en rättslig grund att behandla dina uppgifter, exempelvis för att fullfölja avtalet mellan oss eller för att efterleva en rättslig förpliktelse enligt exempelvis bokföringslagen.
 
-##### Rättslig grund
+#### Rättslig grund
 
 I samband med ett köp behandlas dina personuppgifter för att fullfölja avtalet med dig.
 Marknadsföring, kampanjer och liknande utskick sker endast efter samtycke från dig.
 
-##### Vilka uppgifter delas och med vilket syfte?
+#### Vilka uppgifter delas och med vilket syfte?
 * Betalning - När du väljer att betala med faktura sparas dina personuppgifter hos Klarna
 * Transportör - För att kunna leverera dina beställningar och slutföra vårt avtal måste vi dela specifik information med transportören. Det gäller för- och efternamn samt adress- och kontaktuppgifter för leverans och leveransavisering.
 * Nyhetsbrev - Om du har valt att prenumerera på vårt nyhetsbrev använder vi oss utav ditt förnamn, efternamn samt e-postadress.
 * Sociala Medier – Om du har valt att följa oss på sociala medier använder vi oss utav ditt användarnamn, förnamn, efternamn samt e-postadress.
 
-##### Rätten till tillgång & rättelse
+#### Rätten till tillgång & rättelse
 
 Du har rätt att få utdrag av all information som finns om dig hos oss. Utdrag levereras elektroniskt i ett läsbart format. Du har rätt att be oss uppdatera felaktig information eller komplettera information som är bristfällig.
 
 Du kan när som helst be att uppgifterna som avser dig raderas. Det finns få undantag till rätten till radering, som till exempel om det ska behållas för att vi måste uppfylla en rättslig förpliktelse (exempelvis enligt bokföringslagen).
 
-##### Ansvarig för dataskydd
+#### Ansvarig för dataskydd
 
 KUDETA eCommerce Groip AB är ansvarig för lagring och behandling av personuppgifter i webbutiken och ser till att reglerna efterföljs.
 
-##### Rätt att lämna in klagomål
+#### Rätt att lämna in klagomål
 
 Om du är missnöjd med hur vi behandlat dina personuppgifter kan du också kontakta oss på våra kontaktuppgifter ovan. Du har även rätt att ge in ett klagomål avseende vår personuppgiftsbehandling till:
 Datainspektionen

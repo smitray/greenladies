@@ -18,17 +18,17 @@ const MessageBarView = () => {
 			<CenterWrapper>
 				<MessageList>
 					<MessageLeft>
-						<Link href="/om-oss" passHref>
+						<Link href="/[[...slug]]?tab=om-green-ladies" as="/kundservice?tab=om-green-ladies" passHref>
 							<MessageAnchor>Om Green Ladies</MessageAnchor>
 						</Link>
 					</MessageLeft>
 					<MessageMiddle>
-						<Link href="/kundservice" passHref>
+						<Link href="/[[...slug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
 							<MessageAnchor>Fri frakt på beställningar över 999kr / Klimatkompenserad frakt</MessageAnchor>
 						</Link>
 					</MessageMiddle>
 					<MessageRight>
-						<Link href="/kundservice" passHref>
+						<Link href="/[[...slug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 							<MessageAnchor>Trygg & säker betalning</MessageAnchor>
 						</Link>
 					</MessageRight>

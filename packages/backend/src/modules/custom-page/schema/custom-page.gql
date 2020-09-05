@@ -11,6 +11,7 @@ type CustomPageTab {
 type CustomPageBanner {
 	title: String!
 	subtitle: String!
+	link: Link!
 	imagePath: String!
 	mobileImagePath: String!
 }

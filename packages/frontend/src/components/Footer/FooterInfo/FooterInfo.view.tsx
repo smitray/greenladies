@@ -64,22 +64,26 @@ export const FooterInfoView = () => {
 					<GridBoxTitle>Vanliga frågor</GridBoxTitle>
 					<List>
 						<ListItem>
-							<Link href="/kundservice" passHref>
+							<Link
+								href="/[[...lug]]?tab=fullstandiga-kopvillkor"
+								as="/kundservice?tab=fullstandiga-kopvillkor"
+								passHref
+							>
 								<ListItemLink>Köpvillkor</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice" passHref>
+							<Link href="/[[...lug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 								<ListItemLink>Beställa</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice" passHref>
+							<Link href="/[[...lug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 								<ListItemLink>Betalning</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/kundservice" passHref>
+							<Link href="/[[...lug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
 								<ListItemLink>Leveranstid</ListItemLink>
 							</Link>
 						</ListItem>

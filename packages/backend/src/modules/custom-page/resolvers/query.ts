@@ -7,6 +7,7 @@ import { CustomPageBannerComponent } from '../../../entities/custom-page-banner-
 import { CustomPageProductCarouselComponent } from '../../../entities/custom-page-product-carousel-component';
 import { CustomPageTabComponent } from '../../../entities/custom-page-tab-component';
 import { connectionFromArray } from '../../../utils/relay';
+import { transformLink } from '../../link/utils/transform-link';
 import { ProductProvider } from '../../product/product.provider';
 
 const resolvers: CustomPageModuleResolversType = {
@@ -22,71 +23,74 @@ const resolvers: CustomPageModuleResolversType = {
 			}
 
 			const sections = await Promise.all(
-				page.sections.map<Promise<GQLCustomPageSection>>(async section => {
-					switch (section.type) {
-						case 'tabs': {
-							const customPageTabComponentRepo = getRepository(CustomPageTabComponent);
-							const tab = await customPageTabComponentRepo.findOne({
-								where: { id: section.componentId },
-								relations: ['sections'],
-							});
-							if (!tab) {
-								throw new Error('Component link not found');
+				page.sections
+					.sort((left, right) => left.position - right.position)
+					.map<Promise<GQLCustomPageSection>>(async section => {
+						switch (section.type) {
+							case 'tabs': {
+								const customPageTabComponentRepo = getRepository(CustomPageTabComponent);
+								const tab = await customPageTabComponentRepo.findOne({
+									where: { id: section.componentId },
+									relations: ['sections'],
+								});
+								if (!tab) {
+									throw new Error('Component link not found');
+								}
+
+								return {
+									__typename: 'CustomPageTab',
+									tabs: tab.sections.sort((left, right) => left.position - right.position),
+								};
 							}
+							case 'product-carousel': {
+								const customPageProductCarouselRepo = getRepository(CustomPageProductCarouselComponent);
+								const carousel = await customPageProductCarouselRepo.findOne({ where: { id: section.componentId } });
+								if (!carousel) {
+									throw new Error('Component link not found');
+								}
 
-							return {
-								__typename: 'CustomPageTab',
-								tabs: tab.sections,
-							};
-						}
-						case 'product-carousel': {
-							const customPageProductCarouselRepo = getRepository(CustomPageProductCarouselComponent);
-							const carousel = await customPageProductCarouselRepo.findOne({ where: { id: section.componentId } });
-							if (!carousel) {
-								throw new Error('Component link not found');
-							}
+								const products = await injector
+									.get(ProductProvider)
+									.getProductConfigurationsByCategoryId(carousel.categoryId);
 
-							const products = await injector
-								.get(ProductProvider)
-								.getProductConfigurationsByCategoryId(carousel.categoryId);
-
-							return {
-								__typename: 'CustomPageProductCarousel',
-								title: carousel.title,
-								subtitle: carousel.subtitle,
-								products: {
-									...connectionFromArray(products as any, {}),
-									availableFilters: {
-										brands: [],
-										colors: [],
-										price: {
-											from: 0,
-											to: 0,
+								return {
+									__typename: 'CustomPageProductCarousel',
+									title: carousel.title,
+									subtitle: carousel.subtitle,
+									products: {
+										...connectionFromArray(products as any, {}),
+										availableFilters: {
+											brands: [],
+											colors: [],
+											price: {
+												from: 0,
+												to: 0,
+											},
+											sizes: [],
 										},
-										sizes: [],
 									},
-								},
-							};
-						}
-						case 'banner': {
-							const customPageBannerComponentRepo = getRepository(CustomPageBannerComponent);
-							const banner = await customPageBannerComponentRepo.findOne({ where: { id: section.componentId } });
-							if (!banner) {
-								throw new Error('Component link not found');
+								};
 							}
+							case 'banner': {
+								const customPageBannerComponentRepo = getRepository(CustomPageBannerComponent);
+								const banner = await customPageBannerComponentRepo.findOne({ where: { id: section.componentId } });
+								if (!banner) {
+									throw new Error('Component link not found');
+								}
 
-							return {
-								__typename: 'CustomPageBanner',
-								title: banner.title,
-								subtitle: banner.subtitle,
-								imagePath: banner.imagePath,
-								mobileImagePath: banner.mobileImagePath,
-							};
+								return {
+									__typename: 'CustomPageBanner',
+									title: banner.title,
+									subtitle: banner.subtitle,
+									link: transformLink(banner.link) as any,
+									imagePath: banner.imagePath,
+									mobileImagePath: banner.mobileImagePath,
+								};
+							}
+							default:
+								throw new Error('Invalid section type: ' + section.type);
 						}
-						default:
-							throw new Error('Invalid section type: ' + section.type);
-					}
-				}),
+					}),
 			);
 
 			return {
