@@ -315,7 +315,7 @@ export const NavbarView = ({
 							alignItems: 'center',
 						}}
 					>
-						<NextLink href="/" passHref>
+						<NextLink href="/[[...slug]]" as="/" passHref>
 							<a>
 								<img src="/images/greenladies-logo.png" alt="" style={{ height: '24px' }} />
 							</a>
