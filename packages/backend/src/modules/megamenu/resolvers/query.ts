@@ -1,37 +1,8 @@
 import { getRepository } from 'typeorm';
 
 import { MegamenuModuleResolversType } from '..';
-import { GQLResolversTypes } from '../../../__generated__/types';
-import { Link } from '../../../entities/link';
 import { MegamenuToplevelItem } from '../../../entities/megamenu-toplevel-item';
-
-const transformLink = ({ type, to }: Link): GQLResolversTypes['Link'] => {
-	switch (type) {
-		case 'brand':
-			return {
-				__typename: 'BrandLink',
-				brand: { id: to },
-			};
-		case 'category':
-			return {
-				__typename: 'CategoryLink',
-				category: { id: to },
-			};
-		case 'product':
-			return {
-				__typename: 'ProductLink',
-				product: { id: to },
-			};
-		case 'external':
-		case 'custom':
-			return {
-				__typename: 'CustomPageLink',
-				path: to,
-			};
-		default:
-			throw new Error('Invalid link type: ' + type);
-	}
-};
+import { transformLink } from '../../link/utils/transform-link';
 
 const resolvers: MegamenuModuleResolversType = {
 	Query: {

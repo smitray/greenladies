@@ -1,0 +1,28 @@
+type CustomPageTabSection {
+	key: String!
+	title: String!
+	body: String!
+}
+
+type CustomPageTab {
+	tabs: [CustomPageTabSection!]!
+}
+
+type CustomPageBanner {
+	title: String!
+	subtitle: String!
+	imagePath: String!
+	mobileImagePath: String!
+}
+
+type CustomPageProductCarousel {
+	title: String!
+	subtitle: String!
+	products: ProductConnection!
+}
+
+union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel
+
+type CustomPage {
+	sections: [CustomPageSection!]!
+}

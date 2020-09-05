@@ -2,6 +2,7 @@ import { GraphQLModule } from '@graphql-modules/core';
 
 import { BrandModule } from '../brand';
 import { CategoryModule } from '../category';
+import { CustomPageModule } from '../custom-page';
 import { MegamenuModule } from '../megamenu';
 import { OrderModule } from '../order';
 import { ProductModule } from '../product';
@@ -14,6 +15,7 @@ export const AppModule = new GraphQLModule({
 	imports: [
 		BrandModule,
 		CategoryModule,
+		CustomPageModule,
 		MegamenuModule,
 		OrderModule,
 		ProductModule,

@@ -4,14 +4,16 @@ import path from 'path';
 
 import { GQLResolvers } from '../../__generated__/types';
 import { ApolloContext } from '../../create-apollo-server';
+import { CategoryModule } from '../category';
 import { LinkModule } from '../link';
+import { RelayModule } from '../relay';
 
-export interface MegamenuModuleContext {}
+export interface CustomPageModuleContext {}
 
-export type MegamenuModuleResolversType = GQLResolvers<ModuleContext<MegamenuModuleContext>>;
+export type CustomPageModuleResolversType = GQLResolvers<ModuleContext<CustomPageModuleContext>>;
 
-export const MegamenuModule = new GraphQLModule<any, ApolloContext, MegamenuModuleContext>({
-	imports: [LinkModule],
+export const CustomPageModule = new GraphQLModule<any, ApolloContext, CustomPageModuleContext>({
+	imports: [CategoryModule, LinkModule, RelayModule],
 	providers: [],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
