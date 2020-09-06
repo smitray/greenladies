@@ -66,7 +66,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 					const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
 					const DOMAIN = String(process.env.DOMAIN);
 
-					const protocol = process.env.NODE_ENV === 'product' ? 'https' : 'http';
+					const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
 					const KLARNA_API = String(process.env.KLARNA_API);
 					const { data: order } = await axios.post(
