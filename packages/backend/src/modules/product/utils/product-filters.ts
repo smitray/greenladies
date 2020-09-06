@@ -153,9 +153,8 @@ export function calculateProductFilters(
 	let filteredAndOrderedProducts = filteredProducts;
 	if (orderBy) {
 		switch (orderBy) {
-			case 'popularity_DESC':
-				break;
 			case 'created_DESC':
+				filteredAndOrderedProducts = filteredProducts.sort((left, right) => right.totalStock - left.totalStock);
 				break;
 			case 'price_ASC':
 				filteredAndOrderedProducts = filteredProducts.sort((left, right) => left.price - right.price);

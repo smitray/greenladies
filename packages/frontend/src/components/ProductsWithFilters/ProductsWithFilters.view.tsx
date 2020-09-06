@@ -18,13 +18,9 @@ interface SelectedFilter {
 	display: string;
 }
 
-type OrderBy = 'popularity_DESC' | 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
+type OrderBy = 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
 
 const parseOrderBy = (orderBy: any): OrderBy => {
-	if (orderBy === 'popularity_DESC') {
-		return 'popularity_DESC';
-	}
-
 	if (orderBy === 'created_DESC') {
 		return 'created_DESC';
 	}
@@ -41,7 +37,7 @@ const parseOrderBy = (orderBy: any): OrderBy => {
 		return 'discount_DESC';
 	}
 
-	return 'popularity_DESC';
+	return 'created_DESC';
 };
 
 interface ProductsWithFiltersViewProps {

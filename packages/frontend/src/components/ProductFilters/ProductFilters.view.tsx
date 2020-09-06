@@ -131,7 +131,6 @@ const ProductFiltersView = ({
 				<CategoryFilterSingleSelect
 					title="Sortera på"
 					items={[
-						{ id: 'popularity_DESC', node: 'Popularitet' },
 						{ id: 'created_DESC', node: 'Nyheter' },
 						{ id: 'price_ASC', node: 'Lägsta pris' },
 						{ id: 'price_DESC', node: 'Hösta pris' },

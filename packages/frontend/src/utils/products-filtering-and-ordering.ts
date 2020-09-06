@@ -1,8 +1,4 @@
 export const parseOrderBy = (orderBy: any) => {
-	if (orderBy === 'popularity_DESC') {
-		return 'popularity_DESC';
-	}
-
 	if (orderBy === 'created_DESC') {
 		return 'created_DESC';
 	}
@@ -19,10 +15,10 @@ export const parseOrderBy = (orderBy: any) => {
 		return 'discount_DESC';
 	}
 
-	return 'popularity_DESC';
+	return 'created_DESC';
 };
 
-export type OrderBy = 'popularity_DESC' | 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
+export type OrderBy = 'created_DESC' | 'price_ASC' | 'price_DESC' | 'discount_DESC';
 
 const colorCodeDisplayMapping: Record<string, string> = {
 	beige: 'Beige',

@@ -1,5 +1,4 @@
 enum OrderProductsInput {
-	popularity_DESC
 	created_DESC
 	price_ASC
 	price_DESC

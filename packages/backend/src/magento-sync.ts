@@ -36,6 +36,7 @@ export interface ConfigurableProduct {
 	price: number;
 	specialPrice: number;
 	currency: string;
+	totalStock: number;
 	relatedProductIds: string[];
 }
 
@@ -133,6 +134,17 @@ export async function syncMagentoProductsAndCategories() {
 		);
 	}
 
+	const configurableProductStockMap = new Map<string, number>();
+
+	configurableProducts.forEach(product => {
+		configurableProductStockMap.set(
+			product.id,
+			product.productConfigurationIds
+				.map(configurationId => productStock.get(configurationId) || 0)
+				.reduce((prev, current) => prev + current, 0),
+		);
+	});
+
 	const skuToConfigurableProductMap = new Map(configurableProducts.map(product => [product.sku, product]));
 	const idToProductConfigurationMap = new Map(productConfigurations.map(product => [product.id, product]));
 
@@ -171,6 +183,7 @@ export async function syncMagentoProductsAndCategories() {
 			price: firstProductConfiguration.price.originalPrice,
 			specialPrice: firstProductConfiguration.price.specialPrice,
 			currency: firstProductConfiguration.price.currency,
+			totalStock: configurableProductStockMap.get(product.id) || 0,
 			relatedProductIds,
 		};
 	});
