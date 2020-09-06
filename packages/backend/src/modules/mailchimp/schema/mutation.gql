@@ -1,0 +1,11 @@
+input AddEmailToSubscriberListInput {
+	email: String!
+}
+
+type AddEmailToSubscriberListPayload {
+	success: Boolean!
+}
+
+type Mutation {
+	addEmailToSubscriberList(input: AddEmailToSubscriberListInput!): AddEmailToSubscriberListPayload!
+}

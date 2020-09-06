@@ -3,6 +3,7 @@ import { GraphQLModule } from '@graphql-modules/core';
 import { BrandModule } from '../brand';
 import { CategoryModule } from '../category';
 import { CustomPageModule } from '../custom-page';
+import { MailchimpModule } from '../mailchimp';
 import { MegamenuModule } from '../megamenu';
 import { OrderModule } from '../order';
 import { ProductModule } from '../product';
@@ -16,6 +17,7 @@ export const AppModule = new GraphQLModule({
 		BrandModule,
 		CategoryModule,
 		CustomPageModule,
+		MailchimpModule,
 		MegamenuModule,
 		OrderModule,
 		ProductModule,

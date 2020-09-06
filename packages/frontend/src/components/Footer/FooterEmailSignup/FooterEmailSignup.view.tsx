@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Link from 'next/link';
+import { graphql } from 'react-relay';
+import { useMutation } from 'react-relay/hooks';
 import styled from 'styled-components';
+
+import { FooterEmailSignupMailchimpMutation } from './__generated__/FooterEmailSignupMailchimpMutation.graphql';
 
 const CenterWrapper = styled.div`
 	max-width: 1240px;
@@ -9,7 +13,25 @@ const CenterWrapper = styled.div`
 	margin: 0 auto;
 `;
 
+function validateEmail(email: string) {
+	const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email.toLowerCase());
+}
+
+const MAILCHIMP_MUTATION = graphql`
+	mutation FooterEmailSignupMailchimpMutation($input: AddEmailToSubscriberListInput!) {
+		addEmailToSubscriberList(input: $input) {
+			success
+		}
+	}
+`;
+
 export const FooterEmailSignupView = () => {
+	const [email, setEmail] = useState('');
+	const [addEmailToSubList] = useMutation<FooterEmailSignupMailchimpMutation>(MAILCHIMP_MUTATION);
+
+	const emailIsValid = validateEmail(email);
+
 	return (
 		<div style={{ background: 'url(/images/email-signup.jpg)' }}>
 			<CenterWrapper>
@@ -32,21 +54,32 @@ export const FooterEmailSignupView = () => {
 							id="newsletter"
 							name="newsletter"
 							type="text"
+							value={email}
+							onChange={e => setEmail(e.target.value)}
 						/>
 					</div>
 					<button
-						disabled
+						disabled={emailIsValid}
 						style={{
 							width: '200px',
 							padding: '12px',
-							background: 'grey',
+							background: emailIsValid ? 'black' : 'grey',
 							border: 'none',
 							outline: 'none',
 							color: 'white',
 							fontSize: '14px',
 							fontWeight: 'bold',
-							cursor: 'not-allowed',
 							marginBottom: '16px',
+							cursor: emailIsValid ? 'pointer' : 'not-allowed',
+						}}
+						onClick={() => {
+							addEmailToSubList({
+								variables: {
+									input: {
+										email,
+									},
+								},
+							});
 						}}
 					>
 						Prenumerera
