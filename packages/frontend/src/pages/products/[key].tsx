@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { ProductCarousel } from '../../components/ProductCarousel';
 import { ProductDetails } from '../../components/ProductDetails';
 import { ProductImageGallery } from '../../components/ProductImageGallery';
-import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { MyNextPage } from '../../lib/types';
 import { PRODUCT_QUERY, ProductQuery } from '../../queries/product';
 import { CenterWrapper } from '../../styles/center-wrapper';
@@ -39,7 +38,6 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 		{ where: { urlKey: productUrlKey } },
 		{ fetchPolicy: 'store-only' },
 	);
-	const { width: windowWidth } = useWindowDimensions();
 
 	return (
 		<React.Fragment>
@@ -59,10 +57,7 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 						<div style={{ fontSize: '24px', fontWeight: 'bold', color: 'grey' }}>Vad sägs om dessa?</div>
 						<div style={{ fontSize: '24px', fontWeight: 'bold' }}>Liknande produkter</div>
 					</CenterWrapper>
-					<ProductCarousel
-						products={product.relatedProducts}
-						sidePadding={windowWidth < 1240 ? 40 : (windowWidth - 1240) / 2 + 40}
-					/>
+					<ProductCarousel products={product.relatedProducts} />
 				</React.Fragment>
 			)}
 		</React.Fragment>

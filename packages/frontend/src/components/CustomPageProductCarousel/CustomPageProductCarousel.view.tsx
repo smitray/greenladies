@@ -3,7 +3,6 @@ import React from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { ProductCarousel } from '../ProductCarousel';
 
 import { CustomPageProductCarousel_carousel } from './__generated__/CustomPageProductCarousel_carousel.graphql';
@@ -22,8 +21,6 @@ interface CustomPageProductCarouselViewProps {
 }
 
 const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselViewProps) => {
-	const { width: windowWidth } = useWindowDimensions();
-
 	return (
 		<div style={{ padding: '24px 0' }}>
 			<CenterWrapper>
@@ -32,7 +29,7 @@ const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselVi
 					<div style={{ marginBottom: '24px', color: '#999999' }}>Få inspiration till vårens favoritfärg</div>
 				</div>
 			</CenterWrapper>
-			<ProductCarousel products={carousel.products} sidePadding={Math.max(windowWidth - 1240, 40) / 2} />
+			<ProductCarousel products={carousel.products} />
 		</div>
 	);
 };
