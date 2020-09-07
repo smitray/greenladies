@@ -82,6 +82,10 @@ export async function syncMagentoProductsAndCategories() {
 	const configurableProducts: MagentoConfigurableProduct[] = [];
 	const productConfigurations: MagentoProductConfiguration[] = [];
 	for (const product of magentoProducts) {
+		if (!product.enabled) {
+			continue;
+		}
+
 		switch (product.__type) {
 			case 'ConfigurableProduct':
 				{
