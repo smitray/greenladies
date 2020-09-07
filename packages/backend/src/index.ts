@@ -11,7 +11,13 @@ import { getGuestShoppingCartItems } from './api/shopping-cart';
 import { createApolloServer } from './create-apollo-server';
 import { createGreenLadiesAttributeSet } from './create-attribute-set';
 import { initCustomPages, initMegamenu } from './init-db';
-import { getProductConfiguration, syncMagentoProductsAndCategories, updateProductConfiguration } from './magento-sync';
+import {
+	getConfigurableProduct,
+	getProductConfiguration,
+	syncMagentoProductsAndCategories,
+	updateConfigurableProduct,
+	updateProductConfiguration,
+} from './magento-sync';
 import { getRedisCache, getRedisCacheConnection } from './redis-connection';
 import typeormConfig from './typeorm-config';
 import { base64 } from './utils/base64';
@@ -227,15 +233,18 @@ const sessionOptions: SessionOptions = {
 		const redisCache = getRedisCache();
 		await redisCache.set(`klarnaOrderConfirmSnippet:${order.order_id}`, order.html_snippet, 60 * 60 * 24 * 7);
 
-		await Promise.all(
-			items.map(async item => {
-				const configuration = await getProductConfiguration({ sku: item.sku });
-				await updateProductConfiguration({
-					...configuration,
-					quantity: configuration.quantity - item.qty,
-				});
-			}),
-		);
+		for (const item of items) {
+			const configuration = await getProductConfiguration({ sku: item.sku });
+			await updateProductConfiguration({
+				...configuration,
+				quantity: configuration.quantity - item.qty,
+			});
+			const product = await getConfigurableProduct({ id: configuration.parentId });
+			await updateConfigurableProduct({
+				...product,
+				totalStock: product.totalStock - item.qty,
+			});
+		}
 
 		req.session.guestShoppingCart = undefined;
 
