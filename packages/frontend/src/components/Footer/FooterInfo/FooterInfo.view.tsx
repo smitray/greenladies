@@ -13,6 +13,18 @@ const CenterWrapper = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	gap: 16px 32px;
+
+	@media (min-width: 320px) {
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 641px) {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	@media (min-width: 961px) {
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
 `;
 
 const GridBox = styled.div`
@@ -50,6 +62,18 @@ const GridImageContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
+
+	@media (min-width: 320px) {
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	@media (min-width: 640px) {
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+
+	@media (min-width: 961px) {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
 `;
 
 const GridImage = styled.img`
