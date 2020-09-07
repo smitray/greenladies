@@ -65,11 +65,22 @@ const Category: MyNextPage<Props> = ({
 		initializeSelectedFilters(initialBrands, initialSizes, initialColors, initialLowerPrice, initialUpperPrice),
 	);
 
+	const CategorySidebarWrapper = styled.div`
+		width: 200px;
+		padding-right: 20px;
+
+		display: none;
+
+		@media (min-width: 961px) {
+			display: block;
+		}
+	`;
+
 	return (
 		<CenterWrapper>
-			<div style={{ width: '200px', paddingRight: '20px' }}>
+			<CategorySidebarWrapper>
 				<CategorySidebar category={category} />
-			</div>
+			</CategorySidebarWrapper>
 			<div style={{ flexGrow: 1 }}>
 				<h1 style={{ margin: '0 0 16px 0' }}>
 					{category.name}
