@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 
-import { useElementDimensions } from '../../hooks/use-element-dimensions';
 import { ProductCard } from '../ProductCard';
 
 import { ProductCarousel_products } from './__generated__/ProductCarousel_products.graphql';
@@ -18,15 +17,6 @@ const UPPER_ITEM_INDEX_OFFSET = CAROUSEL_ITEMS_IN_VIEW - 1;
 
 const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps) => {
 	const [index, setIndex] = useState(0);
-	const wrapperElement = useRef<HTMLDivElement>(null);
-	const { width: wrapperWidth } = useElementDimensions(wrapperElement);
-
-	const [initialRender, setInitialRender] = useState(true);
-	useEffect(() => {
-		setTimeout(() => setInitialRender(false), 50);
-	}, []);
-
-	const elementWidth = useMemo(() => (wrapperWidth - 2 * sidePadding) / 4, [wrapperWidth, sidePadding]);
 
 	return (
 		<div style={{ position: 'relative' }}>
@@ -75,22 +65,25 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 				</button>
 			)}
 			<div
-				ref={wrapperElement}
 				style={{
 					position: 'relative',
 					overflow: 'hidden',
 				}}
 			>
-				<div>
+				<div
+					style={{
+						padding: `0 calc((100vw - 1240px) / 2)`,
+					}}
+				>
 					<ul
 						style={{
 							display: 'flex',
-							width: sidePadding + elementWidth * products.edges.length + 'px',
 							listStyle: 'none',
 							margin: '0',
+							width: '200%',
 							padding: '0',
-							transform: `translateX(${sidePadding}px) translateX(-${elementWidth * index}px)`,
-							transition: initialRender ? 'all 0ms' : 'all 300ms',
+							transform: `translateX(-${25 * index}%)`,
+							transition: 'all 300ms',
 						}}
 					>
 						{products.edges.map(({ node: product }, index) => {
@@ -99,8 +92,7 @@ const ProductCarouselView = ({ products, sidePadding }: ProductCarouselViewProps
 									id={index.toString()}
 									key={index}
 									style={{
-										width: elementWidth + 'px',
-										flexBasis: elementWidth + 'px',
+										width: '25%',
 										flexGrow: 0,
 										flexShrink: 0,
 										padding: '0 8px',

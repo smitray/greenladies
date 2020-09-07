@@ -1,14 +1,17 @@
 import styled from 'styled-components';
 
-export const ProductCardWrapper = styled.div`
+export const ProductCardWrapper = styled.a`
 	cursor: pointer;
+	color: black;
+	text-decoration: none;
+	display: block;
 `;
 
 export const ProductDetails = styled.div`
 	margin-top: 12px;
 `;
 
-export const ProductImageWrapper = styled.a`
+export const ProductImageWrapper = styled.div`
 	display: block;
 	position: relative;
 	background: #f6f6f6;
