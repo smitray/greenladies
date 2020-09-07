@@ -2,6 +2,11 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
 	background: #eeeeee;
+	display: none;
+
+	@media (min-width: 641px) {
+		display: block;
+	}
 `;
 
 export const CenterWrapper = styled.div`
