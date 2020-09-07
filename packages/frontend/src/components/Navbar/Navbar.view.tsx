@@ -5,55 +5,23 @@ import { useRouter } from 'next/router';
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
 import { FaRegHeart, FaSearch } from 'react-icons/fa';
-import { fetchQuery, graphql, QueryRenderer } from 'react-relay';
+import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
+import { CenterWrapper } from '../../styles/center-wrapper';
+import { IconWrapper } from '../../styles/icon-wrapper';
 import { Link } from '../Link';
+import { SearchResults } from '../SearchResults';
 import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
 import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
-import { NavbarSearchQuery } from './__generated__/NavbarSearchQuery.graphql';
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
 import { NavbarWishlistQuery } from './__generated__/NavbarWishlistQuery.graphql';
 import { MegaMenu } from './MegaMenu';
-import {
-	CenterWrapper,
-	Group,
-	Item,
-	ItemText,
-	ItemWrapper,
-	MegaMenu as MegaMenuWrapper,
-	Row,
-	Wrapper,
-} from './Navbar.styles';
-
-const SEARCH_QUERY = graphql`
-	query NavbarSearchQuery($query: String!) {
-		search(query: $query) {
-			brands {
-				id
-				name
-			}
-			categories {
-				id
-				name
-				urlKey
-			}
-			products {
-				id
-				urlKey
-				brand
-				name
-				image
-				originalPrice
-				specialPrice
-			}
-		}
-	}
-`;
+import { DropdownWrapper, Group, Item, ItemText, ItemWrapper, Row, Wrapper } from './Navbar.styles';
 
 interface NavbarViewProps {
 	megamenu: Navbar_megamenu;
@@ -88,12 +56,10 @@ export const NavbarView = ({
 	});
 	const [searchIsOpen, setSearchIsOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [searchResults, setSearchResults] = useState<NavbarSearchQuery['response']['search'] | null>(null);
 	const searchInputHovered = useRef(false);
-	const searchDebounceTimeout = useRef<number | null>(null);
-	const searchResultEl = useRef<HTMLDivElement>(null);
-	useClickOutside(searchResultEl, () => {
-		if (!searchInputHovered.current) {
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	useClickOutside(dropdownRef, () => {
+		if (searchIsOpen && !searchInputHovered.current) {
 			setSearchIsOpen(false);
 		}
 	});
@@ -108,6 +74,9 @@ export const NavbarView = ({
 			setSearchIsOpen(false);
 		}
 	}, [currentlySelectedTopLevelItemIndex]);
+
+	const showMegamenuDropdown = currentlySelectedTopLevelItemIndex !== null;
+	const showSearchResultsDropdown = !showMegamenuDropdown && searchIsOpen;
 
 	return (
 		<Wrapper>
@@ -395,24 +364,15 @@ export const NavbarView = ({
 								onChange={e => {
 									const query = e.target.value;
 									setSearchQuery(query);
-									if (searchDebounceTimeout.current !== null) {
-										clearTimeout(searchDebounceTimeout.current);
-										searchDebounceTimeout.current = null;
-									}
 
-									if (query !== '') {
-										searchDebounceTimeout.current = window.setTimeout(() => {
-											fetchQuery<NavbarSearchQuery>(relayEnvironment, SEARCH_QUERY, {
-												query,
-											}).then(({ search }) => {
-												setSearchResults(search);
-												setSearchIsOpen(true);
-											});
-										}, 1000);
+									if (query === '') {
+										setSearchIsOpen(false);
+									} else {
+										setSearchIsOpen(true);
 									}
 								}}
-								onFocus={() => {
-									if (searchResults !== null) {
+								onClick={() => {
+									if (searchQuery !== '') {
 										setSearchIsOpen(true);
 									}
 								}}
@@ -429,179 +389,29 @@ export const NavbarView = ({
 									alignItems: 'center',
 								}}
 							>
-								<div style={{ width: '16px', height: '16px' }}>
+								<IconWrapper size={16}>
 									<FaSearch size="16" color="grey" />
-								</div>
+								</IconWrapper>
 							</div>
 						</Group>
 					</Row>
 				</CenterWrapper>
 			</Row>
-			<MegaMenuWrapper
-				open={currentlySelectedTopLevelItemIndex !== null}
-				onMouseEnter={handleMegaMenuFocus}
-				onMouseLeave={handleMegaMenuUnfocus}
-			>
-				<CenterWrapper style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-					{currentlySelectedTopLevelItemIndex != null && (
-						<MegaMenu item={megamenu.items[currentlySelectedTopLevelItemIndex]} />
-					)}
-				</CenterWrapper>
-			</MegaMenuWrapper>
-			<div style={{ zIndex: 200, position: 'absolute', width: '100%' }}>
-				<Collapse isOpened={searchIsOpen}>
-					<div style={{ padding: '20px 0', background: 'white' }} ref={searchResultEl}>
-						<CenterWrapper>
-							{searchResults === null ||
-							(searchResults.brands.length === 0 &&
-								searchResults.categories.length === 0 &&
-								searchResults.products.length === 0) ? (
-								<div style={{ padding: '64px', textAlign: 'center' }}>inga resultat hittades</div>
-							) : (
-								<React.Fragment>
-									{(searchResults.brands.length > 0 || searchResults.categories.length > 0) && (
-										<div style={{ display: 'flex', marginBottom: '24px' }}>
-											{searchResults.brands.length > 0 && (
-												<div
-													style={{
-														flexBasis: '50%',
-														flexShrink: 0,
-														display: 'flex',
-														flexDirection: 'column',
-														alignItems: 'flex-start',
-													}}
-												>
-													<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Märken</div>
-													{searchResults.brands.map(brand => (
-														<NextLink key={brand.id} href={`/categories/all?brands=${brand.name}`} passHref>
-															<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>{brand.name}</a>
-														</NextLink>
-													))}
-												</div>
-											)}
-											{searchResults.categories.length > 0 && (
-												<div
-													style={{
-														flexBasis: '50%',
-														flexShrink: 0,
-														display: 'flex',
-														flexDirection: 'column',
-														alignItems: 'flex-start',
-													}}
-												>
-													<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Kategorier</div>
-													{searchResults.categories.map(category => (
-														<NextLink
-															key={category.id}
-															href="/categories/[key]"
-															as={`/categories/${category.urlKey}`}
-															passHref
-														>
-															<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>
-																{category.name}
-															</a>
-														</NextLink>
-													))}
-												</div>
-											)}
-										</div>
-									)}
-
-									{searchResults.products.length > 0 && (
-										<React.Fragment>
-											<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Produkter</div>
-											<div>
-												<div style={{ display: 'flex', margin: '0 -8px' }}>
-													{searchResults.products.slice(0, 7).map(product => (
-														<NextLink key={product.id} href="/products/[key]" as={`/products/${product.urlKey}`}>
-															<a
-																style={{
-																	padding: '0 8px',
-																	flexBasis: 100 / 7 + '%',
-																	flexShrink: 0,
-																	flexGrow: 0,
-																	width: 100 / 7 + '%',
-																	color: 'black',
-																	textDecoration: 'none',
-																}}
-															>
-																<div style={{ padding: '0 5%', background: '#f6f6f6', marginBottom: '8px' }}>
-																	<div
-																		style={{
-																			position: 'relative',
-																			width: '100%',
-																			paddingTop: '131.4%',
-																		}}
-																	>
-																		<img
-																			src={product.image}
-																			style={{
-																				position: 'absolute',
-																				top: '0',
-																				right: '5%',
-																				bottom: '0',
-																				left: '5%',
-																				width: '90%',
-																			}}
-																		/>
-																	</div>
-																</div>
-																<div
-																	style={{
-																		overflow: 'hidden',
-																		textOverflow: 'ellipsis',
-																		whiteSpace: 'nowrap',
-																		fontSize: '14px',
-																		fontWeight: 'bold',
-																		marginBottom: '4px',
-																	}}
-																>
-																	{product.brand}
-																</div>
-																<div
-																	style={{
-																		overflow: 'hidden',
-																		textOverflow: 'ellipsis',
-																		whiteSpace: 'nowrap',
-																		fontSize: '14px',
-																		marginBottom: '4px',
-																	}}
-																>
-																	{product.name}
-																</div>
-																<div>
-																	<span
-																		style={{
-																			color: 'grey',
-																			textDecoration: 'line-through',
-																			fontSize: '14px',
-																		}}
-																	>
-																		{product.originalPrice} kr
-																	</span>
-																	<span
-																		style={{
-																			color: 'red',
-																			marginLeft: '8px',
-																			fontSize: '14px',
-																		}}
-																	>
-																		{product.specialPrice} kr
-																	</span>
-																</div>
-															</a>
-														</NextLink>
-													))}
-												</div>
-											</div>
-										</React.Fragment>
-									)}
-								</React.Fragment>
-							)}
-						</CenterWrapper>
-					</div>
+			<DropdownWrapper ref={dropdownRef} onMouseEnter={handleMegaMenuFocus} onMouseLeave={handleMegaMenuUnfocus}>
+				<Collapse isOpened={showMegamenuDropdown || showSearchResultsDropdown}>
+					<CenterWrapper style={{ paddingTop: '32px', paddingBottom: '32px' }}>
+						{showMegamenuDropdown && (
+							<MegaMenu
+								item={
+									// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+									megamenu.items[currentlySelectedTopLevelItemIndex!]
+								}
+							/>
+						)}
+						{showSearchResultsDropdown && <SearchResults query={searchQuery} />}
+					</CenterWrapper>
 				</Collapse>
-			</div>
+			</DropdownWrapper>
 		</Wrapper>
 	);
 };

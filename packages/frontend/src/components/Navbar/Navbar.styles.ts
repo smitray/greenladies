@@ -4,12 +4,6 @@ export const Wrapper = styled.nav`
 	padding-bottom: 0px;
 `;
 
-export const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 0 40px;
-	margin: 0 auto;
-`;
-
 export const Row = styled.div`
 	display: flex;
 	justify-content: space-between;
@@ -55,17 +49,9 @@ export const ItemWrapper = styled.a`
 	}
 `;
 
-interface MegaMenuProps {
-	open: boolean;
-}
-
-export const MegaMenu = styled.div<MegaMenuProps>`
+export const DropdownWrapper = styled.div`
 	width: 100%;
 	background: white;
 	position: absolute;
 	z-index: 100;
-	transition: all 300ms ease-in-out;
-	overflow: hidden;
-	height: 300px;
-	max-height: ${({ open }) => (open ? '300px' : '0')};
 `;
