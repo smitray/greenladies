@@ -25,7 +25,7 @@ const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerVi
 	};
 
 	return (
-		<Drawer open={open} placement="right" handler={false} width={500} onClose={requestClose}>
+		<Drawer level={null} open={open} placement="right" handler={false} width={500} onClose={requestClose}>
 			<div style={{ padding: '24px' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
 					<button
