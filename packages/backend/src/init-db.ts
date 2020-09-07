@@ -246,10 +246,15 @@ export async function initCustomPages() {
 	const customPageRepository = getRepository(CustomPage);
 	const customPageSectionRepository = getRepository(CustomPageSection);
 
-	const cuomstPageProductCarouselComponentRepo = getRepository(CustomPageProductCarouselComponent);
+	const customPageProductCarouselComponentRepo = getRepository(CustomPageProductCarouselComponent);
 
 	const linkRepository = getRepository(Link);
 	const customPageBannerComponentRepository = getRepository(CustomPageBannerComponent);
+
+	const customPages = await customPageRepository.find();
+	if (customPages.length > 0) {
+		return;
+	}
 
 	// Index page
 	const banner1Link = await linkRepository.save({ type: 'category', to: '6' });
@@ -267,7 +272,7 @@ export async function initCustomPages() {
 		position: 0,
 	});
 
-	const carousel1 = await cuomstPageProductCarouselComponentRepo.save({
+	const carousel1 = await customPageProductCarouselComponentRepo.save({
 		title: 'DENIM FEVER',
 		subtitle: 'Brallor för hela högen',
 		categoryId: '6',
@@ -294,7 +299,7 @@ export async function initCustomPages() {
 		position: 2,
 	});
 
-	const carousel2 = await cuomstPageProductCarouselComponentRepo.save({
+	const carousel2 = await customPageProductCarouselComponentRepo.save({
 		title: 'När sommar möter höst',
 		subtitle: 'Stiligt och svalt',
 		categoryId: '6',
@@ -321,7 +326,7 @@ export async function initCustomPages() {
 		position: 4,
 	});
 
-	const carousel3 = await cuomstPageProductCarouselComponentRepo.save({
+	const carousel3 = await customPageProductCarouselComponentRepo.save({
 		title: 'Nedsatta priser',
 		subtitle: 'De bästa fynden just nu',
 		categoryId: '6',
@@ -348,7 +353,7 @@ export async function initCustomPages() {
 		position: 6,
 	});
 
-	const carousel4 = await cuomstPageProductCarouselComponentRepo.save({
+	const carousel4 = await customPageProductCarouselComponentRepo.save({
 		title: '',
 		subtitle: '',
 		categoryId: '6',

@@ -1,6 +1,6 @@
 import slug from 'limax';
 
-import { getCategories } from './api/category';
+import { getCategories as getMagentoCategories } from './api/category';
 import {
 	ConfigurableProduct as MagentoConfigurableProduct,
 	getProducts,
@@ -72,7 +72,7 @@ export interface Brand {
 }
 
 export async function syncMagentoProductsAndCategories() {
-	const magentoCategories = await getCategories();
+	const magentoCategories = await getMagentoCategories();
 
 	const magentoProducts = await getProducts({ pageSize: 1000000 });
 
@@ -308,9 +308,10 @@ export async function getCategory({
 	}
 }
 
-export async function getRootCategoryIds() {
+export async function getRootCategories() {
 	const redisCache = getRedisCache();
-	return redisCache.get<string[]>('rootCategoryIds');
+	const rootCategoryIds = await redisCache.get<string[]>('rootCategoryIds');
+	return redisCache.getMany<Category>(rootCategoryIds.map(id => `Category:id:${id}`));
 }
 
 export async function getConfigurableProduct({
@@ -377,7 +378,8 @@ export async function getBrand({ id, name }: { id?: string | null; name?: string
 	}
 }
 
-export function getCategoryIds() {
+export async function getCategories() {
 	const redisCache = getRedisCache();
-	return redisCache.get<string[]>('allCategoryIds');
+	const allCategoryIds = await redisCache.get<string[]>('allCategoryIds');
+	return redisCache.getMany<Category>(allCategoryIds.map(id => `Category:id:${id}`));
 }

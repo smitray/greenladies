@@ -23,13 +23,11 @@ const resolvers: CategoryModuleResolversType = {
 
 			return { id: String(category.id) };
 		},
-		categories: async (_parent, _args, { injector }) => {
-			const categories = await injector.get(CategoryProvider).getCategoryIds();
-			return categories.map(id => ({ id }));
+		categories: (_parent, _args, { injector }) => {
+			return injector.get(CategoryProvider).getRootCategories();
 		},
-		rootCategories: async (_parent, _args, { injector }) => {
-			const categories = await injector.get(CategoryProvider).getRootCategoryIds();
-			return categories.map(id => ({ id }));
+		rootCategories: (_parent, _args, { injector }) => {
+			return injector.get(CategoryProvider).getCategories();
 		},
 		specialCategory: async (_parent, { where }, { injector }) => {
 			let category: Category;

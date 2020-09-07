@@ -37,8 +37,8 @@ const sessionOptions: SessionOptions = {
 
 	await createConnection(typeormConfig);
 
-	initMegamenu();
-	initCustomPages();
+	initMegamenu().catch(() => console.log('Could not init megamenu'));
+	initCustomPages().catch(() => console.log('Could not init custom pages'));
 
 	if (process.env.NODE_ENV === 'production') {
 		app.set('trust proxy', 1);
