@@ -1,21 +1,3 @@
-type BrandLink {
-	brand: Brand!
-}
-
-type ProductLink {
-	product: Product!
-}
-
-type CategoryLink {
-	category: Category!
-}
-
-type CustomPageLink {
-	path: String!
-}
-
-union Link = BrandLink | ProductLink | CategoryLink | CustomPageLink
-
 type MegamenuSectionItem {
 	name: String!
 	link: Link!
