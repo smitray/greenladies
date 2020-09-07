@@ -5,6 +5,8 @@ import RedisSession from 'connect-redis';
 import express from 'express';
 import session, { SessionOptions } from 'express-session';
 import { gql, GraphQLClient } from 'graphql-request';
+import moment from 'moment';
+import cron from 'node-cron';
 import { createConnection } from 'typeorm';
 
 import { getGuestShoppingCartItems } from './api/shopping-cart';
@@ -54,6 +56,15 @@ const sessionOptions: SessionOptions = {
 	}
 
 	app.use(session(sessionOptions));
+
+	app.get('/sync-magento', async (_req, res) => {
+		try {
+			await syncMagentoProductsAndCategories();
+			return res.send('OK');
+		} catch (error) {
+			return res.send(error);
+		}
+	});
 
 	app.post('/api/klarna/order-validation', (req, res) => {
 		console.log(req);
@@ -258,6 +269,20 @@ const sessionOptions: SessionOptions = {
 	createGreenLadiesAttributeSet()
 		.then(() => console.log('Successfully created attribute set'))
 		.catch(error => console.log('Could not create attribute set', error.message));
+
+	// Every hour
+	cron.schedule('0 */1 * * *', () => {
+		const asyncRun = async () => {
+			try {
+				await syncMagentoProductsAndCategories();
+				console.log(`[${moment().format()}] Successfully synced magento products`);
+			} catch (error) {
+				console.log(`[${moment().format()}] Failed to sync magento`, error);
+			}
+		};
+
+		asyncRun();
+	});
 
 	const server = await createApolloServer();
 	server.applyMiddleware({
