@@ -1,6 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
 import { FaRegHeart, FaSearch } from 'react-icons/fa';
 import { fetchQuery, graphql, QueryRenderer } from 'react-relay';
@@ -29,69 +31,26 @@ import {
 	Wrapper,
 } from './Navbar.styles';
 
-const SearchLink = styled.a`
-	color: black;
-	text-decoration: none;
-	font-size: 14px;
-	display: block;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: hidden;
-	padding: 8px 4px;
-`;
-
-const highlightResult = (result: string, indices: readonly number[]) => {
-	const intervals: JSX.Element[] = [];
-	let prevStartIndex = -1;
-	let prevIndex = -1;
-	indices.forEach((index, i, arr) => {
-		const isFirst = i === 0;
-		const isLast = i === arr.length - 1;
-
-		if (isFirst) {
-			if (index > 0) {
-				intervals.push(<span>{result.slice(0, index)}</span>);
-			}
-
-			prevStartIndex = index;
-		}
-
-		if (!isFirst && index - prevIndex > 1) {
-			intervals.push(<strong>{result.slice(prevStartIndex, prevIndex + 1)}</strong>);
-			intervals.push(<span>{result.slice(prevIndex + 1, index)}</span>);
-
-			prevStartIndex = index;
-		}
-
-		if (isLast) {
-			intervals.push(<strong>{result.slice(prevStartIndex, index + 1)}</strong>);
-			intervals.push(<span>{result.slice(index + 1)}</span>);
-		}
-
-		prevIndex = index;
-	});
-
-	return intervals;
-};
-
 const SEARCH_QUERY = graphql`
 	query NavbarSearchQuery($query: String!) {
 		search(query: $query) {
-			results {
-				node {
-					__typename
-					id
-					... on Product {
-						name
-						urlKey
-					}
-					... on Brand {
-						name
-					}
-				}
-				meta {
-					indices
-				}
+			brands {
+				id
+				name
+			}
+			categories {
+				id
+				name
+				urlKey
+			}
+			products {
+				id
+				urlKey
+				brand
+				name
+				image
+				originalPrice
+				specialPrice
 			}
 		}
 	}
@@ -130,7 +89,7 @@ export const NavbarView = ({
 	});
 	const [searchIsOpen, setSearchIsOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [searchResults, setSearchResults] = useState<NavbarSearchQuery['response']['search']['results'] | null>(null);
+	const [searchResults, setSearchResults] = useState<NavbarSearchQuery['response']['search'] | null>(null);
 	const searchInputHovered = useRef(false);
 	const searchDebounceTimeout = useRef<number | null>(null);
 	const searchResultEl = useRef<HTMLDivElement>(null);
@@ -140,164 +99,16 @@ export const NavbarView = ({
 		}
 	});
 
-	// const { categories }: NavbarProps = {
-	// 	categories: [
-	// 		{
-	// 			promoBanner: {
-	// 				image: null,
-	// 				title: 'Grönare Garderob',
-	// 				subtitle: 'Upptäck mer',
-	// 			},
-	// 			category: {
-	// 				href: null,
-	// 				name: 'Kläder',
-	// 				categories: [
-	// 					{
-	// 						href: null,
-	// 						name: 'Alla kläder',
-	// 						categories: [
-	// 							{
-	// 								href: null,
-	// 								name: 'Klänningar & Tunikor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Toppar & Linnen',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Blusar & Skjortor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Tröjor & Stickat',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Kavaj & Kostym',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Jackor & Kappor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Byxor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Jeans',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Kjolar & Shorts',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Basplagg & Underkläder',
-	// 								categories: [],
-	// 							},
-	// 						],
-	// 					},
-	// 					{
-	// 						href: null,
-	// 						name: 'Utvalt',
-	// 						categories: [
-	// 							{
-	// 								href: null,
-	// 								name: 'Nyheter',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Hållbara regnjackor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Nordiska designers',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Stilinspiration: Grön garderob',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Vintage',
-	// 								categories: [],
-	// 							},
-	// 						],
-	// 					},
-	// 				],
-	// 			},
-	// 		},
-	// 		{
-	// 			promoBanner: {
-	// 				image: null,
-	// 				title: 'Grönare Garderob',
-	// 				subtitle: 'Upptäck mer',
-	// 			},
-	// 			category: {
-	// 				href: null,
-	// 				name: 'Skor',
-	// 				categories: [
-	// 					{
-	// 						href: null,
-	// 						name: 'Alla damskor',
-	// 						categories: [
-	// 							{
-	// 								href: null,
-	// 								name: 'Sneakers & Lågskor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Högklackade skor',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Pumps',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Sandaler& Sandletter',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Ballerina',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Ankelboots',
-	// 								categories: [],
-	// 							},
-	// 							{
-	// 								href: null,
-	// 								name: 'Stövlar',
-	// 								categories: [],
-	// 							},
-	// 						],
-	// 					},
-	// 				],
-	// 			},
-	// 		},
-	// 	],
-	// };
+	const { asPath } = useRouter();
+	useEffect(() => {
+		setSearchIsOpen(false);
+	}, [asPath]);
+
+	useEffect(() => {
+		if (currentlySelectedTopLevelItemIndex !== null) {
+			setSearchIsOpen(false);
+		}
+	}, [currentlySelectedTopLevelItemIndex]);
 
 	return (
 		<Wrapper>
@@ -568,128 +379,59 @@ export const NavbarView = ({
 								flexBasis: '300px',
 								borderLeft: '1px solid lightgrey',
 								borderRight: '1px solid lightgrey',
+								position: 'relative',
 							}}
 						>
-							<div style={{ position: 'relative', width: '100%' }}>
-								<input
-									style={{
-										border: 'none',
-										outline: 'none',
-										width: '100%',
-										paddingLeft: '48px',
-										height: '100%',
-									}}
-									type="text"
-									placeholder="Sök produkter eller märken"
-									value={searchQuery}
-									onChange={e => {
-										const query = e.target.value;
-										setSearchQuery(query);
-										if (searchDebounceTimeout.current !== null) {
-											clearTimeout(searchDebounceTimeout.current);
-											searchDebounceTimeout.current = null;
-										}
+							<input
+								style={{
+									border: 'none',
+									outline: 'none',
+									width: '100%',
+									paddingLeft: '48px',
+									height: '100%',
+								}}
+								type="text"
+								placeholder="Sök produkter eller märken"
+								value={searchQuery}
+								onChange={e => {
+									const query = e.target.value;
+									setSearchQuery(query);
+									if (searchDebounceTimeout.current !== null) {
+										clearTimeout(searchDebounceTimeout.current);
+										searchDebounceTimeout.current = null;
+									}
 
-										if (query !== '') {
-											searchDebounceTimeout.current = window.setTimeout(() => {
-												fetchQuery<NavbarSearchQuery>(relayEnvironment, SEARCH_QUERY, {
-													query,
-												}).then(({ search }) => {
-													setSearchResults(search.results);
-													setSearchIsOpen(true);
-												});
-											}, 1000);
-										}
-									}}
-									onFocus={() => {
-										if (searchResults !== null) {
-											setSearchIsOpen(true);
-										}
-									}}
-									onMouseEnter={() => (searchInputHovered.current = true)}
-									onMouseLeave={() => (searchInputHovered.current = false)}
-								/>
-								<div
-									style={{
-										position: 'absolute',
-										left: '16px',
-										bottom: '0',
-										top: '0',
-										display: 'flex',
-										alignItems: 'center',
-									}}
-								>
-									<div style={{ width: '16px', height: '16px' }}>
-										<FaSearch size="16" color="grey" />
-									</div>
-								</div>
-								<div
-									ref={searchResultEl}
-									style={{
-										position: 'absolute',
-										marginTop: '1px',
-										right: '-1px',
-										zIndex: 30,
-										width: '150%',
-										maxHeight: '500px',
-									}}
-								>
-									{searchIsOpen && searchResults !== null && (
-										<div
-											style={{
-												background: 'white',
-												borderRight: '1px solid lightgrey',
-												borderBottom: '1px solid lightgrey',
-												borderLeft: '1px solid lightgrey',
-												padding: '12px',
-											}}
-										>
-											{searchResults.length === 0 && (
-												<div style={{ color: '#999999', fontSize: '14px', textAlign: 'center', padding: '8px 0' }}>
-													Hittade inget som matchade din sökning
-												</div>
-											)}
-											{searchResults.length > 0 && (
-												<div>
-													{searchResults.map(result => {
-														if (result.node.__typename === 'Product') {
-															return (
-																<NextLink href="/products/[key]" as={`/products/${result.node.urlKey}`} passHref>
-																	<SearchLink onClick={() => setSearchIsOpen(false)}>
-																		Produkt:{' '}
-																		{
-																			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-																			highlightResult(result.node.name!, result.meta.indices)
-																		}
-																	</SearchLink>
-																</NextLink>
-															);
-														}
-
-														if (result.node.__typename === 'Brand') {
-															return (
-																<NextLink
-																	href={`/categories/all?brands=${result.node.name}`}
-																	as={`/categories/all?brands=${result.node.name}`}
-																	passHref
-																>
-																	<SearchLink onClick={() => setSearchIsOpen(false)}>
-																		Märke:{' '}
-																		{
-																			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-																			highlightResult(result.node.name!, result.meta.indices)
-																		}
-																	</SearchLink>
-																</NextLink>
-															);
-														}
-
-														return null;
-													})}
-												</div>
-											)}
-										</div>
-									)}
+									if (query !== '') {
+										searchDebounceTimeout.current = window.setTimeout(() => {
+											fetchQuery<NavbarSearchQuery>(relayEnvironment, SEARCH_QUERY, {
+												query,
+											}).then(({ search }) => {
+												setSearchResults(search);
+												setSearchIsOpen(true);
+											});
+										}, 1000);
+									}
+								}}
+								onFocus={() => {
+									if (searchResults !== null) {
+										setSearchIsOpen(true);
+									}
+								}}
+								onMouseEnter={() => (searchInputHovered.current = true)}
+								onMouseLeave={() => (searchInputHovered.current = false)}
+							/>
+							<div
+								style={{
+									position: 'absolute',
+									left: '16px',
+									bottom: '0',
+									top: '0',
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<div style={{ width: '16px', height: '16px' }}>
+									<FaSearch size="16" color="grey" />
 								</div>
 							</div>
 						</Group>
@@ -707,6 +449,160 @@ export const NavbarView = ({
 					)}
 				</CenterWrapper>
 			</MegaMenuWrapper>
+			<div style={{ zIndex: 200, position: 'absolute', width: '100%' }}>
+				<Collapse isOpened={searchIsOpen}>
+					<div style={{ padding: '20px 0', background: 'white' }} ref={searchResultEl}>
+						<CenterWrapper>
+							{searchResults === null ||
+							(searchResults.brands.length === 0 &&
+								searchResults.categories.length === 0 &&
+								searchResults.products.length === 0) ? (
+								<div style={{ padding: '64px', textAlign: 'center' }}>inga resultat hittades</div>
+							) : (
+								<React.Fragment>
+									{(searchResults.brands.length > 0 || searchResults.categories.length > 0) && (
+										<div style={{ display: 'flex', marginBottom: '24px' }}>
+											{searchResults.brands.length > 0 && (
+												<div
+													style={{
+														flexBasis: '50%',
+														flexShrink: 0,
+														display: 'flex',
+														flexDirection: 'column',
+														alignItems: 'flex-start',
+													}}
+												>
+													<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Märken</div>
+													{searchResults.brands.map(brand => (
+														<NextLink key={brand.id} href={`/categories/all?brands=${brand.name}`} passHref>
+															<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>{brand.name}</a>
+														</NextLink>
+													))}
+												</div>
+											)}
+											{searchResults.categories.length > 0 && (
+												<div
+													style={{
+														flexBasis: '50%',
+														flexShrink: 0,
+														display: 'flex',
+														flexDirection: 'column',
+														alignItems: 'flex-start',
+													}}
+												>
+													<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Kategorier</div>
+													{searchResults.categories.map(category => (
+														<NextLink
+															key={category.id}
+															href="/categories/[key]"
+															as={`/categories/${category.urlKey}`}
+															passHref
+														>
+															<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>
+																{category.name}
+															</a>
+														</NextLink>
+													))}
+												</div>
+											)}
+										</div>
+									)}
+
+									{searchResults.products.length > 0 && (
+										<React.Fragment>
+											<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Produkter</div>
+											<div>
+												<div style={{ display: 'flex', margin: '0 -8px' }}>
+													{searchResults.products.slice(0, 7).map(product => (
+														<NextLink key={product.id} href="/products/[key]" as={`/products/${product.urlKey}`}>
+															<a
+																style={{
+																	padding: '0 8px',
+																	flexBasis: 100 / 7 + '%',
+																	flexShrink: 0,
+																	flexGrow: 0,
+																	width: 100 / 7 + '%',
+																	color: 'black',
+																	textDecoration: 'none',
+																}}
+															>
+																<div style={{ padding: '0 5%', background: '#f6f6f6', marginBottom: '8px' }}>
+																	<div
+																		style={{
+																			position: 'relative',
+																			width: '100%',
+																			paddingTop: '131.4%',
+																		}}
+																	>
+																		<img
+																			src={product.image}
+																			style={{
+																				position: 'absolute',
+																				top: '0',
+																				right: '5%',
+																				bottom: '0',
+																				left: '5%',
+																				width: '90%',
+																			}}
+																		/>
+																	</div>
+																</div>
+																<div
+																	style={{
+																		overflow: 'hidden',
+																		textOverflow: 'ellipsis',
+																		whiteSpace: 'nowrap',
+																		fontSize: '14px',
+																		fontWeight: 'bold',
+																		marginBottom: '4px',
+																	}}
+																>
+																	{product.brand}
+																</div>
+																<div
+																	style={{
+																		overflow: 'hidden',
+																		textOverflow: 'ellipsis',
+																		whiteSpace: 'nowrap',
+																		fontSize: '14px',
+																		marginBottom: '4px',
+																	}}
+																>
+																	{product.name}
+																</div>
+																<div>
+																	<span
+																		style={{
+																			color: 'grey',
+																			textDecoration: 'line-through',
+																			fontSize: '14px',
+																		}}
+																	>
+																		{product.originalPrice} kr
+																	</span>
+																	<span
+																		style={{
+																			color: 'red',
+																			marginLeft: '8px',
+																			fontSize: '14px',
+																		}}
+																	>
+																		{product.specialPrice} kr
+																	</span>
+																</div>
+															</a>
+														</NextLink>
+													))}
+												</div>
+											</div>
+										</React.Fragment>
+									)}
+								</React.Fragment>
+							)}
+						</CenterWrapper>
+					</div>
+				</Collapse>
+			</div>
 		</Wrapper>
 	);
 };

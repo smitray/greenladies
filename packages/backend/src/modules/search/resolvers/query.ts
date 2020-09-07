@@ -20,8 +20,8 @@ const resolvers: SearchModuleResolversType = {
 				threshold: -10000,
 				keys: ['name', 'description.full'],
 				scoreFn: keysResult => {
-					const nameResult = keysResult[0] ? keysResult[0].score : -1000;
-					const descriptionResult = keysResult[1] ? keysResult[1].score - 100 : -1000;
+					const nameResult = keysResult[0] ? keysResult[0].score : -20000;
+					const descriptionResult = keysResult[1] ? keysResult[1].score - 100 : -20000;
 					return Math.max(nameResult, descriptionResult);
 				},
 			});
