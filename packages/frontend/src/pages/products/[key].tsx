@@ -10,11 +10,23 @@ import { ProductImageGallery } from '../../components/ProductImageGallery';
 import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { MyNextPage } from '../../lib/types';
 import { PRODUCT_QUERY, ProductQuery } from '../../queries/product';
+import { CenterWrapper } from '../../styles/center-wrapper';
 
-const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 24px 40px;
-	margin: 0 auto;
+const SomeWrapper = styled.div`
+	display: grid;
+	grid-template-columns: 1fr;
+	padding: 24px 0;
+
+	@media (min-width: 961px) {
+		grid-template-columns: fit-content(50%) 1fr;
+	}
+`;
+
+const ProductImageGalleryWrapper = styled.div`
+	@media (min-width: 961px) {
+		max-width: 480px;
+		gap: 48px;
+	}
 `;
 
 interface Props {
@@ -32,14 +44,14 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 	return (
 		<React.Fragment>
 			<CenterWrapper>
-				<div style={{ display: 'flex' }}>
-					<div style={{ flexBasis: '50%', marginRight: '24px' }}>
+				<SomeWrapper>
+					<ProductImageGalleryWrapper>
 						<ProductImageGallery product={product} />
-					</div>
-					<div style={{ flexBasis: '50%', marginLeft: '24px' }}>
+					</ProductImageGalleryWrapper>
+					<div>
 						<ProductDetails product={product} />
 					</div>
-				</div>
+				</SomeWrapper>
 			</CenterWrapper>
 			{product.relatedProducts.totalCount > 0 && (
 				<React.Fragment>

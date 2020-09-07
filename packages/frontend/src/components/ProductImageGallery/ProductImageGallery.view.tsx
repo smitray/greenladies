@@ -41,8 +41,10 @@ const ProductImageGalleryView = ({ product }: ProductImageGalleryViewProps) => {
 						}}
 						onMouseEnter={() => setSelectedImage({ index, src })}
 						onClick={() => {
+							if (currentImageIndex === index) {
+								setGalleryIsOpen(true);
+							}
 							setCurrentImageIndex(index);
-							setGalleryIsOpen(true);
 						}}
 					/>
 				))}
