@@ -1,15 +1,7 @@
 import React from 'react';
 
-import styled from 'styled-components';
-
 import { MyNextPage } from '../lib/types';
-
-const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 24px 40px;
-	margin: 0 auto;
-	padding: 24px;
-`;
+import { CenterWrapper } from '../styles/center-wrapper';
 
 const OrderFailure: MyNextPage = () => {
 	return (
