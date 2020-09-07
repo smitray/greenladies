@@ -12,7 +12,7 @@ const CenterWrapper = styled.div`
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
-	gap: 16px 32px;
+	gap: 32px;
 
 	@media (min-width: 320px) {
 		grid-template-columns: 1fr;
@@ -27,9 +27,7 @@ const CenterWrapper = styled.div`
 	}
 `;
 
-const GridBox = styled.div`
-	height: 180px;
-`;
+const GridBox = styled.div``;
 
 const GridBoxTitle = styled.div`
 	text-transform: uppercase;
