@@ -159,8 +159,10 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 												cursor: soldOut ? 'not-allowed' : 'pointer',
 											}}
 											onClick={() => {
-												setSelectedConfiguration(virtualProduct);
-												setSelectSizeOpen(false);
+												if (!soldOut) {
+													setSelectedConfiguration(virtualProduct);
+													setSelectSizeOpen(false);
+												}
 											}}
 										>
 											<span

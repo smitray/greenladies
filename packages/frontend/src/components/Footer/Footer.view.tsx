@@ -18,7 +18,7 @@ const FooterView = ({ query }: FooterViewProps) => {
 			<FooterInfo />
 			<FooterCategoriesAndBrands query={query} />
 			<div style={{ textAlign: 'center', background: '#f8f8f8', color: '#777777', padding: '16px', fontSize: '14px' }}>
-				&copy; {new Date().getFullYear()} Green Ladies (Rödholms Ekipering AB). All Rights Reserved
+				&copy; {new Date().getFullYear()} Green Ladies. All Rights Reserved
 			</div>
 		</div>
 	);

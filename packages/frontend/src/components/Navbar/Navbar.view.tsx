@@ -7,7 +7,6 @@ import { BiShoppingBag } from 'react-icons/bi';
 import { FaRegHeart, FaSearch } from 'react-icons/fa';
 import { fetchQuery, graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
-import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
@@ -128,7 +127,7 @@ export const NavbarView = ({
 					>
 						<NextLink href="/[[...slug]]" as="/" passHref>
 							<a>
-								<img src="/images/greenladies-logo.png" alt="" style={{ height: '24px' }} />
+								<img src="/images/greenladies-logo.png" alt="" style={{ height: '32px' }} />
 							</a>
 						</NextLink>
 					</div>
