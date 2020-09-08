@@ -12,11 +12,14 @@ import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { CenterWrapper } from '../../styles/center-wrapper';
 import { IconWrapper } from '../../styles/icon-wrapper';
+import { NORMAL_TABLET_SIZE } from '../../utils/device-size';
 import { DrawerMenu } from '../DrawerMenu';
 import { Link } from '../Link';
 import { SearchResults } from '../SearchResults';
+import { ShoppingCartDrawer } from '../ShoppingCartDrawer';
 import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
@@ -158,6 +161,8 @@ export const NavbarView = ({
 
 	const showMegamenuDropdown = currentlySelectedTopLevelItemIndex !== null;
 	const showSearchResultsDropdown = !showMegamenuDropdown && searchIsOpen;
+
+	const { width: windowWidth } = useWindowDimensions();
 
 	return (
 		<Wrapper>
@@ -325,6 +330,7 @@ export const NavbarView = ({
 												}
 											}
 											...ShoppingCartModal_cart
+											...ShoppingCartDrawer_cart
 										}
 									}
 								`}
@@ -399,13 +405,18 @@ export const NavbarView = ({
 														style={{ position: 'absolute', marginTop: '8px', right: '0', zIndex: 30 }}
 														ref={cartModalWrapperRef}
 													>
-														{shoppingCartModalIsOpen && (
+														{shoppingCartModalIsOpen && windowWidth > NORMAL_TABLET_SIZE && (
 															<div style={{ border: '2px solid lightgrey', background: 'white' }}>
 																<ShoppingCartModal cart={props.shoppingCart} />
 															</div>
 														)}
 													</div>
 												</button>
+												<ShoppingCartDrawer
+													cart={props.shoppingCart}
+													open={shoppingCartModalIsOpen && windowWidth <= NORMAL_TABLET_SIZE}
+													onCloseRequest={() => closeShoppingCartModal()}
+												/>
 											</React.Fragment>
 										);
 									}
