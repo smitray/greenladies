@@ -7,12 +7,10 @@ import styled from 'styled-components';
 
 import { MyNextPage } from '../../lib/types';
 import { ORDER_SUCCESS_QUERY, OrderSuccessQuery } from '../../queries/order-success';
+import { CenterWrapper } from '../../styles/center-wrapper';
 
-const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 0 40px;
-	margin: 0 auto;
-	padding: 24px;
+const SomeKindOfWrapper = styled.div`
+	padding: 24px 0;
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
@@ -61,7 +59,9 @@ const OrderSuccess: MyNextPage<Props> = ({ orderId }) => {
 
 	return (
 		<CenterWrapper>
-			<OrderSuccessIframeDynamic snippet={klarnaOrderConfirmationSnippet} />
+			<SomeKindOfWrapper>
+				<OrderSuccessIframeDynamic snippet={klarnaOrderConfirmationSnippet} />
+			</SomeKindOfWrapper>
 		</CenterWrapper>
 	);
 };
