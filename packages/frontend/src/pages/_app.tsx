@@ -67,7 +67,7 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 								<React.Fragment>
 									<GlobalStyles />
 									<MessageBar />
-									<Navbar megamenu={props.megamenu} />
+									<Navbar megamenu={props.megamenu} query={props} />
 									<Component {...pageProps} />
 									<Footer query={props} />
 								</React.Fragment>

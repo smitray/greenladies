@@ -24,10 +24,10 @@ const resolvers: CategoryModuleResolversType = {
 			return { id: String(category.id) };
 		},
 		categories: (_parent, _args, { injector }) => {
-			return injector.get(CategoryProvider).getRootCategories();
+			return injector.get(CategoryProvider).getCategories();
 		},
 		rootCategories: (_parent, _args, { injector }) => {
-			return injector.get(CategoryProvider).getCategories();
+			return injector.get(CategoryProvider).getRootCategories();
 		},
 		specialCategory: async (_parent, { where }, { injector }) => {
 			let category: Category;

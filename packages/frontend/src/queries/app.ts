@@ -8,6 +8,7 @@ export const APP_QUERY = graphql`
 		megamenu {
 			...Navbar_megamenu
 		}
+		...Navbar_query
 	}
 `;
 

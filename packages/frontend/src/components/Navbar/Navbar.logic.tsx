@@ -4,15 +4,17 @@ import { useRouter } from 'next/router';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
+import { Navbar_query } from './__generated__/Navbar_query.graphql';
 import { NavbarView } from './Navbar.view';
 
 const TIMEOUT_MS = 100;
 
 interface NavbarLogicProps {
+	query: Navbar_query;
 	megamenu: Navbar_megamenu;
 }
 
-const NavbarLogic = ({ megamenu }: NavbarLogicProps) => {
+const NavbarLogic = ({ query, megamenu }: NavbarLogicProps) => {
 	const [currentlySelectedTopLevelItemIndex, setCurrentlySelectedTopLevelItemIndex] = useState<number | null>(null);
 	const [megaMenuFocus, setMegaMenuFocus] = useState(false);
 	// Needed to avoid stale state in setTimeout callback
@@ -97,6 +99,7 @@ const NavbarLogic = ({ megamenu }: NavbarLogicProps) => {
 	return (
 		<NavbarView
 			megamenu={megamenu}
+			query={query}
 			currentlySelectedTopLevelItemIndex={currentlySelectedTopLevelItemIndex}
 			handleTopLevelItemFocus={handleTopLevelItemFocus}
 			handleTopLevelItemUnfocus={handleTopLevelItemUnfocus}
@@ -116,6 +119,11 @@ export default createFragmentContainer(NavbarLogic, {
 				}
 				...MegaMenu_item
 			}
+		}
+	`,
+	query: graphql`
+		fragment Navbar_query on Query {
+			...DrawerMenu_query
 		}
 	`,
 });

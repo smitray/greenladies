@@ -5,7 +5,9 @@ import Drawer from 'rc-drawer';
 import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { useRemoveFromWishlistMutation } from '../../mutations/wishlist';
+import { NORMAL_TABLET_SIZE } from '../../utils/device-size';
 
 import { WishlistDrawer_wishlist } from './__generated__/WishlistDrawer_wishlist.graphql';
 
@@ -24,8 +26,17 @@ const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerVi
 		setIsEditingState(false);
 	};
 
+	const { width: windowWidth } = useWindowDimensions();
+
 	return (
-		<Drawer level={null} open={open} placement="right" handler={false} width={500} onClose={requestClose}>
+		<Drawer
+			level={null}
+			open={open}
+			placement="right"
+			handler={false}
+			width={windowWidth > NORMAL_TABLET_SIZE ? NORMAL_TABLET_SIZE + 'px' : '100%'}
+			onClose={requestClose}
+		>
 			<div style={{ padding: '24px' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
 					<button

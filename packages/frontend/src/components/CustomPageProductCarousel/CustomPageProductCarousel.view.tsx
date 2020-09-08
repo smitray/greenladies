@@ -25,8 +25,8 @@ const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselVi
 		<div style={{ padding: '24px 0' }}>
 			<CenterWrapper>
 				<div>
-					<h1 style={{ margin: '0 0 16px 0' }}>Underbara pasteller</h1>
-					<div style={{ marginBottom: '24px', color: '#999999' }}>Få inspiration till vårens favoritfärg</div>
+					<h1 style={{ margin: '0 0 16px 0' }}>{carousel.title}</h1>
+					<div style={{ marginBottom: '24px', color: '#999999' }}>{carousel.subtitle}</div>
 				</div>
 			</CenterWrapper>
 			<ProductCarousel products={carousel.products} />

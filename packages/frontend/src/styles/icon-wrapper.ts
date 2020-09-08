@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 interface IconWrapperProps {
-	size: number;
+	size: string;
 }
 
 export const IconWrapper = styled.div<IconWrapperProps>`
-	width: ${({ size }) => size}px;
-	height: ${({ size }) => size}px;
+	width: ${({ size }) => size};
+	height: ${({ size }) => size};
 `;

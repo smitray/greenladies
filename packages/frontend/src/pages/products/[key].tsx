@@ -18,13 +18,13 @@ const SomeWrapper = styled.div`
 
 	@media (min-width: 961px) {
 		grid-template-columns: fit-content(50%) 1fr;
+		gap: 48px;
 	}
 `;
 
 const ProductImageGalleryWrapper = styled.div`
 	@media (min-width: 961px) {
 		max-width: 480px;
-		gap: 48px;
 	}
 `;
 

@@ -4,27 +4,80 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaRegHeart, FaSearch } from 'react-icons/fa';
+import { FaBars, FaRegHeart, FaSearch } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
+import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
 import { CenterWrapper } from '../../styles/center-wrapper';
 import { IconWrapper } from '../../styles/icon-wrapper';
+import { DrawerMenu } from '../DrawerMenu';
 import { Link } from '../Link';
 import { SearchResults } from '../SearchResults';
 import { ShoppingCartModal } from '../ShoppingCartModal';
 import { WishlistDrawer } from '../WishlistDrawer';
 
 import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
+import { Navbar_query } from './__generated__/Navbar_query.graphql';
 import { NavbarShoppingCartQuery } from './__generated__/NavbarShoppingCartQuery.graphql';
 import { NavbarWishlistQuery } from './__generated__/NavbarWishlistQuery.graphql';
 import { MegaMenu } from './MegaMenu';
 import { DropdownWrapper, Group, Item, ItemText, ItemWrapper, Row, Wrapper } from './Navbar.styles';
 
+const FirstRow = styled(Row)`
+	padding: 8px;
+	align-items: center;
+
+	@media (min-width: 641px) {
+		flex-direction: row-reverse;
+		position: relative;
+	}
+`;
+
+const SecondRow = styled(Row)`
+	display: none;
+
+	border-top: 1px solid lightgrey;
+	border-bottom: 1px solid lightgrey;
+
+	@media (min-width: 961px) {
+		display: block;
+	}
+`;
+
+const MobileRow = styled(Row)`
+	display: flex;
+
+	border-top: 1px solid lightgrey;
+	border-bottom: 1px solid lightgrey;
+
+	@media (min-width: 961px) {
+		display: none;
+	}
+`;
+
+const LogoWrapper = styled.div`
+	@media (min-width: 641px) {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+`;
+
+const Logo = styled.img`
+	height: 24px;
+`;
+
 interface NavbarViewProps {
 	megamenu: Navbar_megamenu;
+	query: Navbar_query;
 	currentlySelectedTopLevelItemIndex: number | null;
 	handleTopLevelItemFocus: (index: number) => void;
 	handleTopLevelItemUnfocus: () => void;
@@ -33,6 +86,7 @@ interface NavbarViewProps {
 }
 
 export const NavbarView = ({
+	query,
 	megamenu,
 	currentlySelectedTopLevelItemIndex,
 	handleTopLevelItemFocus,
@@ -75,31 +129,23 @@ export const NavbarView = ({
 		}
 	}, [currentlySelectedTopLevelItemIndex]);
 
+	const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+
 	const showMegamenuDropdown = currentlySelectedTopLevelItemIndex !== null;
 	const showSearchResultsDropdown = !showMegamenuDropdown && searchIsOpen;
 
 	return (
 		<Wrapper>
+			<DrawerMenu query={query} open={mobileMenuIsOpen} onCloseRequest={() => setMobileMenuIsOpen(false)} />
 			<CenterWrapper>
-				<Row style={{ flexDirection: 'row-reverse', position: 'relative', padding: '8px' }}>
-					<div
-						style={{
-							position: 'absolute',
-							top: '0',
-							right: '0',
-							bottom: '0',
-							left: '0',
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
+				<FirstRow>
+					<LogoWrapper>
 						<NextLink href="/[[...slug]]" as="/" passHref>
 							<a>
-								<img src="/images/greenladies-logo.png" alt="" style={{ height: '32px' }} />
+								<Logo src="/images/greenladies-logo.png" />
 							</a>
 						</NextLink>
-					</div>
+					</LogoWrapper>
 					<Group>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
 							<QueryRenderer<NavbarWishlistQuery>
@@ -319,9 +365,9 @@ export const NavbarView = ({
 							/>
 						</div>
 					</Group>
-				</Row>
+				</FirstRow>
 			</CenterWrapper>
-			<Row style={{ borderTop: '1px solid lightgrey', borderBottom: '1px solid lightgrey', display: 'block' }}>
+			<SecondRow>
 				<CenterWrapper style={{ display: 'block' }}>
 					<Row>
 						<Group style={{ marginLeft: '-12px', flexGrow: 1 }}>
@@ -389,14 +435,48 @@ export const NavbarView = ({
 									alignItems: 'center',
 								}}
 							>
-								<IconWrapper size={16}>
-									<FaSearch size="16" color="grey" />
+								<IconWrapper size="16px">
+									<FaSearch size="16px" color="grey" />
 								</IconWrapper>
 							</div>
 						</Group>
 					</Row>
 				</CenterWrapper>
-			</Row>
+			</SecondRow>
+			<MobileRow>
+				<Group>
+					<div style={{ padding: '16px', cursor: 'pointer' }} onClick={() => setMobileMenuIsOpen(true)}>
+						<IconWrapper size="16px">
+							<FaBars size="16px" color="black" />
+						</IconWrapper>
+					</div>
+				</Group>
+				<Group
+					style={{
+						flexGrow: 1,
+						borderLeft: '1px solid lightgrey',
+						display: 'flex',
+						cursor: 'pointer',
+						padding: '16px',
+					}}
+				>
+					<IconWrapper size="16px">
+						<FaSearch size="16px" color="grey" />
+					</IconWrapper>
+					<span
+						style={{
+							marginLeft: '16px',
+							color: 'grey',
+							overflow: 'hidden',
+							textOverflow: 'ellipsis',
+							whiteSpace: 'nowrap',
+							display: 'block',
+						}}
+					>
+						Sök efter produkter mm.
+					</span>
+				</Group>
+			</MobileRow>
 			<DropdownWrapper ref={dropdownRef} onMouseEnter={handleMegaMenuFocus} onMouseLeave={handleMegaMenuUnfocus}>
 				<Collapse isOpened={showMegamenuDropdown || showSearchResultsDropdown}>
 					<CenterWrapper style={{ paddingTop: '32px', paddingBottom: '32px' }}>

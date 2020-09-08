@@ -8,12 +8,11 @@ import { CategorySidebar } from '../../components/CategorySidebar';
 import { ProductsWithFilters } from '../../components/ProductsWithFilters';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
+import { CenterWrapper } from '../../styles/center-wrapper';
 import { initializeSelectedFilters, OrderBy, parseOrderBy } from '../../utils/products-filtering-and-ordering';
 
-const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 24px 40px;
-	margin: 0 auto;
+const SomeKindOfWrapper = styled.div`
+	padding: 24px 0;
 	display: flex;
 `;
 
@@ -78,34 +77,38 @@ const Category: MyNextPage<Props> = ({
 
 	return (
 		<CenterWrapper>
-			<CategorySidebarWrapper>
-				<CategorySidebar category={category} />
-			</CategorySidebarWrapper>
-			<div style={{ flexGrow: 1 }}>
-				<h1 style={{ margin: '0 0 16px 0' }}>
-					{category.name}
-					{initialBrands.length === 1 && (
-						<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>från {initialBrands[0]}</span>
-					)}
-				</h1>
-				<ProductsWithFilters
-					products={category.products}
-					selectedOrderBy={selectedOrderBy}
-					selectedBrands={selectedBrands}
-					selectedSizes={selectedSizes}
-					selectedColors={selectedColors}
-					selectedLowerPrice={selectedLowerPrice}
-					selectedUpperPrice={selectedUpperPrice}
-					setSelectedOrderBy={setSelectedOrderBy}
-					setSelectedBrands={setSelectedBrands}
-					setSelectedSizes={setSelectedSizes}
-					setSelectedColors={setSelectedColors}
-					setSelectedLowerPrice={setSelectedLowerPrice}
-					setSelectedUpperPrice={setSelectedUpperPrice}
-					selectedFilters={selectedFilters}
-					setSelectedFilters={setSelectedFilters}
-				/>
-			</div>
+			<SomeKindOfWrapper>
+				<CategorySidebarWrapper>
+					<CategorySidebar category={category} />
+				</CategorySidebarWrapper>
+				<div style={{ flexGrow: 1 }}>
+					<h1 style={{ margin: '0 0 16px 0' }}>
+						{category.name}
+						{initialBrands.length === 1 && (
+							<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>
+								från {initialBrands[0]}
+							</span>
+						)}
+					</h1>
+					<ProductsWithFilters
+						products={category.products}
+						selectedOrderBy={selectedOrderBy}
+						selectedBrands={selectedBrands}
+						selectedSizes={selectedSizes}
+						selectedColors={selectedColors}
+						selectedLowerPrice={selectedLowerPrice}
+						selectedUpperPrice={selectedUpperPrice}
+						setSelectedOrderBy={setSelectedOrderBy}
+						setSelectedBrands={setSelectedBrands}
+						setSelectedSizes={setSelectedSizes}
+						setSelectedColors={setSelectedColors}
+						setSelectedLowerPrice={setSelectedLowerPrice}
+						setSelectedUpperPrice={setSelectedUpperPrice}
+						selectedFilters={selectedFilters}
+						setSelectedFilters={setSelectedFilters}
+					/>
+				</div>
+			</SomeKindOfWrapper>
 		</CenterWrapper>
 	);
 };
