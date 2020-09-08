@@ -263,7 +263,7 @@ export async function initCustomPages() {
 		subtitle: 'SHOPPA',
 		link: banner1Link,
 		imagePath: '/images/denim-fever-banner.jpg',
-		mobileImagePath: '/images/denim-fever-banner.jpg',
+		mobileImagePath: '/images/denim-fever-banner-mobile.jpg',
 	});
 
 	const section1 = await customPageSectionRepository.save({
@@ -290,7 +290,7 @@ export async function initCustomPages() {
 		subtitle: 'SE MER',
 		link: banner2Link,
 		imagePath: '/images/tennis-banner.jpg',
-		mobileImagePath: '/images/tennis-banner.jpg',
+		mobileImagePath: '/images/tennis-banner-mobile.jpg',
 	});
 
 	const section3 = await customPageSectionRepository.save({
@@ -317,7 +317,7 @@ export async function initCustomPages() {
 		subtitle: 'UTFORSKA',
 		link: banner3Link,
 		imagePath: '/images/natural-colors-banner.jpg',
-		mobileImagePath: '/images/natural-colors-banner.jpg',
+		mobileImagePath: '/images/natural-colors-banner-mobile.jpg',
 	});
 
 	const section5 = await customPageSectionRepository.save({
@@ -344,7 +344,7 @@ export async function initCustomPages() {
 		subtitle: 'SE MER',
 		link: banner4Link,
 		imagePath: '/images/vintage-banner.jpg',
-		mobileImagePath: '/images/vintage-banner.jpg',
+		mobileImagePath: '/images/vintage-banner-mobile.jpg',
 	});
 
 	const section7 = await customPageSectionRepository.save({

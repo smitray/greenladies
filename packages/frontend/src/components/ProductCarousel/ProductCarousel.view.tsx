@@ -53,24 +53,26 @@ const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
 				}}
 			>
 				<CenterWrapper style={{ position: 'relative' }}>
-					<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
-						{products.edges.map(({ node: product }, index) => {
-							return (
-								<li
-									id={index.toString()}
-									key={index}
-									style={{
-										width: '25%',
-										flexGrow: 0,
-										flexShrink: 0,
-										padding: '0 8px',
-									}}
-								>
-									<ProductCard product={product} />
-								</li>
-							);
-						})}
-					</ProductsContainer>
+					<div style={{ margin: '0 -8px' }}>
+						<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
+							{products.edges.map(({ node: product }, index) => {
+								return (
+									<li
+										id={index.toString()}
+										key={index}
+										style={{
+											width: '25%',
+											flexGrow: 0,
+											flexShrink: 0,
+											padding: '0 8px',
+										}}
+									>
+										<ProductCard product={product} />
+									</li>
+								);
+							})}
+						</ProductsContainer>
+					</div>
 					{index > 0 && (
 						<button
 							style={{
