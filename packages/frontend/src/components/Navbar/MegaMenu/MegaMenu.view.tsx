@@ -41,7 +41,13 @@ const MegaMenuView = ({ item }: MegaMenuViewProps) => {
 						style={{ flexGrow: 0, flexShrink: 0, flexBasis: 25 * chunks.length + '%' }}
 					>
 						<MegaMenuTitle>
-							<MegaMenuLink>{section.name}</MegaMenuLink>
+							{section.link === null ? (
+								<MegaMenuLink>{section.name}</MegaMenuLink>
+							) : (
+								<Link link={section.link}>
+									<MegaMenuLink>{section.name}</MegaMenuLink>
+								</Link>
+							)}
 						</MegaMenuTitle>
 						<MegaMenuChunkList>
 							{chunks.map((chunk, chunkIndex) => (
@@ -70,6 +76,9 @@ export default createFragmentContainer(MegaMenuView, {
 		fragment MegaMenu_item on MegamenuToplevelItem {
 			sections {
 				name
+				link {
+					...Link_link
+				}
 				items {
 					name
 					link {

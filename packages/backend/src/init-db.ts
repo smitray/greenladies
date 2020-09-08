@@ -11,6 +11,27 @@ import { MegamenuSection } from './entities/megamenu-section';
 import { MegamenuSectionItem } from './entities/megamenu-section-item';
 import { MegamenuToplevelItem } from './entities/megamenu-toplevel-item';
 
+interface L {
+	type: string;
+	to: string;
+}
+
+interface M {
+	name: string;
+	position: number;
+	link: L;
+	sections: {
+		name: string;
+		position: number;
+		link?: L;
+		items: {
+			name: string;
+			position: number;
+			link: L;
+		}[];
+	}[];
+}
+
 export async function initMegamenu() {
 	const megamenuToplevelItemRepository = getRepository(MegamenuToplevelItem);
 	const megamenuSectionRepository = getRepository(MegamenuSection);
@@ -19,7 +40,7 @@ export async function initMegamenu() {
 
 	const toplevelItems = await megamenuToplevelItemRepository.find();
 
-	const a = [
+	const a: M[] = [
 		{
 			name: 'Kläder',
 			position: 0,
@@ -31,9 +52,13 @@ export async function initMegamenu() {
 				{
 					name: 'Alla kläder',
 					position: 0,
+					link: {
+						type: 'category',
+						to: '7',
+					},
 					items: [
 						{
-							name: 'Byxor',
+							name: 'Klänning & Tunikor',
 							position: 0,
 							link: {
 								type: 'category',
@@ -41,7 +66,7 @@ export async function initMegamenu() {
 							},
 						},
 						{
-							name: 'Jeans',
+							name: 'Toppar & Linnen',
 							position: 1,
 							link: {
 								type: 'category',
@@ -49,8 +74,64 @@ export async function initMegamenu() {
 							},
 						},
 						{
-							name: 'Mer byxor',
+							name: 'Blusar & Skjortor',
 							position: 2,
+							link: {
+								type: 'category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Tröjor & Stickat',
+							position: 3,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Kavaj & Kostym',
+							position: 4,
+							link: {
+								type: 'category',
+								to: '8',
+							},
+						},
+						{
+							name: 'Jackor & Kappor',
+							position: 5,
+							link: {
+								type: 'category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Byxor',
+							position: 6,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Jeans',
+							position: 7,
+							link: {
+								type: 'category',
+								to: '8',
+							},
+						},
+						{
+							name: 'Kjolar & Shorts',
+							position: 8,
+							link: {
+								type: 'category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Basplagg & Underkläder',
+							position: 9,
 							link: {
 								type: 'category',
 								to: '9',
@@ -59,11 +140,71 @@ export async function initMegamenu() {
 					],
 				},
 				{
-					name: 'Alla 123',
+					name: 'Inspiration',
 					position: 1,
 					items: [
 						{
-							name: 'Byxor',
+							name: 'Denim Fever',
+							position: 0,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Färgglada höstnyheter',
+							position: 1,
+							link: {
+								type: 'special-category',
+								to: '8',
+							},
+						},
+						{
+							name: 'Sommar möter höst',
+							position: 2,
+							link: {
+								type: 'special-category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Vardagsfavoriter',
+							position: 3,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Utvalt',
+							position: 4,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+					],
+				},
+			],
+		},
+		{
+			name: 'Skor',
+			position: 1,
+			link: {
+				type: 'category',
+				to: '7',
+			},
+			sections: [
+				{
+					name: 'Alla skor',
+					position: 0,
+					link: {
+						type: 'category',
+						to: '7',
+					},
+					items: [
+						{
+							name: 'Ankelboots',
 							position: 0,
 							link: {
 								type: 'category',
@@ -71,23 +212,23 @@ export async function initMegamenu() {
 							},
 						},
 						{
-							name: 'Jeans',
+							name: 'Stövlar',
 							position: 1,
 							link: {
 								type: 'category',
-								to: '8',
+								to: '7',
 							},
 						},
 						{
-							name: 'Mer byxor',
+							name: 'Sneaker & Lågskor',
 							position: 2,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '7',
 							},
 						},
 						{
-							name: 'Byxor',
+							name: 'Högklackade skor',
 							position: 3,
 							link: {
 								type: 'category',
@@ -95,103 +236,353 @@ export async function initMegamenu() {
 							},
 						},
 						{
-							name: 'Jeans',
+							name: 'Pumps',
 							position: 4,
 							link: {
 								type: 'category',
-								to: '8',
+								to: '7',
 							},
 						},
 						{
-							name: 'Mer byxor',
+							name: 'Bellarina',
 							position: 5,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '7',
+							},
+						},
+						{
+							name: 'Sandaler & Sandaletter',
+							position: 6,
+							link: {
+								type: 'category',
+								to: '7',
 							},
 						},
 					],
 				},
 				{
-					name: 'Alla kläder',
+					name: 'Inspiration',
+					position: 1,
+					items: [
+						{
+							name: 'Denim Fever',
+							position: 0,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Färgglada höstnyheter',
+							position: 1,
+							link: {
+								type: 'special-category',
+								to: '8',
+							},
+						},
+						{
+							name: 'Sommar möter höst',
+							position: 2,
+							link: {
+								type: 'special-category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Vardagsfavoriter',
+							position: 3,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Utvalt',
+							position: 4,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+					],
+				},
+			],
+		},
+		{
+			name: 'Accessorarer',
+			position: 2,
+			link: {
+				type: 'category',
+				to: '7',
+			},
+			sections: [
+				{
+					name: 'Alla väskor',
+					position: 0,
+					link: {
+						type: 'category',
+						to: '7',
+					},
+					items: [
+						{
+							name: 'Handväskor',
+							position: 0,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Kuvertväskor',
+							position: 1,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Axelremsväskor',
+							position: 2,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Portföljer & Fodral',
+							position: 3,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Tygväskor & Sportväskor',
+							position: 4,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+					],
+				},
+				{
+					name: 'Alla accessoarer',
+					position: 1,
+					link: {
+						type: 'category',
+						to: '7',
+					},
+					items: [
+						{
+							name: 'Scarves & Handdukar',
+							position: 0,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Bälten',
+							position: 1,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Handskar',
+							position: 2,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Hatta & Mössor',
+							position: 3,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Smycken',
+							position: 4,
+							link: {
+								type: 'category',
+								to: '7',
+							},
+						},
+					],
+				},
+				{
+					name: 'Inspiration',
 					position: 2,
 					items: [
 						{
-							name: 'Byxor',
+							name: 'Denim Fever',
 							position: 0,
 							link: {
-								type: 'external',
-								to: 'http://google.com',
+								type: 'special-category',
+								to: '7',
 							},
 						},
 						{
-							name: 'Jeans',
+							name: 'Färgglada höstnyheter',
 							position: 1,
 							link: {
-								type: 'custom',
-								to: '/home/test',
+								type: 'special-category',
+								to: '8',
 							},
 						},
 						{
-							name: 'Mer byxor',
+							name: 'Sommar möter höst',
 							position: 2,
 							link: {
-								type: 'product',
-								to: '1058',
+								type: 'special-category',
+								to: '9',
+							},
+						},
+						{
+							name: 'Vardagsfavoriter',
+							position: 3,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Utvalt',
+							position: 4,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+					],
+				},
+			],
+		},
+		{
+			name: 'Märken & Designers',
+			position: 3,
+			link: {
+				type: 'category',
+				to: '7',
+			},
+			sections: [
+				{
+					name: 'Populära märken',
+					position: 0,
+					items: [
+						{
+							name: 'ESPRIT',
+							position: 0,
+							link: {
+								type: 'brand',
+								to: '7',
+							},
+						},
+						{
+							name: 'Forte Forte',
+							position: 1,
+							link: {
+								type: 'brand',
+								to: '7',
+							},
+						},
+						{
+							name: 'Dondup',
+							position: 2,
+							link: {
+								type: 'brand',
+								to: '7',
+							},
+						},
+						{
+							name: 'Alice Bizous',
+							position: 3,
+							link: {
+								type: 'brand',
+								to: '7',
 							},
 						},
 					],
 				},
 				{
-					name: 'Alla 123',
-					position: 3,
+					name: 'Nordiskt mode',
+					position: 1,
 					items: [
 						{
-							name: 'Byxor',
+							name: 'Rosebud',
 							position: 0,
 							link: {
-								type: 'category',
+								type: 'brand',
 								to: '7',
 							},
 						},
 						{
-							name: 'Jeans',
+							name: 'Rodebjer',
 							position: 1,
 							link: {
-								type: 'category',
-								to: '8',
-							},
-						},
-						{
-							name: 'Mer byxor',
-							position: 2,
-							link: {
-								type: 'category',
-								to: '9',
-							},
-						},
-						{
-							name: 'Byxor',
-							position: 3,
-							link: {
-								type: 'category',
+								type: 'brand',
 								to: '7',
 							},
 						},
 						{
-							name: 'Jeans',
-							position: 4,
+							name: 'Honey',
+							position: 2,
 							link: {
-								type: 'category',
+								type: 'brand',
+								to: '7',
+							},
+						},
+					],
+				},
+				{
+					name: 'Inspiration',
+					position: 2,
+					items: [
+						{
+							name: 'Denim Fever',
+							position: 0,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Färgglada höstnyheter',
+							position: 1,
+							link: {
+								type: 'special-category',
 								to: '8',
 							},
 						},
 						{
-							name: 'Mer byxor',
-							position: 5,
+							name: 'Sommar möter höst',
+							position: 2,
 							link: {
-								type: 'category',
+								type: 'special-category',
 								to: '9',
+							},
+						},
+						{
+							name: 'Vardagsfavoriter',
+							position: 3,
+							link: {
+								type: 'special-category',
+								to: '7',
+							},
+						},
+						{
+							name: 'Utvalt',
+							position: 4,
+							link: {
+								type: 'special-category',
+								to: '7',
 							},
 						},
 					],
@@ -199,6 +590,7 @@ export async function initMegamenu() {
 			],
 		},
 	];
+
 	if (toplevelItems.length === 0) {
 		await Promise.all(
 			a.map(async toplevelItem => {
@@ -207,6 +599,12 @@ export async function initMegamenu() {
 
 				const sections = await Promise.all(
 					toplevelItem.sections.map(async section => {
+						let link: Link | null = null;
+						if (section.link !== undefined) {
+							link = linkRepository.create(section.link);
+							link = await linkRepository.save(link);
+						}
+
 						const items = await Promise.all(
 							section.items.map(async item => {
 								let link = linkRepository.create(item.link);
@@ -225,6 +623,7 @@ export async function initMegamenu() {
 							name: section.name,
 							position: section.position,
 							items,
+							link,
 						});
 						return megamenuSectionRepository.save(r);
 					}),

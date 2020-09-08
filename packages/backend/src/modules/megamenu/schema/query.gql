@@ -5,6 +5,7 @@ type MegamenuSectionItem {
 
 type MegamenuSection {
 	name: String!
+	link: Link
 	items: [MegamenuSectionItem!]!
 }
 

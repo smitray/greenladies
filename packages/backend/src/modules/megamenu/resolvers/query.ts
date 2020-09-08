@@ -23,6 +23,7 @@ const resolvers: MegamenuModuleResolversType = {
 								.map(section => {
 									return {
 										name: section.name,
+										link: section.link !== null ? (transformLink(section.link) as any) : null,
 										items: section.items
 											.sort((left, right) => left.position - right.position)
 											.map(item => {

@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 
 import { BaseEntity } from './base-entity';
+import { Link } from './link';
 import { MegamenuSectionItem } from './megamenu-section-item';
 import { MegamenuToplevelItem } from './megamenu-toplevel-item';
 
@@ -11,6 +12,9 @@ export class MegamenuSection extends BaseEntity {
 
 	@Column()
 	position: number;
+
+	@OneToOne(() => Link, { onDelete: 'CASCADE', eager: true })
+	link: Link | null;
 
 	@OneToMany(() => MegamenuSectionItem, sectionItem => sectionItem.section, { onDelete: 'CASCADE' })
 	items: MegamenuSectionItem[];
