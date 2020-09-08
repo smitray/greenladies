@@ -13,12 +13,16 @@ export function transformLink({ type, to }: Link): GQLResolversTypes['Link'] {
 				__typename: 'CategoryLink',
 				category: { id: to },
 			};
+		case 'special-category':
+			return {
+				__typename: 'SpecialCategoryLink',
+				category: { id: to },
+			};
 		case 'product':
 			return {
 				__typename: 'ProductLink',
 				product: { id: to },
 			};
-		case 'external':
 		case 'custom':
 			return {
 				__typename: 'CustomPageLink',

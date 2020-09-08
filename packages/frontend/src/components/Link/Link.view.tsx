@@ -23,6 +23,12 @@ const LinkView = ({ children, link }: React.PropsWithChildren<LinkViewProps>) =>
 					{children}
 				</Link>
 			);
+		case 'SpecialCategoryLink':
+			return (
+				<Link href="/categories/special/[key]" as={`/categories/${link.category.urlKey}`} passHref>
+					{children}
+				</Link>
+			);
 		case 'CustomPageLink':
 			return (
 				<Link href={link.path} passHref>
@@ -57,6 +63,12 @@ export default createFragmentContainer(LinkView, {
 				}
 			}
 			... on CategoryLink {
+				category {
+					id
+					urlKey
+				}
+			}
+			... on SpecialCategoryLink {
 				category {
 					id
 					urlKey

@@ -10,8 +10,12 @@ type CategoryLink {
 	category: Category!
 }
 
+type SpecialCategoryLink {
+	category: Category!
+}
+
 type CustomPageLink {
 	path: String!
 }
 
-union Link = BrandLink | ProductLink | CategoryLink | CustomPageLink
+union Link = BrandLink | ProductLink | CategoryLink | CustomPageLink | SpecialCategoryLink

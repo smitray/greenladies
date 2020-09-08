@@ -482,7 +482,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 						{
@@ -490,7 +490,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 						{
@@ -498,7 +498,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 						{
@@ -506,7 +506,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 					],
@@ -520,7 +520,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 						{
@@ -528,7 +528,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 						{
@@ -536,7 +536,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'brand',
-								to: '7',
+								to: 'esprit',
 							},
 						},
 					],
