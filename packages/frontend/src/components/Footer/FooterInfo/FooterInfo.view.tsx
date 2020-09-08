@@ -150,18 +150,18 @@ export const FooterInfoView = () => {
 					<GridBoxTitle>Inspiration</GridBoxTitle>
 					<List>
 						<ListItem>
-							<Link href="#" passHref>
-								<ListItemLink>Höstnyheter</ListItemLink>
+							<Link href="/categories/special/[key]" as="/categories/special/denim-fever" passHref>
+								<ListItemLink>Denim fever</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="#" passHref>
+							<Link href="/categories/special/[key]" as="/categories/special/vardagsfavoriter" passHref>
 								<ListItemLink>Vardagsfavoriter</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="#" passHref>
-								<ListItemLink>Stilinspiration</ListItemLink>
+							<Link href="/categories/special/[key]" as="/categories/special/utvalt" passHref>
+								<ListItemLink>Utvalt</ListItemLink>
 							</Link>
 						</ListItem>
 					</List>

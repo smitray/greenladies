@@ -25,6 +25,8 @@ export const FooterEmailSignupView = () => {
 	const [email, setEmail] = useState('');
 	const [addEmailToSubList] = useMutation<FooterEmailSignupMailchimpMutation>(MAILCHIMP_MUTATION);
 
+	const [message, setMessage] = useState<string | null>(null);
+
 	const emailIsValid = validateEmail(email);
 
 	return (
@@ -44,7 +46,7 @@ export const FooterEmailSignupView = () => {
 								Din e-mail
 							</label>
 						</div>
-						<div style={{ marginBottom: '16px' }}>
+						<div style={{ marginBottom: '8px' }}>
 							<input
 								style={{
 									width: '100%',
@@ -57,11 +59,15 @@ export const FooterEmailSignupView = () => {
 								name="newsletter"
 								type="text"
 								value={email}
-								onChange={e => setEmail(e.target.value)}
+								onChange={e => {
+									setEmail(e.target.value);
+									setMessage(null);
+								}}
 							/>
 						</div>
+						{message !== null && <div style={{ marginTop: '4px 0', fontSize: '0.75em' }}>{message}</div>}
 						<button
-							disabled={emailIsValid}
+							disabled={!emailIsValid}
 							style={{
 								width: '200px',
 								padding: '12px',
@@ -72,16 +78,25 @@ export const FooterEmailSignupView = () => {
 								fontSize: '14px',
 								fontWeight: 'bold',
 								marginBottom: '16px',
+								marginTop: '8px',
 								cursor: emailIsValid ? 'pointer' : 'not-allowed',
 							}}
 							onClick={() => {
-								addEmailToSubList({
-									variables: {
-										input: {
-											email,
+								if (emailIsValid) {
+									addEmailToSubList({
+										variables: {
+											input: {
+												email,
+											},
 										},
-									},
-								});
+										onCompleted: () => {
+											setMessage('Prenumerationen gick igenom!');
+										},
+										onError: () => {
+											setMessage('Något gick fel');
+										},
+									});
+								}
 							}}
 						>
 							Prenumerera
