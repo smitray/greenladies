@@ -25,7 +25,7 @@ const NotMobileWrapper = styled.div`
 	position: relative;
 
 	@media (min-width: 641px) {
-		display: none;
+		display: block;
 	}
 `;
 
