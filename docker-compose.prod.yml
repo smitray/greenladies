@@ -47,6 +47,21 @@ services:
     volumes:
       - ${PG_DATA_FOLDER}:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - ${PGADMIN_STORAGE_PATH}:/usr/lib/pgadmin
+      - SCRIPT_NAME=/pgadmin
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pgadmin.rule=Host(`${DOMAIN}`)&&PathPrefix(`/pgadmin`)
+      - traefik.http.routers.pgadmin.entryPoints=https
+      - traefik.http.routers.pgadmin.tls=true
+      - traefik.http.routers.pgadmin.tls.certresolver=letsencrypt
+
   magento2:
     image: ${REGISTRY_HOST}/greenladies-magento2:latest
     build:
