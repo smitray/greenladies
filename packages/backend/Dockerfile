@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y make python g++
 RUN yarn --frozen-lockfile && yarn cache clean
 
 RUN apt-get remove -y make python g++
+RUN apt-get autoremove
 
 EXPOSE 3000
 

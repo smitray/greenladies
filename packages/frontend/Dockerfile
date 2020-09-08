@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y python make
 RUN yarn --frozen-lockfile && yarn cache clean
 
 RUN apt-get remove -y python make
+RUN apt-get autoremove
 
 EXPOSE 3000
 
