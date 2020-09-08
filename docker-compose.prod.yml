@@ -53,7 +53,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     volumes:
-      - ${PGADMIN_STORAGE_PATH}:/usr/lib/pgadmin
+      - ${PGADMIN_DATA_FOLDER}:/usr/lib/pgadmin
       - SCRIPT_NAME=/pgadmin
     labels:
       - traefik.enable=true
