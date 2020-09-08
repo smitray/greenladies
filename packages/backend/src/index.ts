@@ -45,8 +45,20 @@ const sessionOptions: SessionOptions = {
 
 	await createConnection(typeormConfig);
 
-	initMegamenu().catch(() => console.log('Could not init megamenu'));
-	initCustomPages().catch(() => console.log('Could not init custom pages'));
+	initMegamenu().catch(e => {
+		if (process.env.NODE_ENV === 'production') {
+			console.log('Could not init megamenu', e);
+		} else {
+			console.log('Could not init megamenu', e.message);
+		}
+	});
+	initCustomPages().catch(e => {
+		if (process.env.NODE_ENV === 'production') {
+			console.log('Could not init custom pages', e);
+		} else {
+			console.log('Could not init custom pages', e.message);
+		}
+	});
 
 	if (process.env.NODE_ENV === 'production') {
 		app.set('trust proxy', 1);
@@ -268,7 +280,7 @@ const sessionOptions: SessionOptions = {
 
 	createGreenLadiesAttributeSet()
 		.then(() => console.log('Successfully created attribute set'))
-		.catch(error => console.log('Could not create attribute set', error.message));
+		.catch(error => console.log('Could not create attribute set', error.message, error));
 
 	// Every hour
 	cron.schedule('0 */1 * * *', () => {
