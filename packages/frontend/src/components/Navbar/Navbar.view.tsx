@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import Drawer from 'rc-drawer';
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
-import { FaBars, FaRegHeart, FaSearch } from 'react-icons/fa';
+import { FaBars, FaRegHeart, FaSearch, FaTimes } from 'react-icons/fa';
 import { graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -75,6 +76,26 @@ const Logo = styled.img`
 	height: 24px;
 `;
 
+const Header = styled.div`
+	position: relative;
+	padding: 0.5em 0;
+	text-align: center;
+	font-size: 1.5em;
+	line-height: 1.5em;
+`;
+
+const CloseButton = styled.button`
+	position: absolute;
+	right: 0.5em;
+	top: 0.25em;
+	background: white;
+	border: none;
+	outline: none;
+	padding: 0.5em;
+	font-size: 1em;
+	cursor: pointer;
+`;
+
 interface NavbarViewProps {
 	megamenu: Navbar_megamenu;
 	query: Navbar_query;
@@ -121,6 +142,7 @@ export const NavbarView = ({
 	const { asPath } = useRouter();
 	useEffect(() => {
 		setSearchIsOpen(false);
+		setMobileSearchIsOpen(false);
 	}, [asPath]);
 
 	useEffect(() => {
@@ -129,7 +151,10 @@ export const NavbarView = ({
 		}
 	}, [currentlySelectedTopLevelItemIndex]);
 
+	const mobileSearchInputEl = useRef<HTMLInputElement>(null);
+
 	const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+	const [mobileSearchIsOpen, setMobileSearchIsOpen] = useState(true);
 
 	const showMegamenuDropdown = currentlySelectedTopLevelItemIndex !== null;
 	const showSearchResultsDropdown = !showMegamenuDropdown && searchIsOpen;
@@ -137,6 +162,50 @@ export const NavbarView = ({
 	return (
 		<Wrapper>
 			<DrawerMenu query={query} open={mobileMenuIsOpen} onCloseRequest={() => setMobileMenuIsOpen(false)} />
+			<Drawer
+				level={null}
+				open={mobileSearchIsOpen}
+				placement="bottom"
+				handler={null}
+				height="100%"
+				onClose={() => setMobileSearchIsOpen(false)}
+				afterVisibleChange={open => {
+					if (open && mobileSearchInputEl.current) {
+						mobileSearchInputEl.current.focus();
+					}
+				}}
+			>
+				<Header>
+					Sök
+					<CloseButton onClick={() => setMobileSearchIsOpen(false)}>
+						<IconWrapper size="1em">
+							<FaTimes size="1em" />
+						</IconWrapper>
+					</CloseButton>
+				</Header>
+				<div style={{ padding: '0.5em 1em' }}>
+					<input
+						autoFocus
+						ref={mobileSearchInputEl}
+						style={{
+							border: 'none',
+							borderBottom: '1px solid black',
+							padding: '0.5em 0',
+							fontSize: '1em',
+							lineHeight: '1em',
+							width: '100%',
+							outline: 'none',
+						}}
+						type="text"
+						placeholder="Sök efter produkter mm."
+						value={searchQuery}
+						onChange={e => setSearchQuery(e.target.value)}
+					/>
+				</div>
+				<div style={{ padding: '0.5em 1em' }}>
+					<SearchResults query={searchQuery} />
+				</div>
+			</Drawer>
 			<CenterWrapper>
 				<FirstRow>
 					<LogoWrapper>
@@ -459,6 +528,7 @@ export const NavbarView = ({
 						cursor: 'pointer',
 						padding: '16px',
 					}}
+					onClick={() => setMobileSearchIsOpen(true)}
 				>
 					<IconWrapper size="16px">
 						<FaSearch size="16px" color="grey" />

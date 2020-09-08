@@ -50,7 +50,9 @@ const SectionsWrapper = styled.div`
 const Section = styled.div``;
 
 const ProductSection = styled(Section)`
-	grid-column: 1 / 3;
+	@media (min-width: 641px) {
+		grid-column: 1 / 3;
+	}
 `;
 
 const SectionHeader = styled.div`
@@ -78,22 +80,25 @@ const SectionProductsContainer = styled.ul`
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	display: flex;
+
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+	@media (min-width: 641px) {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+	@media (min-width: 961px) {
+		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+		grid-template-rows: 1fr;
+		grid-auto-rows: 0;
+	}
 	margin: 0 -0.5em;
 	overflow: hidden;
 `;
 
 const SectionProductWrapper = styled.li`
-	flex-basis: 50%;
-	width: 50%;
-	flex-grow: 0;
-	flex-shrink: 0;
 	font-size: 0.9em;
-
-	@media (min-width: 1281px) {
-		flex-basis: ${100 / 6}%;
-		width: ${100 / 6}%;
-	}
 `;
 
 const SectionProductLink = styled.a`

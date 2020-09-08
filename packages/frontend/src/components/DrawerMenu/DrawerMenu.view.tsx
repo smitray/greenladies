@@ -38,6 +38,7 @@ const Banner = styled.div`
 	background-image: url(/images/tennis-banner.jpg);
 	background-position: right;
 `;
+
 const OuterCategoryList = styled.ul`
 	margin: 0;
 	padding: 0;
