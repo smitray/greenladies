@@ -36,7 +36,7 @@ export const FooterEmailSignupView = () => {
 							Vad sägs om 10% rabatt på nästa beställning?
 						</h1>
 						<p style={{ color: 'grey', fontSize: '16px', lineHeight: '24px' }}>
-							Bli en del av Green Ladies! Anmäl dig till vårt nyhetsbrev och få 10% rabatt på din nästa besällning,
+							Bli en del av Green Ladies! Anmäl dig till vårt nyhetsbrev och få 10% rabatt på din nästa beställning,
 							stilinpiration plus exklusiva medlemsinbjudningar
 						</p>
 						<div style={{ marginBottom: '2px' }}>

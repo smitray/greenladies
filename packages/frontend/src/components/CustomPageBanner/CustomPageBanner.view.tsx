@@ -70,38 +70,52 @@ const CustomPageBannerView = ({ banner }: CustomPageBannerViewProps) => {
 			</MobileWrapper>
 			<NotMobileWrapper>
 				<img src={banner.imagePath} alt="" style={{ width: '100%', display: 'block' }} />
-				<div style={{ position: 'absolute', top: '0', right: '0', bottom: '0', left: '0', zIndex: 1 }}>
-					<Link link={banner.link}>
-						<a style={{ textDecoration: 'none' }}>
-							<div
-								style={{
-									padding: '16px 48px',
-									height: '100%',
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'flex-end',
-								}}
-							>
-								<div style={{ color: 'white', fontSize: '42px', fontWeight: 'bold', marginBottom: '48px' }}>
-									{banner.title}
+				<Link link={banner.link}>
+					<a
+						style={{
+							textDecoration: 'none',
+							position: 'absolute',
+							top: '0',
+							right: '0',
+							bottom: '0',
+							left: '0',
+							zIndex: 1,
+							display: 'flex',
+							justifyContent: 'flex-start',
+							alignItems: 'flex-end',
+						}}
+					>
+						<div style={{ padding: '24px 0', flexGrow: 1 }}>
+							<CenterWrapper>
+								<div
+									style={{
+										height: '100%',
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: 'flex-end',
+									}}
+								>
+									<div style={{ color: 'white', fontSize: '42px', fontWeight: 'bold', marginBottom: '48px' }}>
+										{banner.title}
+									</div>
+									<div>
+										<span
+											style={{
+												color: 'white',
+												fontSize: '12px',
+												fontWeight: 'bold',
+												paddingBottom: '2px',
+												borderBottom: '2px solid white',
+											}}
+										>
+											{banner.subtitle}
+										</span>
+									</div>
 								</div>
-								<div>
-									<span
-										style={{
-											color: 'white',
-											fontSize: '12px',
-											fontWeight: 'bold',
-											paddingBottom: '2px',
-											borderBottom: '2px solid white',
-										}}
-									>
-										{banner.subtitle}
-									</span>
-								</div>
-							</div>
-						</a>
-					</Link>
-				</div>
+							</CenterWrapper>
+						</div>
+					</a>
+				</Link>
 			</NotMobileWrapper>
 		</React.Fragment>
 	);

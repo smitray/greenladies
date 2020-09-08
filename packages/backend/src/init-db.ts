@@ -774,7 +774,7 @@ export async function initCustomPages() {
 	const customPageTabComponentSectionRepo = getRepository(CustomPageTabComponentSection);
 
 	const tab1 = await customPageTabComponentSectionRepo.save({
-		key: 'om',
+		key: 'om-green-ladies',
 		title: 'Om Green Ladies',
 		body: `
 Green Ladies är en modebutik för kvinnor som grundades med det bakomliggande syftet att bidra till en hållbar konsumtion inom dammode. Vår vision är att vara ett komplement till den befintliga branschen och den traditionella shoppingen, där vi erbjuder möjligheten att främja en cirkulär ekonomi.
