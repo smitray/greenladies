@@ -52,9 +52,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      SCRIPT_NAME: /pgadmin
     volumes:
       - ${PGADMIN_DATA_FOLDER}:/usr/lib/pgadmin
-      - SCRIPT_NAME=/pgadmin
     labels:
       - traefik.enable=true
       - traefik.http.routers.pgadmin.rule=Host(`${DOMAIN}`)&&PathPrefix(`/pgadmin`)
