@@ -672,8 +672,8 @@ export async function initCustomPages() {
 	});
 
 	const carousel1 = await customPageProductCarouselComponentRepo.save({
-		title: 'DENIM FEVER',
-		subtitle: 'Brallor för hela högen',
+		title: '',
+		subtitle: '',
 		categoryId: '6',
 	});
 

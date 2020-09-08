@@ -9,12 +9,6 @@ export const Wrapper = styled.div`
 	}
 `;
 
-export const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 0 40px;
-	margin: 0 auto;
-`;
-
 export const MessageList = styled.ul`
 	margin: 0;
 	padding: 0;

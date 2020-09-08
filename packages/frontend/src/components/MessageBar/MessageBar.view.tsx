@@ -2,15 +2,9 @@ import React from 'react';
 
 import Link from 'next/link';
 
-import {
-	CenterWrapper,
-	MessageAnchor,
-	MessageLeft,
-	MessageList,
-	MessageMiddle,
-	MessageRight,
-	Wrapper,
-} from './MessageBar.styles';
+import { CenterWrapper } from '../../styles/center-wrapper';
+
+import { MessageAnchor, MessageLeft, MessageList, MessageMiddle, MessageRight, Wrapper } from './MessageBar.styles';
 
 const MessageBarView = () => {
 	return (

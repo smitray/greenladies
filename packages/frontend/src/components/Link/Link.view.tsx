@@ -25,7 +25,7 @@ const LinkView = ({ children, link }: React.PropsWithChildren<LinkViewProps>) =>
 			);
 		case 'SpecialCategoryLink':
 			return (
-				<Link href="/categories/special/[key]" as={`/categories/${link.category.urlKey}`} passHref>
+				<Link href="/categories/special/[key]" as={`/categories/special/${link.category.urlKey}`} passHref>
 					{children}
 				</Link>
 			);
