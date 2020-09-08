@@ -28,6 +28,9 @@ services:
       - PG_DATABASE
       - PG_PASSWORD
       - PG_USERNAME
+      - MAILCHIMP_API_TOKEN
+      - MAILCHIMP_SERVER
+      - MAILCHIMP_LIST
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)

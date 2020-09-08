@@ -29,6 +29,9 @@ services:
       - PG_DATABASE
       - PG_PASSWORD
       - PG_USERNAME
+      - MAILCHIMP_API_TOKEN
+      - MAILCHIMP_SERVER
+      - MAILCHIMP_LIST
     volumes:
       - /usr/src/app/packages/backend/node_modules
       - ./packages/backend:/usr/src/app/packages/backend
