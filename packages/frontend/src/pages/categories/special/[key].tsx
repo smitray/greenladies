@@ -9,13 +9,12 @@ import styled from 'styled-components';
 import { ProductsWithFilters } from '../../../components/ProductsWithFilters';
 import { MyNextPage } from '../../../lib/types';
 import { SPECIAL_CATEGORY_QUERY, SpecialCategoryQuery } from '../../../queries/special-category';
+import { CenterWrapper } from '../../../styles/center-wrapper';
 import { filterObjectByKeys } from '../../../utils/object';
 import { initializeSelectedFilters, OrderBy, parseOrderBy } from '../../../utils/products-filtering-and-ordering';
 
-const CenterWrapper = styled.div`
-	max-width: 1240px;
-	padding: 24px 40px;
-	margin: 0 auto;
+const SomeKindOfWrapper = styled.div`
+	padding: 24px 0;
 	display: flex;
 `;
 
@@ -47,6 +46,17 @@ const CategoryProductCount = styled.span`
 	font-size: 12px;
 	color: grey;
 	margin-left: 4px;
+`;
+
+const CategorySidebarWrapper = styled.div`
+	width: 200px;
+	padding-right: 20px;
+
+	display: none;
+
+	@media (min-width: 961px) {
+		display: block;
+	}
 `;
 
 interface Props {
@@ -105,56 +115,62 @@ const SpecialCategory: MyNextPage<Props> = ({
 
 	return (
 		<CenterWrapper>
-			<div style={{ width: '200px', paddingRight: '20px' }}>
-				<CategorySidebarList>
-					{rootCategories.map(category => (
-						<li key={category.id} style={{ padding: '4px 0' }}>
-							{category.categoryProducts.totalCount > 0 ? (
-								<React.Fragment>
-									<Link
-										href={{ pathname: '/categories/[key]', query: processedQuery }}
-										as={{ pathname: `/categories/${category.urlKey}`, query: processedQuery }}
-										passHref
-									>
-										<CategorySidebarLink>{category.name}</CategorySidebarLink>
-									</Link>
-									<CategoryProductCount>({category.categoryProducts.totalCount})</CategoryProductCount>
-								</React.Fragment>
-							) : (
-								<CategorySidebarNoLink>
-									{category.name}
-									<CategoryProductCount>(0)</CategoryProductCount>
-								</CategorySidebarNoLink>
-							)}
-						</li>
-					))}
-				</CategorySidebarList>
-			</div>
-			<div style={{ flexGrow: 1 }}>
-				<h1 style={{ margin: '0 0 16px 0' }}>
-					Hela sortimentet
-					{initialBrands.length === 1 && (
-						<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>från {initialBrands[0]}</span>
-					)}
-				</h1>
-				<ProductsWithFilters
-					products={specialCategory.products}
-					selectedOrderBy={selectedOrderBy}
-					selectedBrands={selectedBrands}
-					selectedSizes={selectedSizes}
-					selectedColors={selectedColors}
-					selectedLowerPrice={selectedLowerPrice}
-					selectedUpperPrice={selectedUpperPrice}
-					setSelectedOrderBy={setSelectedOrderBy}
-					setSelectedBrands={setSelectedBrands}
-					setSelectedSizes={setSelectedSizes}
-					setSelectedColors={setSelectedColors}
-					setSelectedLowerPrice={setSelectedLowerPrice}
-					setSelectedUpperPrice={setSelectedUpperPrice}
-					selectedFilters={selectedFilters}
-					setSelectedFilters={setSelectedFilters}
-				/>
-			</div>
+			<SomeKindOfWrapper>
+				<CategorySidebarWrapper>
+					<div style={{ width: '200px', paddingRight: '20px' }}>
+						<CategorySidebarList>
+							{rootCategories.map(category => (
+								<li key={category.id} style={{ padding: '4px 0' }}>
+									{category.categoryProducts.totalCount > 0 ? (
+										<React.Fragment>
+											<Link
+												href={{ pathname: '/categories/[key]', query: processedQuery }}
+												as={{ pathname: `/categories/${category.urlKey}`, query: processedQuery }}
+												passHref
+											>
+												<CategorySidebarLink>{category.name}</CategorySidebarLink>
+											</Link>
+											<CategoryProductCount>({category.categoryProducts.totalCount})</CategoryProductCount>
+										</React.Fragment>
+									) : (
+										<CategorySidebarNoLink>
+											{category.name}
+											<CategoryProductCount>(0)</CategoryProductCount>
+										</CategorySidebarNoLink>
+									)}
+								</li>
+							))}
+						</CategorySidebarList>
+					</div>
+				</CategorySidebarWrapper>
+				<div style={{ flexGrow: 1 }}>
+					<h1 style={{ margin: '0 0 16px 0' }}>
+						Hela sortimentet
+						{initialBrands.length === 1 && (
+							<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>
+								från {initialBrands[0]}
+							</span>
+						)}
+					</h1>
+					<ProductsWithFilters
+						products={specialCategory.products}
+						selectedOrderBy={selectedOrderBy}
+						selectedBrands={selectedBrands}
+						selectedSizes={selectedSizes}
+						selectedColors={selectedColors}
+						selectedLowerPrice={selectedLowerPrice}
+						selectedUpperPrice={selectedUpperPrice}
+						setSelectedOrderBy={setSelectedOrderBy}
+						setSelectedBrands={setSelectedBrands}
+						setSelectedSizes={setSelectedSizes}
+						setSelectedColors={setSelectedColors}
+						setSelectedLowerPrice={setSelectedLowerPrice}
+						setSelectedUpperPrice={setSelectedUpperPrice}
+						selectedFilters={selectedFilters}
+						setSelectedFilters={setSelectedFilters}
+					/>
+				</div>
+			</SomeKindOfWrapper>
 		</CenterWrapper>
 	);
 };

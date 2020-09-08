@@ -83,6 +83,7 @@ const SectionProductsContainer = styled.ul`
 
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1em;
 
 	@media (min-width: 641px) {
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -103,7 +104,6 @@ const SectionProductWrapper = styled.li`
 
 const SectionProductLink = styled.a`
 	display: block;
-	padding: 0 0.5em;
 	color: black;
 	text-decoration: none;
 `;
@@ -232,145 +232,5 @@ const SearchResultsView = ({ query }: SearchResultsViewProps) => {
 		/>
 	);
 };
-
-/* {searchResults === null ||
-			(searchResults.brands.length === 0 &&
-				searchResults.categories.length === 0 &&
-				searchResults.products.length === 0) ? (
-				<div style={{ padding: '64px', textAlign: 'center' }}>inga resultat hittades</div>
-			) : (
-				<React.Fragment>
-					{(searchResults.brands.length > 0 || searchResults.categories.length > 0) && (
-						<div style={{ display: 'flex', marginBottom: '24px' }}>
-							{searchResults.brands.length > 0 && (
-								<div
-									style={{
-										flexBasis: '50%',
-										flexShrink: 0,
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'flex-start',
-									}}
-								>
-									<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Märken</div>
-									{searchResults.brands.map(brand => (
-										<NextLink key={brand.id} href={`/categories/all?brands=${brand.name}`} passHref>
-											<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>{brand.name}</a>
-										</NextLink>
-									))}
-								</div>
-							)}
-							{searchResults.categories.length > 0 && (
-								<div
-									style={{
-										flexBasis: '50%',
-										flexShrink: 0,
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'flex-start',
-									}}
-								>
-									<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Kategorier</div>
-									{searchResults.categories.map(category => (
-										<NextLink key={category.id} href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
-											<a style={{ color: 'black', textDecoration: 'none', padding: '4px 0' }}>{category.name}</a>
-										</NextLink>
-									))}
-								</div>
-							)}
-						</div>
-					)}
-
-					{searchResults.products.length > 0 && (
-						<React.Fragment>
-							<div style={{ fontWeight: 'bold', marginBottom: '16px' }}>Produkter</div>
-							<div>
-								<div style={{ display: 'flex', margin: '0 -8px' }}>
-									{searchResults.products.slice(0, 7).map(product => (
-										<NextLink key={product.id} href="/products/[key]" as={`/products/${product.urlKey}`}>
-											<a
-												style={{
-													padding: '0 8px',
-													flexBasis: 100 / 7 + '%',
-													flexShrink: 0,
-													flexGrow: 0,
-													width: 100 / 7 + '%',
-													color: 'black',
-													textDecoration: 'none',
-												}}
-											>
-												<div style={{ padding: '0 5%', background: '#f6f6f6', marginBottom: '8px' }}>
-													<div
-														style={{
-															position: 'relative',
-															width: '100%',
-															paddingTop: '131.4%',
-														}}
-													>
-														<img
-															src={product.image}
-															style={{
-																position: 'absolute',
-																top: '0',
-																right: '5%',
-																bottom: '0',
-																left: '5%',
-																width: '90%',
-															}}
-														/>
-													</div>
-												</div>
-												<div
-													style={{
-														overflow: 'hidden',
-														textOverflow: 'ellipsis',
-														whiteSpace: 'nowrap',
-														fontSize: '14px',
-														fontWeight: 'bold',
-														marginBottom: '4px',
-													}}
-												>
-													{product.brand}
-												</div>
-												<div
-													style={{
-														overflow: 'hidden',
-														textOverflow: 'ellipsis',
-														whiteSpace: 'nowrap',
-														fontSize: '14px',
-														marginBottom: '4px',
-													}}
-												>
-													{product.name}
-												</div>
-												<div>
-													<span
-														style={{
-															color: 'grey',
-															textDecoration: 'line-through',
-															fontSize: '14px',
-														}}
-													>
-														{product.originalPrice} kr
-													</span>
-													<span
-														style={{
-															color: 'red',
-															marginLeft: '8px',
-															fontSize: '14px',
-														}}
-													>
-														{product.specialPrice} kr
-													</span>
-												</div>
-											</a>
-										</NextLink>
-									))}
-								</div>
-							</div>
-						</React.Fragment>
-					)}
-				</React.Fragment>
-			)} */
 
 export default SearchResultsView;

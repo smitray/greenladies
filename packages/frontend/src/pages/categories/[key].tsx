@@ -16,6 +16,17 @@ const SomeKindOfWrapper = styled.div`
 	display: flex;
 `;
 
+const CategorySidebarWrapper = styled.div`
+	width: 200px;
+	padding-right: 20px;
+
+	display: none;
+
+	@media (min-width: 961px) {
+		display: block;
+	}
+`;
+
 interface Props {
 	categoryUrlKey: string;
 	initialOrderBy: OrderBy;
@@ -63,17 +74,6 @@ const Category: MyNextPage<Props> = ({
 	const [selectedFilters, setSelectedFilters] = useState<{ filter: string; code: string; display: string }[]>(
 		initializeSelectedFilters(initialBrands, initialSizes, initialColors, initialLowerPrice, initialUpperPrice),
 	);
-
-	const CategorySidebarWrapper = styled.div`
-		width: 200px;
-		padding-right: 20px;
-
-		display: none;
-
-		@media (min-width: 961px) {
-			display: block;
-		}
-	`;
 
 	return (
 		<CenterWrapper>
