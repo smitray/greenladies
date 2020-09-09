@@ -7,27 +7,9 @@ import {
 
 export async function createGreenLadiesAttributeSet() {
 	await createAttribute({
-		type: 'dropdown',
+		type: 'text',
 		code: 'color',
 		required: true,
-		options: [
-			'beige',
-			'black',
-			'blue',
-			'brown',
-			'darkgreen',
-			'gold',
-			'green',
-			'grey',
-			'multi',
-			'orange',
-			'pink',
-			'purple',
-			'red',
-			'silver',
-			'white',
-			'yellow',
-		],
 	});
 	await createAttribute({
 		type: 'dropdown',

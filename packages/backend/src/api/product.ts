@@ -201,12 +201,7 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 
 async function transformProductConfiguration(configuration: MagentoFullProduct): Promise<ProductConfiguration> {
 	const colorsValue = getCustomAttribute(configuration.custom_attributes, 'color');
-	const colors = await Promise.all(
-		colorsValue
-			.split('|')
-			.filter(x => x.trim() !== '')
-			.map(colorValue => attributeValueToLabel('color', colorValue)),
-	);
+	const colors = colorsValue.split(',').filter(color => color.trim() !== '');
 
 	const sizeValue = getCustomAttribute(configuration.custom_attributes, 'size', true);
 	const size = await attributeValueToLabel('size', sizeValue);
