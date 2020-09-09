@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { ShoppingCartModuleResolversType } from '..';
+import { getRedisCache } from '../../../redis-connection';
 import { base64 } from '../../../utils/base64';
 import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../../product/product.provider';
@@ -116,6 +117,9 @@ const resolvers: ShoppingCartModuleResolversType = {
 							},
 						},
 					);
+
+					const redisCache = getRedisCache();
+					redisCache.set('klarnaOrderToCartId:' + order.order_id, request.session.guestShoppingCart.cartId);
 
 					request.session.guestShoppingCart.klarna = {
 						orderId: order.order_id,

@@ -14,6 +14,14 @@ const resolvers: ShoppingCartModuleResolversType = {
 				};
 			}
 
+			try {
+				await injector.get(ShoppingCartProvider).getGuestShoppingCartItems(request.session.guestShoppingCart.cartId);
+			} catch (error) {
+				request.session.guestShoppingCart = {
+					cartId: await injector.get(ShoppingCartProvider).createGuestShoppingCart(),
+				};
+			}
+
 			return { id: request.session.guestShoppingCart.cartId };
 		},
 	},

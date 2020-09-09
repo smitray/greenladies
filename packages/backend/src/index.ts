@@ -86,10 +86,6 @@ const sessionOptions: SessionOptions = {
 	});
 
 	app.get('/api/klarna/order-confirmation/:orderId', async (req, res) => {
-		if (!req.session?.guestShoppingCart) {
-			return res.send({ error: 'No cart available' });
-		}
-
 		const KLARNA_USER_ID = String(process.env.KLARNA_USER_ID);
 		const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
 		const KLARNA_API = String(process.env.KLARNA_API);
@@ -106,7 +102,10 @@ const sessionOptions: SessionOptions = {
 			return res.send({ error: 'Klarna order not found' });
 		}
 
-		const items = await getGuestShoppingCartItems(req.session.guestShoppingCart.cartId);
+		const redisCache = getRedisCache();
+		const cartId = await redisCache.get<string>('klarnaOrderToCartId:' + order.order_id);
+
+		const items = await getGuestShoppingCartItems(cartId);
 
 		try {
 			const client = new GraphQLClient('http://magento2/graphql');
@@ -195,7 +194,7 @@ const sessionOptions: SessionOptions = {
 				`,
 				{
 					setShippingAddressesOnCartInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 						shipping_addresses: [
 							{
 								address: {
@@ -211,7 +210,7 @@ const sessionOptions: SessionOptions = {
 						],
 					},
 					setBillingAddressOnCartInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 						billing_address: {
 							address: {
 								city: order.billing_address.city,
@@ -225,7 +224,7 @@ const sessionOptions: SessionOptions = {
 						},
 					},
 					setShippingMethodsOnCartInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 						shipping_methods: [
 							{
 								carrier_code: 'flatrate',
@@ -234,17 +233,17 @@ const sessionOptions: SessionOptions = {
 						],
 					},
 					setGuestEmailOnCartInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 						email: order.billing_address.email,
 					},
 					setPaymentMethodOnCartInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 						payment_method: {
 							code: 'checkmo',
 						},
 					},
 					placeOrderInput: {
-						cart_id: req.session.guestShoppingCart.cartId,
+						cart_id: cartId,
 					},
 				},
 			);
@@ -253,7 +252,6 @@ const sessionOptions: SessionOptions = {
 			return res.redirect('/order-failure');
 		}
 
-		const redisCache = getRedisCache();
 		await redisCache.set(`klarnaOrderConfirmSnippet:${order.order_id}`, order.html_snippet, 60 * 60 * 24 * 7);
 
 		for (const item of items) {
@@ -268,8 +266,6 @@ const sessionOptions: SessionOptions = {
 				totalStock: product.totalStock - item.qty,
 			});
 		}
-
-		req.session.guestShoppingCart = undefined;
 
 		return res.redirect('/order-success/' + order.order_id);
 	});
