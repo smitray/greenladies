@@ -5,6 +5,7 @@ import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
 
 import { CategorySidebar } from '../../components/CategorySidebar';
+import { MobileCategoriesList } from '../../components/MobileCategoriesList';
 import { ProductsWithFilters } from '../../components/ProductsWithFilters';
 import { MyNextPage } from '../../lib/types';
 import { CATEGORY_QUERY, CategoryQuery } from '../../queries/category';
@@ -24,6 +25,13 @@ const CategorySidebarWrapper = styled.div`
 
 	@media (min-width: 961px) {
 		display: block;
+	}
+`;
+
+const MobileCategoriesWrapper = styled.div`
+	margin-bottom: 1em;
+	@media (min-width: 961px) {
+		display: none;
 	}
 `;
 
@@ -90,6 +98,9 @@ const Category: MyNextPage<Props> = ({
 							</span>
 						)}
 					</h1>
+					<MobileCategoriesWrapper>
+						<MobileCategoriesList category={category} />
+					</MobileCategoriesWrapper>
 					<ProductsWithFilters
 						products={category.products}
 						selectedOrderBy={selectedOrderBy}

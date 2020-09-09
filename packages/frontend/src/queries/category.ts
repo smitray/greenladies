@@ -13,6 +13,7 @@ export const CATEGORY_QUERY = graphql`
 				...ProductsWithFilters_products @arguments(filters: $filters)
 			}
 			...CategorySidebar_category @arguments(filters: $filters)
+			...MobileCategoriesList_category @arguments(filters: $filters)
 		}
 	}
 `;

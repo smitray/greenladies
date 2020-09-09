@@ -1,51 +1,20 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
 
+import { CategorySidebarRoot } from '../../components/CategorySidebarRoot';
+import { MobileRootCategoriesList } from '../../components/MobileRootCategoriesList';
 import { ProductsWithFilters } from '../../components/ProductsWithFilters';
 import { MyNextPage } from '../../lib/types';
 import { ALL_CATEGORIES_QUERY, AllCategoriesQuery } from '../../queries/all-categories';
 import { CenterWrapper } from '../../styles/center-wrapper';
-import { filterObjectByKeys } from '../../utils/object';
 import { initializeSelectedFilters, OrderBy, parseOrderBy } from '../../utils/products-filtering-and-ordering';
 
 const SomeKindOfWrapper = styled.div`
 	padding: 24px 0;
 	display: flex;
-`;
-
-const CategorySidebarLink = styled.a`
-	font-size: 14px;
-	display: inline-block;
-	position: relative;
-	color: black;
-	text-decoration: none;
-
-	&:hover {
-		border-bottom: 1px solid black;
-	}
-`;
-
-const CategorySidebarNoLink = styled.div`
-	font-size: 14px;
-	padding: 5px 0;
-	color: grey;
-`;
-
-const CategorySidebarList = styled.ul`
-	padding: 0 0 0 15px;
-	margin: 0;
-	list-style: none;
-`;
-
-const CategoryProductCount = styled.span`
-	font-size: 12px;
-	color: grey;
-	margin-left: 4px;
 `;
 
 const CategorySidebarWrapper = styled.div`
@@ -56,6 +25,13 @@ const CategorySidebarWrapper = styled.div`
 
 	@media (min-width: 961px) {
 		display: block;
+	}
+`;
+
+const MobileCategoriesWrapper = styled.div`
+	margin-bottom: 1em;
+	@media (min-width: 961px) {
+		display: none;
 	}
 `;
 
@@ -76,7 +52,7 @@ const AllCategories: MyNextPage<Props> = ({
 	initialLowerPrice,
 	initialUpperPrice,
 }) => {
-	const { products, rootCategories } = useLazyLoadQuery<AllCategoriesQuery>(
+	const result = useLazyLoadQuery<AllCategoriesQuery>(
 		ALL_CATEGORIES_QUERY,
 		{
 			orderBy: initialOrderBy,
@@ -93,6 +69,8 @@ const AllCategories: MyNextPage<Props> = ({
 		{ fetchPolicy: 'store-only' },
 	);
 
+	const { products } = result;
+
 	const [selectedOrderBy, setSelectedOrderBy] = useState(initialOrderBy);
 	const [selectedBrands, setSelectedBrands] = useState(initialBrands);
 	const [selectedSizes, setSelectedSizes] = useState(initialSizes);
@@ -104,41 +82,11 @@ const AllCategories: MyNextPage<Props> = ({
 		initializeSelectedFilters(initialBrands, initialSizes, initialColors, initialLowerPrice, initialUpperPrice),
 	);
 
-	const { query } = useRouter();
-
-	const processedQuery = useMemo(() => {
-		return filterObjectByKeys(['orderBy', 'brands', 'sizes', 'colors', 'price'], query);
-	}, [query]);
-
 	return (
 		<CenterWrapper>
 			<SomeKindOfWrapper>
 				<CategorySidebarWrapper>
-					<div style={{ width: '200px', paddingRight: '20px' }}>
-						<CategorySidebarList>
-							{rootCategories.map(category => (
-								<li key={category.id} style={{ padding: '4px 0' }}>
-									{category.categoryProducts.totalCount > 0 ? (
-										<React.Fragment>
-											<Link
-												href={{ pathname: '/categories/[key]', query: processedQuery }}
-												as={{ pathname: `/categories/${category.urlKey}`, query: processedQuery }}
-												passHref
-											>
-												<CategorySidebarLink>{category.name}</CategorySidebarLink>
-											</Link>
-											<CategoryProductCount>({category.categoryProducts.totalCount})</CategoryProductCount>
-										</React.Fragment>
-									) : (
-										<CategorySidebarNoLink>
-											{category.name}
-											<CategoryProductCount>(0)</CategoryProductCount>
-										</CategorySidebarNoLink>
-									)}
-								</li>
-							))}
-						</CategorySidebarList>
-					</div>
+					<CategorySidebarRoot query={result} />
 				</CategorySidebarWrapper>
 				<div style={{ flexGrow: 1 }}>
 					<h1 style={{ margin: '0 0 16px 0' }}>
@@ -149,6 +97,10 @@ const AllCategories: MyNextPage<Props> = ({
 							</span>
 						)}
 					</h1>
+
+					<MobileCategoriesWrapper>
+						<MobileRootCategoriesList query={result} />
+					</MobileCategoriesWrapper>
 					<ProductsWithFilters
 						products={products}
 						selectedOrderBy={selectedOrderBy}

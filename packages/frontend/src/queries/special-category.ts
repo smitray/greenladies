@@ -17,14 +17,8 @@ export const SPECIAL_CATEGORY_QUERY = graphql`
 				...ProductsWithFilters_products @arguments(filters: $filters)
 			}
 		}
-		rootCategories {
-			id
-			name
-			urlKey
-			categoryProducts: products(filters: $filters) {
-				totalCount
-			}
-		}
+		...CategorySidebarRoot_query @arguments(filters: $filters)
+		...MobileRootCategoriesList_query @arguments(filters: $filters)
 	}
 `;
 

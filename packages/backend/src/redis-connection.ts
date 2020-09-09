@@ -57,6 +57,10 @@ export function getRedisCache() {
 			});
 		},
 		getMany: function <T = any>(keys: string[]): Promise<T[]> {
+			if (keys.length === 0) {
+				return Promise.resolve([]);
+			}
+
 			return new Promise((resolve, reject) => {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				redisCacheConnection!.mget(keys, (err, values) => {
@@ -69,6 +73,10 @@ export function getRedisCache() {
 			});
 		},
 		setMany: async function <T = any>(pairs: { key: string; value: T; expiresInSeconds?: number }[]): Promise<void> {
+			if (pairs.length === 0) {
+				return Promise.resolve();
+			}
+
 			await new Promise((resolve, reject) => {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				redisCacheConnection!.mset(

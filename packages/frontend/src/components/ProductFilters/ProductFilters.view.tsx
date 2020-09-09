@@ -80,7 +80,7 @@ function colorCodeToSquare(code: string) {
 
 const MobileWrapper = styled.div`
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	margin-bottom: 1em;
 
 	@media (min-width: 641px) {
