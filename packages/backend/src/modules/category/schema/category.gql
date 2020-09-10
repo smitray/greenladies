@@ -2,6 +2,9 @@ type Category implements Node {
 	id: ID!
 	urlKey: String!
 	name: String!
+	metaTitle: String!
+	metaKeywords: String!
+	metaDescription: String!
 	children: [Category!]!
 	parent: Category
 }

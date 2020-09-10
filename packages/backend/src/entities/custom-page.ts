@@ -8,6 +8,15 @@ export class CustomPage extends BaseEntity {
 	@Column({ unique: true })
 	path: string;
 
+	@Column()
+	metaTitle: string;
+
+	@Column()
+	metaKeywords: string;
+
+	@Column()
+	metaDescription: string;
+
 	@OneToMany(() => CustomPageSection, section => section.page)
 	sections: CustomPageSection[];
 }

@@ -94,6 +94,9 @@ const resolvers: CustomPageModuleResolversType = {
 			);
 
 			return {
+				metaTitle: page.metaTitle,
+				metaKeywords: page.metaKeywords,
+				metaDescription: page.metaDescription,
 				sections,
 			};
 		},

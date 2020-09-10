@@ -53,6 +53,11 @@ export interface Category {
 	name: string;
 	urlKey: string;
 	includeInMenu: boolean;
+	meta: {
+		title: string;
+		keywords: string;
+		description: string;
+	};
 	parentId: string;
 	childrenIds: string[];
 }
@@ -63,6 +68,11 @@ function transformCategory(category: MagentoFullCategory): Category {
 		name: category.name,
 		urlKey: getCustomAttribute(category.custom_attributes, 'url_key', true),
 		includeInMenu: category.include_in_menu,
+		meta: {
+			title: getCustomAttribute(category.custom_attributes, 'meta_title', false),
+			keywords: getCustomAttribute(category.custom_attributes, 'meta_keywords', false),
+			description: getCustomAttribute(category.custom_attributes, 'meta_description', false),
+		},
 		parentId: category.parent_id.toString(),
 		childrenIds: category.children
 			.split(',')

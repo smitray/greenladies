@@ -25,5 +25,8 @@ type CustomPageProductCarousel {
 union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel
 
 type CustomPage {
+	metaTitle: String!
+	metaKeywords: String!
+	metaDescription: String!
 	sections: [CustomPageSection!]!
 }

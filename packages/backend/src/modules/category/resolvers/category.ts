@@ -17,6 +17,21 @@ const resolvers: CategoryModuleResolversType = {
 
 			return category.name;
 		},
+		metaTitle: async ({ id }, _args, { injector }) => {
+			const category = await injector.get(CategoryProvider).getCategory(id);
+
+			return category.meta.title;
+		},
+		metaKeywords: async ({ id }, _args, { injector }) => {
+			const category = await injector.get(CategoryProvider).getCategory(id);
+
+			return category.meta.keywords;
+		},
+		metaDescription: async ({ id }, _args, { injector }) => {
+			const category = await injector.get(CategoryProvider).getCategory(id);
+
+			return category.meta.description;
+		},
 		children: async ({ id }, _args, { injector }) => {
 			const category = await injector.get(CategoryProvider).getCategory(id);
 

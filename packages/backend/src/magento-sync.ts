@@ -61,6 +61,11 @@ export interface Category {
 	name: string;
 	urlKey: string;
 	includeInMenu: boolean;
+	meta: {
+		title: string;
+		keywords: string;
+		description: string;
+	};
 	parentId: string;
 	childrenIds: string[];
 	productIds: string[];
