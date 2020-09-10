@@ -26,6 +26,8 @@ const ProductGridView = ({ products }: ProductListViewProps) => {
 					))}
 				</div>
 			)}
+			{products.edges.length === 0}{' '}
+			{<div style={{ padding: '48px 0', color: 'grey', textAlign: 'center' }}>Inga produkter hittades</div>}
 		</div>
 	);
 };
