@@ -157,9 +157,20 @@ export async function syncMagentoProductsAndCategories() {
 	const skuToConfigurableProductMap = new Map(configurableProducts.map(product => [product.sku, product]));
 	const idToProductConfigurationMap = new Map(productConfigurations.map(product => [product.id, product]));
 
+	const idToMagentoCategoryMap = new Map(magentoCategories.map(category => [category.id, category]));
 	const transformedCategories = magentoCategories.map<Category>(category => {
+		const children = category.childrenIds.map(id => {
+			const child = idToMagentoCategoryMap.get(id);
+			if (child === undefined) {
+				throw new Error(`Could not find child category ${id} for category ${category.id}`);
+			}
+
+			return child;
+		});
+
 		return {
 			...category,
+			childrenIds: children.filter(child => child.includeInMenu).map(child => child.id),
 			productIds: categoriesProductIds.get(category.id) || [],
 		};
 	});
