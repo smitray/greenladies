@@ -88,6 +88,7 @@ async function attributeValueToLabel(attributeCode: string, value: string) {
 }
 
 function getCustomAttribute(
+	productId: number,
 	customAttributes: { attribute_code: string; value: string }[],
 	code: string,
 	required = true,
@@ -98,7 +99,7 @@ function getCustomAttribute(
 			return '';
 		}
 
-		throw new Error('Invalid product, must have ' + code + ' attribute');
+		throw new Error(`Invalid product ${productId}, must have ${code} attribute`);
 	}
 
 	return attribute.value;
@@ -163,32 +164,32 @@ export interface ProductConfiguration {
 export type Product = ConfigurableProduct | ProductConfiguration;
 
 async function transformConfigurableProduct(product: MagentoFullProduct): Promise<ConfigurableProduct> {
-	const brandAttribute = getCustomAttribute(product.custom_attributes, 'mgs_brand', true);
+	const brandAttribute = getCustomAttribute(product.id, product.custom_attributes, 'mgs_brand', true);
 	const brand = await attributeValueToLabel('mgs_brand', brandAttribute);
 
-	const conditionAttribute = getCustomAttribute(product.custom_attributes, 'condition', true);
+	const conditionAttribute = getCustomAttribute(product.id, product.custom_attributes, 'condition', true);
 	const condition = await attributeValueToLabel('condition', conditionAttribute);
 
 	return {
 		__type: 'ConfigurableProduct',
 		id: product.id.toString(),
 		sku: product.sku,
-		urlKey: getCustomAttribute(product.custom_attributes, 'url_key', true),
+		urlKey: getCustomAttribute(product.id, product.custom_attributes, 'url_key', true),
 		enabled: product.status === 1,
 		name: product.name,
 		brand,
 		metaData: {
-			title: getCustomAttribute(product.custom_attributes, 'meta_title', false),
-			keyword: getCustomAttribute(product.custom_attributes, 'meta_keyword', false),
-			description: getCustomAttribute(product.custom_attributes, 'meta_description', false),
+			title: getCustomAttribute(product.id, product.custom_attributes, 'meta_title', false),
+			keyword: getCustomAttribute(product.id, product.custom_attributes, 'meta_keyword', false),
+			description: getCustomAttribute(product.id, product.custom_attributes, 'meta_description', false),
 		},
 		description: {
-			short: getCustomAttribute(product.custom_attributes, 'short_description'),
-			full: getCustomAttribute(product.custom_attributes, 'description'),
+			short: getCustomAttribute(product.id, product.custom_attributes, 'short_description', false),
+			full: getCustomAttribute(product.id, product.custom_attributes, 'description'),
 		},
-		washingDescription: getCustomAttribute(product.custom_attributes, 'washing_description', false),
+		washingDescription: getCustomAttribute(product.id, product.custom_attributes, 'washing_description', false),
 		condition,
-		material: getCustomAttribute(product.custom_attributes, 'material', false),
+		material: getCustomAttribute(product.id, product.custom_attributes, 'material', false),
 		image: product.media_gallery_entries.length > 0 ? product.media_gallery_entries[0].file : '',
 		images: product.media_gallery_entries.map(galleryEntry => galleryEntry.file),
 		productConfigurationIds: product.extension_attributes.configurable_product_links.map(id => id.toString()),
@@ -200,10 +201,10 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 }
 
 async function transformProductConfiguration(configuration: MagentoFullProduct): Promise<ProductConfiguration> {
-	const colorsValue = getCustomAttribute(configuration.custom_attributes, 'color');
+	const colorsValue = getCustomAttribute(configuration.id, configuration.custom_attributes, 'color');
 	const colors = colorsValue.split(',').filter(color => color.trim() !== '');
 
-	const sizeValue = getCustomAttribute(configuration.custom_attributes, 'size', true);
+	const sizeValue = getCustomAttribute(configuration.id, configuration.custom_attributes, 'size', true);
 	const size = await attributeValueToLabel('size', sizeValue);
 
 	return {
@@ -215,7 +216,8 @@ async function transformProductConfiguration(configuration: MagentoFullProduct):
 		price: {
 			originalPrice: configuration.price,
 			specialPrice:
-				parseFloat(getCustomAttribute(configuration.custom_attributes, 'special_price', false)) || configuration.price,
+				parseFloat(getCustomAttribute(configuration.id, configuration.custom_attributes, 'special_price', false)) ||
+				configuration.price,
 			currency: 'SEK',
 		},
 		colors,
