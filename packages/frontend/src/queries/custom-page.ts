@@ -5,6 +5,9 @@ import { customPageQuery } from './__generated__/customPageQuery.graphql';
 export const CUSTOM_PAGE_QUERY = graphql`
 	query customPageQuery($path: String!) {
 		customPage(path: $path) {
+			metaTitle
+			metaKeywords
+			metaDescription
 			sections {
 				__typename
 				... on CustomPageBanner {

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Head from 'next/head';
 import Link from 'next/link';
 import { FaTrashAlt } from 'react-icons/fa';
 import { fetchQuery } from 'react-relay';
@@ -83,144 +84,153 @@ const Cart: MyNextPage = () => {
 	const numberOfItems = shoppingCart.items.edges.reduce((prev, { node: item }) => prev + item.amount, 0);
 
 	return (
-		<CenterWrapper>
-			<SomeKindOfWrapper>
-				<div style={{ flexGrow: 1 }}>
-					<div>
-						<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Varukorg ({numberOfItems})</h1>
-						<ul style={{ padding: '0', margin: '0', listStyle: 'none' }}>
-							{shoppingCart.items.edges.map(({ node: item }) => {
-								return (
-									<li key={item.id} style={{ padding: '24px 0', borderBottom: '1px solid lightgrey' }}>
-										<div style={{ display: 'flex' }}>
-											<div style={{ flexBasis: '80px' }}>
-												<img src={item.product.parent.image} alt="" style={{ width: '100%' }} />
-											</div>
-											<div style={{ marginLeft: '12px', flexGrow: 1 }}>
-												<div style={{ marginBottom: '2px' }}>{item.product.parent.brand}</div>
-												<div style={{ marginBottom: '4px', color: 'grey' }}>{item.product.name}</div>
-												<div style={{ marginBottom: '24px', color: 'grey' }}>Storlek {item.product.size}</div>
-												<button
-													style={{
-														display: 'flex',
-														padding: '4px',
-														border: 'none',
-														outline: 'none',
-														background: 'none',
-														color: 'grey',
-														cursor: 'pointer',
-													}}
-													onClick={() => removeFromCart(item.id)}
-												>
-													<div style={{ width: '14px', height: '14px' }}>
-														<FaTrashAlt size="14" />
-													</div>
-													<span style={{ marginLeft: '4px' }}>Ta bort</span>
-												</button>
-											</div>
-											<div
-												style={{
-													marginLeft: '12px',
-													display: 'flex',
-													flexDirection: 'column',
-													justifyContent: 'space-between',
-												}}
-											>
-												<div style={{ textAlign: 'right' }}>
-													<select
-														style={{
-															width: '100px',
-															outline: 'none',
-															border: '1px solid black',
-															background: 'white',
-															padding: '8px 12px',
-														}}
-														disabled={item.product.quantity === 1}
-														onChange={e => {
-															const amount = parseInt(e.target.value, 10);
-															if (amount > 0 && amount <= 10) {
-																updateCartAmount(item.id, amount);
-															}
-														}}
-														value={item.amount}
-													>
-														{Array.from({ length: Math.min(item.product.quantity, 10) }, (_, i) => i + 1).map(
-															amount => (
-																<option key={amount}>{amount}</option>
-															),
-														)}
-													</select>
-													{item.product.quantity === 1 && (
-														<div style={{ color: 'red', marginTop: '4px' }}>(Bara 1 kvar)</div>
-													)}
+		<React.Fragment>
+			<Head>
+				<title>Varukorg | greenladies.se</title>
+				<meta name="robots" content="noindex,nofollow" />
+			</Head>
+			<CenterWrapper>
+				<SomeKindOfWrapper>
+					<div style={{ flexGrow: 1 }}>
+						<div>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Varukorg ({numberOfItems})</h1>
+							<ul style={{ padding: '0', margin: '0', listStyle: 'none' }}>
+								{shoppingCart.items.edges.map(({ node: item }) => {
+									return (
+										<li key={item.id} style={{ padding: '24px 0', borderBottom: '1px solid lightgrey' }}>
+											<div style={{ display: 'flex' }}>
+												<div style={{ flexBasis: '80px' }}>
+													<img src={item.product.parent.image} alt="" style={{ width: '100%' }} />
 												</div>
-												<div>
-													<div
+												<div style={{ marginLeft: '12px', flexGrow: 1 }}>
+													<div style={{ marginBottom: '2px' }}>{item.product.parent.brand}</div>
+													<div style={{ marginBottom: '4px', color: 'grey' }}>{item.product.name}</div>
+													<div style={{ marginBottom: '24px', color: 'grey' }}>Storlek {item.product.size}</div>
+													<button
 														style={{
-															marginBottom: '4px',
 															display: 'flex',
-															flexDirection: windowWidth < NORMAL_TABLET_SIZE ? 'column' : 'row',
-															alignItems: 'flex-end',
+															padding: '4px',
+															border: 'none',
+															outline: 'none',
+															background: 'none',
+															color: 'grey',
+															cursor: 'pointer',
 														}}
+														onClick={() => removeFromCart(item.id)}
 													>
+														<div style={{ width: '14px', height: '14px' }}>
+															<FaTrashAlt size="14" />
+														</div>
+														<span style={{ marginLeft: '4px' }}>Ta bort</span>
+													</button>
+												</div>
+												<div
+													style={{
+														marginLeft: '12px',
+														display: 'flex',
+														flexDirection: 'column',
+														justifyContent: 'space-between',
+													}}
+												>
+													<div style={{ textAlign: 'right' }}>
+														<select
+															style={{
+																width: '100px',
+																outline: 'none',
+																border: '1px solid black',
+																background: 'white',
+																padding: '8px 12px',
+															}}
+															disabled={item.product.quantity === 1}
+															onChange={e => {
+																const amount = parseInt(e.target.value, 10);
+																if (amount > 0 && amount <= 10) {
+																	updateCartAmount(item.id, amount);
+																}
+															}}
+															value={item.amount}
+														>
+															{Array.from({ length: Math.min(item.product.quantity, 10) }, (_, i) => i + 1).map(
+																amount => (
+																	<option key={amount}>{amount}</option>
+																),
+															)}
+														</select>
+														{item.product.quantity === 1 && (
+															<div style={{ color: 'red', marginTop: '4px' }}>(Bara 1 kvar)</div>
+														)}
+													</div>
+													<div>
 														<div
 															style={{
-																textDecoration: 'line-through',
-																whiteSpace: 'nowrap',
-
-																marginRight: windowWidth < NORMAL_TABLET_SIZE ? '0' : '16px',
-																marginBottom: windowWidth < NORMAL_TABLET_SIZE ? '4px' : '0',
+																marginBottom: '4px',
+																display: 'flex',
+																flexDirection: windowWidth < NORMAL_TABLET_SIZE ? 'column' : 'row',
+																alignItems: 'flex-end',
 															}}
 														>
-															{(item.product.originalPrice * item.amount).toFixed(2).replace('.', ',')} kr
+															<div
+																style={{
+																	textDecoration: 'line-through',
+																	whiteSpace: 'nowrap',
+
+																	marginRight: windowWidth < NORMAL_TABLET_SIZE ? '0' : '16px',
+																	marginBottom: windowWidth < NORMAL_TABLET_SIZE ? '4px' : '0',
+																}}
+															>
+																{(item.product.originalPrice * item.amount).toFixed(2).replace('.', ',')} kr
+															</div>
+															<div style={{ color: 'red', whiteSpace: 'nowrap' }}>
+																{(item.product.specialPrice * item.amount).toFixed(2).replace('.', ',')} kr
+															</div>
 														</div>
-														<div style={{ color: 'red', whiteSpace: 'nowrap' }}>
-															{(item.product.specialPrice * item.amount).toFixed(2).replace('.', ',')} kr
+														<div style={{ fontSize: '14px', color: 'red', textAlign: 'right' }}>
+															Du sparar{' '}
+															{Math.round(
+																((item.product.originalPrice - item.product.specialPrice) /
+																	item.product.originalPrice) *
+																	100,
+															)}
+															%
 														</div>
-													</div>
-													<div style={{ fontSize: '14px', color: 'red', textAlign: 'right' }}>
-														Du sparar{' '}
-														{Math.round(
-															((item.product.originalPrice - item.product.specialPrice) / item.product.originalPrice) *
-																100,
-														)}
-														%
 													</div>
 												</div>
 											</div>
-										</div>
-									</li>
-								);
-							})}
-						</ul>
+										</li>
+									);
+								})}
+							</ul>
+						</div>
+						{windowWidth <= 961 && (
+							<div style={{ padding: '48px 0 24px 0' }}>
+								<CostSummary itemCost={itemCost} shippingCost={shippingCost} />
+							</div>
+						)}
+						<div style={{ background: 'white', padding: '24px 0' }}>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi skickar med</h1>
+							<img src="/images/dhl.jpg" alt="" />
+						</div>
+						<div style={{ background: 'white', padding: '24px 0' }}>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi accepterar</h1>
+							<div>
+								<img style={{ marginLeft: '8px', height: '48px' }} src="/images/klarna.jpg" alt="" />
+								<img style={{ marginLeft: '8px', height: '48px' }} src="/images/visa.png" alt="" />
+								<img style={{ marginLeft: '8px', height: '48px' }} src="/images/mastercard.png" alt="" />
+								<img style={{ marginLeft: '8px', height: '48px' }} src="/images/amex.png" alt="" />
+								<img style={{ marginLeft: '8px', height: '48px' }} src="/images/faktura.png" alt="" />
+							</div>
+						</div>
 					</div>
-					{windowWidth <= 961 && (
-						<div style={{ padding: '48px 0 24px 0' }}>
+					{windowWidth > 961 && (
+						<div
+							style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}
+						>
 							<CostSummary itemCost={itemCost} shippingCost={shippingCost} />
 						</div>
 					)}
-					<div style={{ background: 'white', padding: '24px 0' }}>
-						<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi skickar med</h1>
-						<img src="/images/dhl.jpg" alt="" />
-					</div>
-					<div style={{ background: 'white', padding: '24px 0' }}>
-						<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Vi accepterar</h1>
-						<div>
-							<img style={{ marginLeft: '8px', height: '48px' }} src="/images/klarna.jpg" alt="" />
-							<img style={{ marginLeft: '8px', height: '48px' }} src="/images/visa.png" alt="" />
-							<img style={{ marginLeft: '8px', height: '48px' }} src="/images/mastercard.png" alt="" />
-							<img style={{ marginLeft: '8px', height: '48px' }} src="/images/amex.png" alt="" />
-							<img style={{ marginLeft: '8px', height: '48px' }} src="/images/faktura.png" alt="" />
-						</div>
-					</div>
-				</div>
-				{windowWidth > 961 && (
-					<div style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>
-						<CostSummary itemCost={itemCost} shippingCost={shippingCost} />
-					</div>
-				)}
-			</SomeKindOfWrapper>
-		</CenterWrapper>
+				</SomeKindOfWrapper>
+			</CenterWrapper>
+		</React.Fragment>
 	);
 };
 

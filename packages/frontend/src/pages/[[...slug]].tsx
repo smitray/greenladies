@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 
@@ -18,6 +19,12 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 
 	return (
 		<React.Fragment>
+			<Head>
+				<title>{customPage.metaTitle}</title>
+				<meta name="keywords" content={customPage.metaKeywords} />
+				<meta name="description" content={customPage.metaDescription} />
+				<meta name="robots" content="index,follow" />
+			</Head>
 			{customPage.sections.map((section, index) => {
 				switch (section.__typename) {
 					case 'CustomPageBanner':

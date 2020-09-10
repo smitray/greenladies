@@ -14,6 +14,9 @@ export const CATEGORY_QUERY = graphql`
 			}
 			...CategorySidebar_category @arguments(filters: $filters)
 			...MobileCategoriesList_category @arguments(filters: $filters)
+			metaTitle
+			metaKeywords
+			metaDescription
 		}
 	}
 `;

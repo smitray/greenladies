@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -58,11 +59,17 @@ const OrderSuccess: MyNextPage<Props> = ({ orderId }) => {
 	);
 
 	return (
-		<CenterWrapper>
-			<SomeKindOfWrapper>
-				<OrderSuccessIframeDynamic snippet={klarnaOrderConfirmationSnippet} />
-			</SomeKindOfWrapper>
-		</CenterWrapper>
+		<React.Fragment>
+			<Head>
+				<title>Orderbekräftelse | greenladies.se</title>
+				<meta name="robots" content="noindex,nofollow" />
+			</Head>
+			<CenterWrapper>
+				<SomeKindOfWrapper>
+					<OrderSuccessIframeDynamic snippet={klarnaOrderConfirmationSnippet} />
+				</SomeKindOfWrapper>
+			</CenterWrapper>
+		</React.Fragment>
 	);
 };
 

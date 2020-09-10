@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -41,6 +42,12 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 
 	return (
 		<React.Fragment>
+			<Head>
+				<title>{product.metaTitle}</title>
+				<meta name="keywords" content={product.metaKeyword} />
+				<meta name="description" content={product.metaDescription} />
+				<meta name="robots" content="index,follow" />
+			</Head>
 			<CenterWrapper>
 				<SomeWrapper>
 					<ProductImageGalleryWrapper>

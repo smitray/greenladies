@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -83,44 +84,52 @@ const AllCategories: MyNextPage<Props> = ({
 	);
 
 	return (
-		<CenterWrapper>
-			<SomeKindOfWrapper>
-				<CategorySidebarWrapper>
-					<CategorySidebarRoot query={result} />
-				</CategorySidebarWrapper>
-				<div style={{ flexGrow: 1 }}>
-					<h1 style={{ margin: '0 0 16px 0' }}>
-						Hela sortimentet
-						{initialBrands.length === 1 && (
-							<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>
-								från {initialBrands[0]}
-							</span>
-						)}
-					</h1>
+		<React.Fragment>
+			<Head>
+				<title>Alla kategorier | greenladies.se</title>
+				{/* <meta name="keywords" content={product.metaKeyword} />
+				<meta name="description" content={product.metaDescription} /> */}
+				<meta name="robots" content="index,follow" />
+			</Head>
+			<CenterWrapper>
+				<SomeKindOfWrapper>
+					<CategorySidebarWrapper>
+						<CategorySidebarRoot query={result} />
+					</CategorySidebarWrapper>
+					<div style={{ flexGrow: 1 }}>
+						<h1 style={{ margin: '0 0 16px 0' }}>
+							Hela sortimentet
+							{initialBrands.length === 1 && (
+								<span style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'normal' }}>
+									från {initialBrands[0]}
+								</span>
+							)}
+						</h1>
 
-					<MobileCategoriesWrapper>
-						<MobileRootCategoriesList query={result} />
-					</MobileCategoriesWrapper>
-					<ProductsWithFilters
-						products={products}
-						selectedOrderBy={selectedOrderBy}
-						selectedBrands={selectedBrands}
-						selectedSizes={selectedSizes}
-						selectedColors={selectedColors}
-						selectedLowerPrice={selectedLowerPrice}
-						selectedUpperPrice={selectedUpperPrice}
-						setSelectedOrderBy={setSelectedOrderBy}
-						setSelectedBrands={setSelectedBrands}
-						setSelectedSizes={setSelectedSizes}
-						setSelectedColors={setSelectedColors}
-						setSelectedLowerPrice={setSelectedLowerPrice}
-						setSelectedUpperPrice={setSelectedUpperPrice}
-						selectedFilters={selectedFilters}
-						setSelectedFilters={setSelectedFilters}
-					/>
-				</div>
-			</SomeKindOfWrapper>
-		</CenterWrapper>
+						<MobileCategoriesWrapper>
+							<MobileRootCategoriesList query={result} />
+						</MobileCategoriesWrapper>
+						<ProductsWithFilters
+							products={products}
+							selectedOrderBy={selectedOrderBy}
+							selectedBrands={selectedBrands}
+							selectedSizes={selectedSizes}
+							selectedColors={selectedColors}
+							selectedLowerPrice={selectedLowerPrice}
+							selectedUpperPrice={selectedUpperPrice}
+							setSelectedOrderBy={setSelectedOrderBy}
+							setSelectedBrands={setSelectedBrands}
+							setSelectedSizes={setSelectedSizes}
+							setSelectedColors={setSelectedColors}
+							setSelectedLowerPrice={setSelectedLowerPrice}
+							setSelectedUpperPrice={setSelectedUpperPrice}
+							selectedFilters={selectedFilters}
+							setSelectedFilters={setSelectedFilters}
+						/>
+					</div>
+				</SomeKindOfWrapper>
+			</CenterWrapper>
+		</React.Fragment>
 	);
 };
 

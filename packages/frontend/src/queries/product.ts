@@ -11,6 +11,9 @@ export const PRODUCT_QUERY = graphql`
 				totalCount
 				...ProductCarousel_products
 			}
+			metaTitle
+			metaKeyword
+			metaDescription
 		}
 	}
 `;

@@ -16,6 +16,9 @@ export const SPECIAL_CATEGORY_QUERY = graphql`
 				...ProductFilters_products
 				...ProductsWithFilters_products @arguments(filters: $filters)
 			}
+			metaTitle
+			metaKeywords
+			metaDescription
 		}
 		...CategorySidebarRoot_query @arguments(filters: $filters)
 		...MobileRootCategoriesList_query @arguments(filters: $filters)

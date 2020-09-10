@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
@@ -59,40 +60,46 @@ const Checkout: MyNextPage = () => {
 	const { width: windowWidth } = useWindowDimensions();
 
 	return (
-		<CenterWrapper>
-			<SomeKindOfWrapper>
-				<div style={{ flexGrow: 1 }}>
-					<div style={{ flexBasis: '640px' }}>
-						<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Betalning</h1>
-						<CheckoutIframeDynamic snippet={shoppingCart.klarnaCartSnippet} />
-					</div>
-				</div>
-				{windowWidth >= 961 && (
-					<div style={{ background: 'white', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>
-						<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Översikt ({numberOfItems} varor)</h1>
-						<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
-							<div>Deltotal</div>
-							<div>{itemCost.toFixed(2).replace(',', '.')} kr</div>
-						</div>
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'space-between',
-								borderBottom: '1px solid lightgrey',
-								padding: '12px 0',
-							}}
-						>
-							<div>Frakt</div>
-							<div>{shippingCost === 0 ? 'fri frakt' : `${shippingCost.toFixed(2).replace(',', '.')} kr`}</div>
-						</div>
-						<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 24px 0' }}>
-							<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
-							<div style={{ fontWeight: 'bold' }}>{(itemCost + shippingCost).toFixed(2).replace(',', '.')} kr</div>
+		<React.Fragment>
+			<Head>
+				<title>Utcheckning | greenladies.se</title>
+				<meta name="robots" content="noindex,nofollow" />
+			</Head>
+			<CenterWrapper>
+				<SomeKindOfWrapper>
+					<div style={{ flexGrow: 1 }}>
+						<div style={{ flexBasis: '640px' }}>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Betalning</h1>
+							<CheckoutIframeDynamic snippet={shoppingCart.klarnaCartSnippet} />
 						</div>
 					</div>
-				)}
-			</SomeKindOfWrapper>
-		</CenterWrapper>
+					{windowWidth >= 961 && (
+						<div style={{ background: 'white', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Översikt ({numberOfItems} varor)</h1>
+							<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
+								<div>Deltotal</div>
+								<div>{itemCost.toFixed(2).replace(',', '.')} kr</div>
+							</div>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'space-between',
+									borderBottom: '1px solid lightgrey',
+									padding: '12px 0',
+								}}
+							>
+								<div>Frakt</div>
+								<div>{shippingCost === 0 ? 'fri frakt' : `${shippingCost.toFixed(2).replace(',', '.')} kr`}</div>
+							</div>
+							<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 24px 0' }}>
+								<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
+								<div style={{ fontWeight: 'bold' }}>{(itemCost + shippingCost).toFixed(2).replace(',', '.')} kr</div>
+							</div>
+						</div>
+					)}
+				</SomeKindOfWrapper>
+			</CenterWrapper>
+		</React.Fragment>
 	);
 };
 
