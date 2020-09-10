@@ -5,6 +5,7 @@ import {
 	ConfigurableProduct as MagentoConfigurableProduct,
 	getProducts,
 	getProductStock,
+	Product,
 	ProductConfiguration as MagentoProductConfiguration,
 } from './api/product';
 import { getRedisCache } from './redis-connection';
@@ -79,7 +80,31 @@ export interface Brand {
 export async function syncMagentoProductsAndCategories() {
 	const magentoCategories = await getMagentoCategories();
 
-	const magentoProducts = await getProducts({ pageSize: 1000000 });
+	const PRODUCT_FETCH_CHUNK_SIZE = 50;
+	const PRODUCT_FETCH_TIME_GAP_MS = 1000;
+	const magentoProducts: Product[] = [];
+
+	// const magentoProducts = await getProducts({ pageSize: 1000000 });
+
+	let page = 1;
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		if (page !== 1) {
+			await new Promise(resolve => {
+				setTimeout(() => {
+					resolve();
+				}, PRODUCT_FETCH_TIME_GAP_MS);
+			});
+		}
+
+		const magentoProductsChunk = await getProducts({ pageSize: PRODUCT_FETCH_CHUNK_SIZE, page });
+		if (magentoProducts.length > 0) {
+			magentoProducts.push(...magentoProductsChunk);
+			page++;
+		} else {
+			break;
+		}
+	}
 
 	const brands = new Map<string, Brand>();
 	const productConfigurationParentIds = new Map<string, string>();
