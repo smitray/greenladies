@@ -28,7 +28,7 @@ const CategorySidebarNoLink = styled.div`
 `;
 
 const CategorySidebarList = styled.ul`
-	padding: 0 0 0 15px;
+	padding: 0;
 	margin: 0;
 	list-style: none;
 `;
