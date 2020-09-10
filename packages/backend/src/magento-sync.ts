@@ -98,7 +98,7 @@ export async function syncMagentoProductsAndCategories() {
 		}
 
 		const magentoProductsChunk = await getProducts({ pageSize: PRODUCT_FETCH_CHUNK_SIZE, page });
-		if (magentoProducts.length > 0) {
+		if (magentoProductsChunk.length > 0) {
 			magentoProducts.push(...magentoProductsChunk);
 			page++;
 		} else {
