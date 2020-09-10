@@ -220,6 +220,9 @@ export async function syncMagentoProductsAndCategories() {
 		});
 
 		const firstProductConfiguration = productConfigurationsLocal[0];
+		if (!firstProductConfiguration) {
+			throw new Error(`Product configurations for product ${product.id} could not be found`);
+		}
 
 		return {
 			...product,
