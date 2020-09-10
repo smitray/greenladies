@@ -115,12 +115,12 @@ export const FooterInfoView = () => {
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/categories/[key]" as="/categories/klanningar" passHref>
+							<Link href="/categories/[key]" as="/categories/damklader-klanningar-tunikor" passHref>
 								<ListItemLink>Klänningar</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/categories/[key]" as="/categories/sjalar" passHref>
+							<Link href="/categories/[key]" as="/categories/accessoarer-scarves-halsdukar" passHref>
 								<ListItemLink>Sjalar</ListItemLink>
 							</Link>
 						</ListItem>
