@@ -4,6 +4,13 @@ import Link from 'next/link';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { FooterCategoriesAndBrands_query } from './__generated__/FooterCategoriesAndBrands_query.graphql';
+import {
+	CategoriesAndBrandsHeader,
+	CategoriesAndBrandsLink,
+	CategoriesAndBrandsSection,
+	CategoriesAndBrandsSeparator,
+	CategoriesAndBrandsWrapper,
+} from './FooterCategoriesAndBrands.styles';
 
 interface FooterCategoriesAndBrandsViewProps {
 	query: FooterCategoriesAndBrands_query;
@@ -14,33 +21,29 @@ const FooterCategoriesAndBrandsView = ({ query }: FooterCategoriesAndBrandsViewP
 	const sortedBrands = query.brands.slice().sort((left, right) => left.name.localeCompare(right.name));
 
 	return (
-		<div style={{ padding: '24px', textAlign: 'center' }}>
-			<h1 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0' }}>KATEGORIER | MÄRKEN & DESIGNERS</h1>
-			<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '16px' }}>
+		<CategoriesAndBrandsWrapper>
+			<CategoriesAndBrandsHeader>KATEGORIER | MÄRKEN & DESIGNERS</CategoriesAndBrandsHeader>
+			<CategoriesAndBrandsSection>
 				{sortedCategories.map((category, index) => (
 					<React.Fragment key={category.id}>
-						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
+						{index !== 0 && <CategoriesAndBrandsSeparator>.</CategoriesAndBrandsSeparator>}
 						<Link href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
-							<a style={{ padding: '2px 8px', fontSize: '14px', textDecoration: 'none', color: 'black' }}>
-								{category.name}
-							</a>
+							<CategoriesAndBrandsLink>{category.name}</CategoriesAndBrandsLink>
 						</Link>
 					</React.Fragment>
 				))}
-			</div>
-			<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+			</CategoriesAndBrandsSection>
+			<CategoriesAndBrandsSection>
 				{sortedBrands.map((brand, index) => (
 					<React.Fragment key={index}>
-						{index !== 0 && <div style={{ lineHeight: '12px', color: 'grey' }}>.</div>}
+						{index !== 0 && <CategoriesAndBrandsSeparator>.</CategoriesAndBrandsSeparator>}
 						<Link href={`/categories/all?brands=${brand.name}`} as={`/categories/all?brands=${brand.name}`} passHref>
-							<a style={{ padding: '2px 8px', fontSize: '14px', textDecoration: 'none', color: 'black' }}>
-								{brand.name}
-							</a>
+							<CategoriesAndBrandsLink>{brand.name}</CategoriesAndBrandsLink>
 						</Link>
 					</React.Fragment>
 				))}
-			</div>
-		</div>
+			</CategoriesAndBrandsSection>
+		</CategoriesAndBrandsWrapper>
 	);
 };
 
