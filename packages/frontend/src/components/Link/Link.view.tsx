@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { createFragmentContainer, graphql } from 'react-relay';
 
 import { Link_link } from './__generated__/Link_link.graphql';
@@ -13,33 +13,33 @@ const LinkView = ({ children, link }: React.PropsWithChildren<LinkViewProps>) =>
 	switch (link.__typename) {
 		case 'BrandLink':
 			return (
-				<Link href={`/categories/all?brands=${link.brand.name}`} passHref>
+				<NextLink href={`/categories/all?brands=${link.brand.name}`} passHref>
 					{children}
-				</Link>
+				</NextLink>
 			);
 		case 'CategoryLink':
 			return (
-				<Link href="/categories/[key]" as={`/categories/${link.category.urlKey}`} passHref>
+				<NextLink href="/categories/[key]" as={`/categories/${link.category.urlKey}`} passHref>
 					{children}
-				</Link>
+				</NextLink>
 			);
 		case 'SpecialCategoryLink':
 			return (
-				<Link href="/categories/special/[key]" as={`/categories/special/${link.category.urlKey}`} passHref>
+				<NextLink href="/categories/special/[key]" as={`/categories/special/${link.category.urlKey}`} passHref>
 					{children}
-				</Link>
+				</NextLink>
 			);
 		case 'CustomPageLink':
 			return (
-				<Link href={link.path} passHref>
+				<NextLink href={link.path} passHref>
 					{children}
-				</Link>
+				</NextLink>
 			);
 		case 'ProductLink':
 			return (
-				<Link href="/products/[key]" as={`/products/${link.product.urlKey}`} passHref>
+				<NextLink href="/products/[key]" as={`/products/${link.product.urlKey}`} passHref>
 					{children}
-				</Link>
+				</NextLink>
 			);
 		case '%other':
 			return null;
