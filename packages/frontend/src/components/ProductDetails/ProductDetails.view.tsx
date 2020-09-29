@@ -275,7 +275,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 			<Collapse isOpened={materialOpen}>
 				<CollapseContentWrapper>
 					<h3 style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '0' }}>Material</h3>
-					<ReactMarkdown source={product.fullDescription} />
+					<ReactMarkdown source={product.material} />
 					<h3 style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '0' }}>Skötselråd</h3>
 					<ReactMarkdown source={product.washingDescription} />
 				</CollapseContentWrapper>
@@ -295,6 +295,7 @@ export default createFragmentContainer(ProductDetailsView, {
 			specialPrice
 			fullDescription
 			washingDescription
+			material
 			inWishlist
 			productConfigurations {
 				id
