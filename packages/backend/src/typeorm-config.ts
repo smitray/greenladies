@@ -10,7 +10,7 @@ const config: ConnectionOptions = {
 	entities: [__dirname + '/entities/*.{js,ts}'],
 	// TODO: dont sync in prod, it's dangerous
 	synchronize: true, //process.env.NODE_ENV === 'development',
-	logging: process.env.NODE_ENV === 'development' && ['error', 'warn'],
+	logging: ['error', 'warn'],
 };
 
 export default config;
