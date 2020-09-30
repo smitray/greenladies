@@ -7,6 +7,7 @@ import session, { SessionOptions } from 'express-session';
 import { gql, GraphQLClient } from 'graphql-request';
 import moment from 'moment';
 import cron from 'node-cron';
+import path from 'path';
 import { createConnection } from 'typeorm';
 
 import { getGuestShoppingCartItems } from './api/shopping-cart';
@@ -42,6 +43,8 @@ const sessionOptions: SessionOptions = {
 
 (async function () {
 	const app = express();
+
+	app.use('/api/static', express.static(path.join(__dirname, '..', 'static')));
 
 	await createConnection(typeormConfig);
 

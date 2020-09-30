@@ -7,6 +7,7 @@ import { useLazyLoadQuery } from 'react-relay/hooks';
 import { CustomPageBanner } from '../components/CustomPageBanner';
 import { CustomPageProductCarousel } from '../components/CustomPageProductCarousel';
 import CustomPageTabsView from '../components/CustomPageTabs/CustomPageTabs.view';
+import { CustomPageTripleImage } from '../components/CustomPageTripleImage';
 import { MyNextPage } from '../lib/types';
 import { CUSTOM_PAGE_QUERY, CustomPageQuery } from '../queries/custom-page';
 
@@ -33,6 +34,8 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 						return <CustomPageProductCarousel key={index} carousel={section} />;
 					case 'CustomPageTab':
 						return <CustomPageTabsView key={index} tabs={section} />;
+					case 'CustomPageTripleImage':
+						return <CustomPageTripleImage key={index} tripleImage={section} />;
 					case '%other':
 						return null;
 				}

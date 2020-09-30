@@ -19,6 +19,9 @@ export const CUSTOM_PAGE_QUERY = graphql`
 				... on CustomPageTab {
 					...CustomPageTabs_tabs
 				}
+				... on CustomPageTripleImage {
+					...CustomPageTripleImage_tripleImage
+				}
 			}
 		}
 	}
