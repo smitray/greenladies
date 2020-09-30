@@ -19,10 +19,20 @@ type CustomPageBanner {
 type CustomPageProductCarousel {
 	title: String!
 	subtitle: String!
-	products: ProductConnection!
+	category: Category!
 }
 
-union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel
+type CustomPageTripleImage {
+	smallTitle: String!
+	bigTitle: String!
+	link: Link!
+	firstImagePath: String!
+	secondImagePath: String!
+	thirdImagePath: String!
+	color: String!
+}
+
+union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel | CustomPageTripleImage
 
 type CustomPage {
 	metaTitle: String!

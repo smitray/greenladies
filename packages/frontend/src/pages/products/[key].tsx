@@ -14,19 +14,9 @@ import { CenterWrapper } from '../../styles/center-wrapper';
 
 const SomeWrapper = styled.div`
 	display: grid;
-	grid-template-columns: 1fr;
+	grid-template-columns: 1fr 1fr;
 	padding: 24px 0;
-
-	@media (min-width: 961px) {
-		grid-template-columns: fit-content(50%) 1fr;
-		gap: 48px;
-	}
-`;
-
-const ProductImageGalleryWrapper = styled.div`
-	@media (min-width: 961px) {
-		max-width: 480px;
-	}
+	gap: 24px;
 `;
 
 interface Props {
@@ -50,9 +40,9 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 			</Head>
 			<CenterWrapper>
 				<SomeWrapper>
-					<ProductImageGalleryWrapper>
+					<div>
 						<ProductImageGallery product={product} />
-					</ProductImageGalleryWrapper>
+					</div>
 					<div>
 						<ProductDetails product={product} />
 					</div>

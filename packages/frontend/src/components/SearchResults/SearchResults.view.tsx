@@ -49,7 +49,6 @@ const SEARCH_QUERY = graphql`
 		}
 	}
 `;
-
 interface SearchResultsViewProps {
 	query: string;
 }

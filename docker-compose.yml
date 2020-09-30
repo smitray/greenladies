@@ -60,7 +60,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:4.24
     ports:
       - ${PGADMIN_PORT}:80
     environment:

@@ -42,4 +42,5 @@ export const MessageAnchor = styled.a`
 	font-weight: bold;
 	text-decoration: none;
 	border-bottom: 1px solid #666666;
+	font-family: Arimo, sans-serif;
 `;

@@ -6,13 +6,12 @@ import { CustomPage } from '../../../entities/custom-page';
 import { CustomPageBannerComponent } from '../../../entities/custom-page-banner-component';
 import { CustomPageProductCarouselComponent } from '../../../entities/custom-page-product-carousel-component';
 import { CustomPageTabComponent } from '../../../entities/custom-page-tab-component';
-import { connectionFromArray } from '../../../utils/relay';
+import { CustomPageTripleImageComponent } from '../../../entities/custom-page-triple-image-component';
 import { transformLink } from '../../link/utils/transform-link';
-import { ProductProvider } from '../../product/product.provider';
 
 const resolvers: CustomPageModuleResolversType = {
 	Query: {
-		customPage: async (_parent, { path }, { injector }) => {
+		customPage: async (_parent, { path }) => {
 			const customPageRepo = getRepository(CustomPage);
 			const page = await customPageRepo.findOne({
 				where: { path },
@@ -49,26 +48,11 @@ const resolvers: CustomPageModuleResolversType = {
 									throw new Error('Component link not found');
 								}
 
-								const products = await injector
-									.get(ProductProvider)
-									.getProductConfigurationsByCategoryId(carousel.categoryId);
-
 								return {
 									__typename: 'CustomPageProductCarousel',
 									title: carousel.title,
 									subtitle: carousel.subtitle,
-									products: {
-										...connectionFromArray(products as any, {}),
-										availableFilters: {
-											brands: [],
-											colors: [],
-											price: {
-												from: 0,
-												to: 0,
-											},
-											sizes: [],
-										},
-									},
+									category: { id: carousel.categoryId } as any,
 								};
 							}
 							case 'banner': {
@@ -85,6 +69,29 @@ const resolvers: CustomPageModuleResolversType = {
 									link: transformLink(banner.link) as any,
 									imagePath: banner.imagePath,
 									mobileImagePath: banner.mobileImagePath,
+								};
+							}
+							case 'triple-image': {
+								const customPageTripleImageComponentRepo = getRepository(CustomPageTripleImageComponent);
+								const tripleImage = await customPageTripleImageComponentRepo.findOne({
+									where: { id: section.componentId },
+								});
+								if (!tripleImage) {
+									throw new Error('Component link not found');
+								}
+
+								const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+								const DOMAIN = String(process.env.DOMAIN);
+
+								return {
+									__typename: 'CustomPageTripleImage',
+									smallTitle: tripleImage.smallTitle,
+									bigTitle: tripleImage.bigTitle,
+									link: transformLink(tripleImage.link) as any,
+									firstImagePath: PROTOCOL + DOMAIN + tripleImage.firstImagePath,
+									secondImagePath: PROTOCOL + DOMAIN + tripleImage.secondImagePath,
+									thirdImagePath: PROTOCOL + DOMAIN + tripleImage.thirdImagePath,
+									color: tripleImage.color,
 								};
 							}
 							default:

@@ -32,7 +32,7 @@ export const Item = styled.div<ItemProps>`
 `;
 
 export const ItemText = styled.span`
-	font-family: 'Cerebri Sans', sans-serif;
+	font-family: Arimo, sans-serif;
 	display: block;
 	color: black;
 `;

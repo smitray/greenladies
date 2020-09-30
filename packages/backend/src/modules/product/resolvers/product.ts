@@ -45,6 +45,10 @@ const resolvers: ProductModuleResolversType = {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
 			return product.washingDescription;
 		},
+		material: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
+			return product.material;
+		},
 		condition: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
 			return product.condition;
