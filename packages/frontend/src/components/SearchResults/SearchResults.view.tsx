@@ -109,7 +109,6 @@ const SectionProductLink = styled.a`
 `;
 
 const ProductImageStyleWrapper = styled.div`
-	padding: 0 5%;
 	background: #f6f6f6;
 	margin-bottom: 0.5em;
 `;
