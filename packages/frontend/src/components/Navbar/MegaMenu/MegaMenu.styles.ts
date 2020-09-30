@@ -11,7 +11,7 @@ export const MegaMenuOuterListItem = styled.li`
 	flex-direction: column;
 `;
 
-export const MegaMenuTitle = styled.h1`
+export const MegaMenuTitle = styled.h2`
 	margin-top: 0;
 	margin-bottom: 16px;
 `;
@@ -41,4 +41,6 @@ export const MegaMenuInnerListItem = styled.li`
 export const MegaMenuLink = styled.a`
 	color: black;
 	text-decoration: none;
+	font-size: 18px;
+	font-weight: bold;
 `;

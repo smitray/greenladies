@@ -56,7 +56,7 @@ const MegaMenuView = ({ item }: MegaMenuViewProps) => {
 										{chunk.map((item, itemIndex) => (
 											<MegaMenuInnerListItem key={itemIndex}>
 												<Link link={item.link}>
-													<MegaMenuLink>{item.name}</MegaMenuLink>
+													<MegaMenuLink style={{ fontWeight: 'normal' }}>{item.name}</MegaMenuLink>
 												</Link>
 											</MegaMenuInnerListItem>
 										))}
