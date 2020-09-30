@@ -17,23 +17,15 @@ const ProductsContainer = styled.ul`
 	padding: 0;
 	list-style: none;
 	display: flex;
-	width: 400%;
+	width: 200%;
 	transition: transform 300ms;
 	position: relative;
 
-	@media (min-width: 320px) {
-		width: 400%;
-	}
-
 	@media (min-width: 641px) {
-		width: 200%;
-	}
-
-	@media (min-width: 961px) {
 		width: 133.3%;
 	}
 
-	@media (min-width: 1281px) {
+	@media (min-width: 961px) {
 		width: 100%;
 	}
 `;
