@@ -31,6 +31,8 @@ services:
       - MAILCHIMP_API_TOKEN
       - MAILCHIMP_SERVER
       - MAILCHIMP_LIST
+    volumes:
+      - ${BACKEND_STATIC_FILES_FOLDER}:/usr/src/app/packages/backend/static
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
