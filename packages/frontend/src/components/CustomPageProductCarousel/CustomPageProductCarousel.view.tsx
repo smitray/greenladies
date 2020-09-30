@@ -46,7 +46,7 @@ const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselVi
 						<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
 							<a
 								style={{
-									display: 'block',
+									fontFamily: 'Arimo, sans-serif',
 									fontSize: '28px',
 									color: 'inherit',
 									textDecoration: 'none',
@@ -56,7 +56,6 @@ const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselVi
 							</a>
 						</Link>
 					</div>
-
 					<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
 						<a
 							style={{

@@ -50,7 +50,11 @@ const CustomPageBannerView = ({ banner }: CustomPageBannerViewProps) => {
 							}}
 						>
 							<div style={{ background: 'white', padding: '12px 24px' }}>
-								<div style={{ fontSize: '28px', marginBottom: '8px', fontWeight: 'bold' }}>{banner.title}</div>
+								<div
+									style={{ fontSize: '28px', marginBottom: '8px', fontWeight: 'bold', fontFamily: 'Arimo, sans-serif' }}
+								>
+									{banner.title}
+								</div>
 								<div
 									style={{
 										fontSize: '18px',
