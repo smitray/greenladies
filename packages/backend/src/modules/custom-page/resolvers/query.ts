@@ -6,13 +6,11 @@ import { CustomPage } from '../../../entities/custom-page';
 import { CustomPageBannerComponent } from '../../../entities/custom-page-banner-component';
 import { CustomPageProductCarouselComponent } from '../../../entities/custom-page-product-carousel-component';
 import { CustomPageTabComponent } from '../../../entities/custom-page-tab-component';
-import { connectionFromArray } from '../../../utils/relay';
 import { transformLink } from '../../link/utils/transform-link';
-import { ProductProvider } from '../../product/product.provider';
 
 const resolvers: CustomPageModuleResolversType = {
 	Query: {
-		customPage: async (_parent, { path }, { injector }) => {
+		customPage: async (_parent, { path }) => {
 			const customPageRepo = getRepository(CustomPage);
 			const page = await customPageRepo.findOne({
 				where: { path },
@@ -49,26 +47,11 @@ const resolvers: CustomPageModuleResolversType = {
 									throw new Error('Component link not found');
 								}
 
-								const products = await injector
-									.get(ProductProvider)
-									.getProductConfigurationsByCategoryId(carousel.categoryId);
-
 								return {
 									__typename: 'CustomPageProductCarousel',
 									title: carousel.title,
 									subtitle: carousel.subtitle,
-									products: {
-										...connectionFromArray(products as any, {}),
-										availableFilters: {
-											brands: [],
-											colors: [],
-											price: {
-												from: 0,
-												to: 0,
-											},
-											sizes: [],
-										},
-									},
+									category: { id: carousel.categoryId } as any,
 								};
 							}
 							case 'banner': {

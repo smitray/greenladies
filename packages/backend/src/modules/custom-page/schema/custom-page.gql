@@ -19,7 +19,7 @@ type CustomPageBanner {
 type CustomPageProductCarousel {
 	title: String!
 	subtitle: String!
-	products: ProductConnection!
+	category: Category!
 }
 
 union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel
