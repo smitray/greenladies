@@ -99,6 +99,7 @@ const TabLink = styled.a<SidebarLinkProps>`
 							position: absolute;
 							right: 0;
 							top: 0;
+							left: unset;
 						}
 				  `
 				: ''}
