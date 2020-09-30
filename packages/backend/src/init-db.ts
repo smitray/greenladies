@@ -54,7 +54,7 @@ export async function initMegamenu() {
 					position: 0,
 					link: {
 						type: 'category',
-						to: '7',
+						to: '6',
 					},
 					items: [
 						{
@@ -62,7 +62,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -70,7 +70,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -78,7 +78,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -86,7 +86,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -94,7 +94,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -102,7 +102,7 @@ export async function initMegamenu() {
 							position: 5,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -110,7 +110,7 @@ export async function initMegamenu() {
 							position: 6,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -118,7 +118,7 @@ export async function initMegamenu() {
 							position: 7,
 							link: {
 								type: 'category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -126,7 +126,7 @@ export async function initMegamenu() {
 							position: 8,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -134,7 +134,7 @@ export async function initMegamenu() {
 							position: 9,
 							link: {
 								type: 'category',
-								to: '9',
+								to: '6',
 							},
 						},
 					],
@@ -148,7 +148,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -156,7 +156,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'special-category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -164,7 +164,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'special-category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -172,7 +172,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -180,7 +180,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -192,7 +192,7 @@ export async function initMegamenu() {
 			position: 1,
 			link: {
 				type: 'category',
-				to: '7',
+				to: '6',
 			},
 			sections: [
 				{
@@ -200,7 +200,7 @@ export async function initMegamenu() {
 					position: 0,
 					link: {
 						type: 'category',
-						to: '7',
+						to: '6',
 					},
 					items: [
 						{
@@ -208,7 +208,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -216,7 +216,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -224,7 +224,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -232,7 +232,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -240,7 +240,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -248,7 +248,7 @@ export async function initMegamenu() {
 							position: 5,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -256,7 +256,7 @@ export async function initMegamenu() {
 							position: 6,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -270,7 +270,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -278,7 +278,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'special-category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -286,7 +286,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'special-category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -294,7 +294,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -302,7 +302,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -314,7 +314,7 @@ export async function initMegamenu() {
 			position: 2,
 			link: {
 				type: 'category',
-				to: '7',
+				to: '6',
 			},
 			sections: [
 				{
@@ -322,7 +322,7 @@ export async function initMegamenu() {
 					position: 0,
 					link: {
 						type: 'category',
-						to: '7',
+						to: '6',
 					},
 					items: [
 						{
@@ -330,7 +330,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -338,7 +338,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -346,7 +346,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -354,7 +354,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -362,7 +362,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -372,7 +372,7 @@ export async function initMegamenu() {
 					position: 1,
 					link: {
 						type: 'category',
-						to: '7',
+						to: '6',
 					},
 					items: [
 						{
@@ -380,7 +380,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -388,7 +388,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -396,7 +396,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -404,7 +404,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -412,7 +412,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -426,7 +426,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -434,7 +434,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'special-category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -442,7 +442,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'special-category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -450,7 +450,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -458,7 +458,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -470,7 +470,7 @@ export async function initMegamenu() {
 			position: 3,
 			link: {
 				type: 'category',
-				to: '7',
+				to: '6',
 			},
 			sections: [
 				{
@@ -550,7 +550,7 @@ export async function initMegamenu() {
 							position: 0,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -558,7 +558,7 @@ export async function initMegamenu() {
 							position: 1,
 							link: {
 								type: 'special-category',
-								to: '8',
+								to: '6',
 							},
 						},
 						{
@@ -566,7 +566,7 @@ export async function initMegamenu() {
 							position: 2,
 							link: {
 								type: 'special-category',
-								to: '9',
+								to: '6',
 							},
 						},
 						{
@@ -574,7 +574,7 @@ export async function initMegamenu() {
 							position: 3,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 						{
@@ -582,7 +582,7 @@ export async function initMegamenu() {
 							position: 4,
 							link: {
 								type: 'special-category',
-								to: '7',
+								to: '6',
 							},
 						},
 					],
@@ -767,6 +767,9 @@ export async function initCustomPages() {
 	await customPageRepository.save({
 		path: '/',
 		sections: [section1, section2, section3, section4, section5, section6, section7, section8],
+		metaTitle: '',
+		metaKeywords: '',
+		metaDescription: '',
 	});
 
 	// Customer service page
@@ -1009,5 +1012,8 @@ Vi reserverar oss för eventuella text eller bildfel på webbplatsen såsom fela
 	await customPageRepository.save({
 		path: '/kundservice',
 		sections: [tabsSection],
+		metaTitle: '',
+		metaKeywords: '',
+		metaDescription: '',
 	});
 }
