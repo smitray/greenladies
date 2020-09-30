@@ -11,19 +11,15 @@ const CenterWrapper = styled.div`
 	padding: 40px;
 	margin: 0 auto;
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr;
 	gap: 32px;
 
 	@media (min-width: 320px) {
 		grid-template-columns: 1fr;
 	}
 
-	@media (min-width: 641px) {
-		grid-template-columns: 1fr 1fr;
-	}
-
 	@media (min-width: 961px) {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 `;
 
@@ -56,26 +52,15 @@ const ListItemLink = styled.a`
 	font-size: 14px;
 `;
 
-const GridImageContainer = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 8px;
-
-	@media (min-width: 320px) {
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-	}
-
-	@media (min-width: 640px) {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-	}
-
-	@media (min-width: 961px) {
-		grid-template-columns: 1fr 1fr 1fr;
-	}
+const ImageContainer = styled.div`
+	display: flex;
+	flex-wrap: wrap;
 `;
 
-const GridImage = styled.img`
-	width: 100%;
+const Image = styled.img`
+	flex-basis: 70px;
+	width: 70px;
+	margin-right: 8px;
 `;
 
 export const FooterInfoView = () => {
@@ -87,7 +72,7 @@ export const FooterInfoView = () => {
 					<List>
 						<ListItem>
 							<Link
-								href="/[[...lug]]?tab=fullstandiga-kopvillkor"
+								href="/[[...slug]]?tab=fullstandiga-kopvillkor"
 								as="/kundservice?tab=fullstandiga-kopvillkor"
 								passHref
 							>
@@ -95,92 +80,32 @@ export const FooterInfoView = () => {
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/[[...lug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
+							<Link href="/[[...slug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 								<ListItemLink>Betalning</ListItemLink>
 							</Link>
 						</ListItem>
 						<ListItem>
-							<Link href="/[[...lug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
+							<Link href="/[[...slug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
 								<ListItemLink>Leveranstid</ListItemLink>
 							</Link>
 						</ListItem>
 					</List>
 				</GridBox>
 				<GridBox>
-					<GridBoxTitle>Populära kategorier</GridBoxTitle>
-					<List>
-						<ListItem>
-							<Link href="/categories/[key]" as="/categories/jeans" passHref>
-								<ListItemLink>Jeans</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/[key]" as="/categories/damklader-klanningar-tunikor" passHref>
-								<ListItemLink>Klänningar</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/[key]" as="/categories/accessoarer-scarves-halsdukar" passHref>
-								<ListItemLink>Sjalar</ListItemLink>
-							</Link>
-						</ListItem>
-					</List>
-				</GridBox>
-				<GridBox>
-					<GridBoxTitle>Utvalda märken och designers</GridBoxTitle>
-					<List>
-						<ListItem>
-							<Link href="/categories/all?brands=Baum And Pferdgarten" passHref>
-								<ListItemLink>Baum Und Pferdgarten</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/all?brands=Stefanel" passHref>
-								<ListItemLink>Stefanel</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/all?brands=ESPRIT" passHref>
-								<ListItemLink>ESPRIT</ListItemLink>
-							</Link>
-						</ListItem>
-					</List>
-				</GridBox>
-				<GridBox>
-					<GridBoxTitle>Inspiration</GridBoxTitle>
-					<List>
-						<ListItem>
-							<Link href="/categories/special/[key]" as="/categories/special/denim-fever" passHref>
-								<ListItemLink>Denim fever</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/special/[key]" as="/categories/special/vardagsfavoriter" passHref>
-								<ListItemLink>Vardagsfavoriter</ListItemLink>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link href="/categories/special/[key]" as="/categories/special/utvalt" passHref>
-								<ListItemLink>Utvalt</ListItemLink>
-							</Link>
-						</ListItem>
-					</List>
-				</GridBox>
-				<GridBox>
 					<GridBoxTitle>Betalningsalternativ</GridBoxTitle>
-					<GridImageContainer>
-						<GridImage src="/images/klarna.jpg" />
-						<GridImage src="/images/visa.png" />
-						<GridImage src="/images/mastercard.png" />
-						<GridImage src="/images/amex.png" />
-						<GridImage src="/images/faktura.png" />
-					</GridImageContainer>
+					<ImageContainer>
+						<Image src="/images/klarna.jpg" />
+						<Image src="/images/visa.png" />
+						<Image src="/images/mastercard.png" />
+						<Image src="/images/amex.png" />
+						<Image src="/images/faktura.png" />
+					</ImageContainer>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Vi skickar med</GridBoxTitle>
-					<GridImageContainer>
-						<GridImage src="/images/dhl.jpg" />
-					</GridImageContainer>
+					<ImageContainer>
+						<Image src="/images/dhl.jpg" />
+					</ImageContainer>
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Enkel onlineshopping</GridBoxTitle>
@@ -201,10 +126,10 @@ export const FooterInfoView = () => {
 				</GridBox>
 				<GridBox>
 					<GridBoxTitle>Trygg e-handel</GridBoxTitle>
-					<GridImageContainer>
-						<GridImage src="/images/verified-by-visa.jpg" />
-						<GridImage src="/images/mastercard-securecode.png" />
-					</GridImageContainer>
+					<ImageContainer>
+						<Image src="/images/verified-by-visa.jpg" />
+						<Image src="/images/mastercard-securecode.png" />
+					</ImageContainer>
 				</GridBox>
 			</CenterWrapper>
 		</div>
