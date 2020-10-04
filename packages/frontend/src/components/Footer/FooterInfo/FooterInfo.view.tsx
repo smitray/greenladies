@@ -61,6 +61,7 @@ const Image = styled.img`
 	flex-basis: 70px;
 	width: 70px;
 	margin-right: 8px;
+	margin-bottom: 8px;
 `;
 
 export const FooterInfoView = () => {
@@ -86,7 +87,7 @@ export const FooterInfoView = () => {
 						</ListItem>
 						<ListItem>
 							<Link href="/[[...slug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
-								<ListItemLink>Leveranstid</ListItemLink>
+								<ListItemLink>Leverans</ListItemLink>
 							</Link>
 						</ListItem>
 					</List>
