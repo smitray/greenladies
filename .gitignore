@@ -138,3 +138,6 @@ __generated__
 
 # Magento default data path
 magento2-data
+
+# Backend static files
+static
