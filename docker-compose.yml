@@ -35,7 +35,6 @@ services:
     volumes:
       - /usr/src/app/packages/backend/node_modules
       - ./packages/backend:/usr/src/app/packages/backend
-      - backendstaticfiles:/usr/src/app/packages/backend/static
     labels:
       - traefik.enable=true
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
@@ -127,4 +126,3 @@ services:
 volumes:
   pgdata:
   pgadmindata:
-  backendstaticfiles:
