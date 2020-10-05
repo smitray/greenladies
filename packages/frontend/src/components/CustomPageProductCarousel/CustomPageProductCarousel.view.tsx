@@ -12,7 +12,7 @@ import { ProductCarousel } from '../ProductCarousel';
 import { CustomPageProductCarousel_carousel } from './__generated__/CustomPageProductCarousel_carousel.graphql';
 
 const SomeKindOfWrapper = styled.div`
-	padding: 3em 0;
+	padding: 72px 0;
 `;
 
 const WrapOnMobile = styled.div`

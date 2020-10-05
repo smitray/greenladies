@@ -82,7 +82,7 @@ const CustomPageTripleImageView = ({ tripleImage }: CustomPageTripleImageViewPro
 				</Link>
 			</MobileWrapper>
 			<NotMobileWrapper>
-				<div style={{ background: tripleImage.color, padding: '48px 0', margin: '0 -12px' }}>
+				<div style={{ background: tripleImage.color, padding: '72px 0', margin: '0' }}>
 					<CenterWrapper>
 						<div style={{ display: 'flex' }}>
 							<A
