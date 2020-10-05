@@ -3,18 +3,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { createFragmentContainer, graphql } from 'react-relay';
 
-import { Navbar_megamenu } from './__generated__/Navbar_megamenu.graphql';
-import { Navbar_query } from './__generated__/Navbar_query.graphql';
-import { NavbarView } from './Navbar.view';
+import { NavbarDesktop_megamenu } from './__generated__/NavbarDesktop_megamenu.graphql';
+import { NavbarDesktopView } from './NavbarDesktop.view';
 
 const TIMEOUT_MS = 100;
 
 interface NavbarLogicProps {
-	query: Navbar_query;
-	megamenu: Navbar_megamenu;
+	megamenu: NavbarDesktop_megamenu;
 }
 
-const NavbarLogic = ({ query, megamenu }: NavbarLogicProps) => {
+const NavbarDesktopLogic = ({ megamenu }: NavbarLogicProps) => {
 	const [currentlySelectedTopLevelItemIndex, setCurrentlySelectedTopLevelItemIndex] = useState<number | null>(null);
 	const [megaMenuFocus, setMegaMenuFocus] = useState(false);
 	// Needed to avoid stale state in setTimeout callback
@@ -97,9 +95,8 @@ const NavbarLogic = ({ query, megamenu }: NavbarLogicProps) => {
 	};
 
 	return (
-		<NavbarView
+		<NavbarDesktopView
 			megamenu={megamenu}
-			query={query}
 			currentlySelectedTopLevelItemIndex={currentlySelectedTopLevelItemIndex}
 			handleTopLevelItemFocus={handleTopLevelItemFocus}
 			handleTopLevelItemUnfocus={handleTopLevelItemUnfocus}
@@ -109,9 +106,9 @@ const NavbarLogic = ({ query, megamenu }: NavbarLogicProps) => {
 	);
 };
 
-export default createFragmentContainer(NavbarLogic, {
+export default createFragmentContainer(NavbarDesktopLogic, {
 	megamenu: graphql`
-		fragment Navbar_megamenu on Megamenu {
+		fragment NavbarDesktop_megamenu on Megamenu {
 			items {
 				name
 				link {
@@ -119,11 +116,6 @@ export default createFragmentContainer(NavbarLogic, {
 				}
 				...MegaMenu_item
 			}
-		}
-	`,
-	query: graphql`
-		fragment Navbar_query on Query {
-			...DrawerMenu_query
 		}
 	`,
 });

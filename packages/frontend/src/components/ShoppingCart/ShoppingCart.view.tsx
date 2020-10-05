@@ -169,7 +169,7 @@ const ShoppingCartView = ({ cart }: ShoppingCartViewProps) => {
 export default createFragmentContainer(ShoppingCartView, {
 	cart: graphql`
 		fragment ShoppingCart_cart on ShoppingCart {
-			items(first: 1000) @connection(key: "ShoppingCart_items") {
+			items(first: 10000) @connection(key: "ShoppingCart_items") {
 				edges {
 					node {
 						id

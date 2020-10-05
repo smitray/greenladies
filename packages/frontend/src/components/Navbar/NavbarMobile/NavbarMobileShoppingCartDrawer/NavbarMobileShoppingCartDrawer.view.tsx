@@ -5,12 +5,12 @@ import { FaTimes } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { useWindowDimensions } from '../../hooks/use-window-dimensions';
-import { IconWrapper } from '../../styles/icon-wrapper';
-import { NORMAL_TABLET_SIZE } from '../../utils/device-size';
-import { ShoppingCart } from '../ShoppingCart';
+import { useWindowDimensions } from '../../../../hooks/use-window-dimensions';
+import { IconWrapper } from '../../../../styles/icon-wrapper';
+import { NORMAL_TABLET_SIZE } from '../../../../utils/device-size';
+import { ShoppingCart } from '../../../ShoppingCart';
 
-import { ShoppingCartDrawer_cart } from './__generated__/ShoppingCartDrawer_cart.graphql';
+import { NavbarMobileShoppingCartDrawer_cart } from './__generated__/NavbarMobileShoppingCartDrawer_cart.graphql';
 
 const Header = styled.div`
 	position: relative;
@@ -32,13 +32,13 @@ const CloseButton = styled.button`
 	cursor: pointer;
 `;
 
-interface ShoppingCartDrawerView {
-	cart: ShoppingCartDrawer_cart;
+interface NavbarMobileShoppingCartDrawerViewProps {
+	cart: NavbarMobileShoppingCartDrawer_cart;
 	open: boolean;
 	onCloseRequest: () => void;
 }
 
-const ShoppingCartModalView = ({ cart, open, onCloseRequest }: ShoppingCartDrawerView) => {
+const NavbarMobileShoppingCartModalView = ({ cart, open, onCloseRequest }: NavbarMobileShoppingCartDrawerViewProps) => {
 	const { width: windowWidth } = useWindowDimensions();
 
 	return (
@@ -65,9 +65,9 @@ const ShoppingCartModalView = ({ cart, open, onCloseRequest }: ShoppingCartDrawe
 	);
 };
 
-export default createFragmentContainer(ShoppingCartModalView, {
+export default createFragmentContainer(NavbarMobileShoppingCartModalView, {
 	cart: graphql`
-		fragment ShoppingCartDrawer_cart on ShoppingCart {
+		fragment NavbarMobileShoppingCartDrawer_cart on ShoppingCart {
 			...ShoppingCart_cart
 		}
 	`,

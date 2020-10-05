@@ -7,11 +7,11 @@ import { FaAngleDown, FaAngleUp, FaTimes } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { useWindowDimensions } from '../../hooks/use-window-dimensions';
-import { IconWrapper } from '../../styles/icon-wrapper';
-import { NORMAL_TABLET_SIZE } from '../../utils/device-size';
+import { useWindowDimensions } from '../../../../hooks/use-window-dimensions';
+import { IconWrapper } from '../../../../styles/icon-wrapper';
+import { NORMAL_TABLET_SIZE } from '../../../../utils/device-size';
 
-import { DrawerMenu_query } from './__generated__/DrawerMenu_query.graphql';
+import { NavbarMobileMenuDrawer_query } from './__generated__/NavbarMobileMenuDrawer_query.graphql';
 
 const Header = styled.div`
 	position: relative;
@@ -91,13 +91,13 @@ const CategoryLink = styled.a`
 	display: block;
 `;
 
-interface DrawerMenuViewProps {
-	query: DrawerMenu_query;
+interface NavbarMobileMenuDrawerViewProps {
+	query: NavbarMobileMenuDrawer_query;
 	open: boolean;
 	onCloseRequest: () => void;
 }
 
-const DrawerMenuView = ({ query, open, onCloseRequest }: DrawerMenuViewProps) => {
+const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobileMenuDrawerViewProps) => {
 	const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
 	const { width: windowWidth } = useWindowDimensions();
@@ -165,9 +165,9 @@ const DrawerMenuView = ({ query, open, onCloseRequest }: DrawerMenuViewProps) =>
 	);
 };
 
-export default createFragmentContainer(DrawerMenuView, {
+export default createFragmentContainer(NavbarMobileMenuDrawerView, {
 	query: graphql`
-		fragment DrawerMenu_query on Query {
+		fragment NavbarMobileMenuDrawer_query on Query {
 			rootCategories {
 				id
 				name
