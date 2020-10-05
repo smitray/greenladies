@@ -26,16 +26,39 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 				<meta name="description" content={customPage.metaDescription} />
 				<meta name="robots" content="index,follow" />
 			</Head>
-			{customPage.sections.map((section, index) => {
+			{customPage.sections.map((section, index, sections) => {
 				switch (section.__typename) {
 					case 'CustomPageBanner':
+						if (index < sections.length - 1) {
+							const next = sections[index + 1];
+							if (next.__typename === 'CustomPageBanner' || next.__typename === 'CustomPageTripleImage') {
+								return (
+									<React.Fragment>
+										<CustomPageBanner key={index} banner={section} />
+										<div style={{ height: '72px' }}></div>
+									</React.Fragment>
+								);
+							}
+						}
 						return <CustomPageBanner key={index} banner={section} />;
 					case 'CustomPageProductCarousel':
 						return <CustomPageProductCarousel key={index} carousel={section} />;
 					case 'CustomPageTab':
 						return <CustomPageTabsView key={index} tabs={section} />;
-					case 'CustomPageTripleImage':
+					case 'CustomPageTripleImage': {
+						if (index < sections.length - 1) {
+							const next = sections[index + 1];
+							if (next.__typename === 'CustomPageBanner' || next.__typename === 'CustomPageTripleImage') {
+								return (
+									<React.Fragment>
+										<CustomPageTripleImage key={index} tripleImage={section} />
+										<div style={{ height: '72px' }}></div>
+									</React.Fragment>
+								);
+							}
+						}
 						return <CustomPageTripleImage key={index} tripleImage={section} />;
+					}
 					case '%other':
 						return null;
 				}

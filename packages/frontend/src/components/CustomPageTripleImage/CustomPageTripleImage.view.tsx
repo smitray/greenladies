@@ -133,7 +133,6 @@ const CustomPageTripleImageView = ({ tripleImage }: CustomPageTripleImageViewPro
 							))}
 						</div>
 					</CenterWrapper>
-					{/*  */}
 				</div>
 			</NotMobileWrapper>
 		</React.Fragment>

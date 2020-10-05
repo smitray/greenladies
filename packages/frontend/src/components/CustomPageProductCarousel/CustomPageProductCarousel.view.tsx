@@ -62,14 +62,14 @@ const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselVi
 								color: 'inherit',
 								textDecoration: 'none',
 								display: 'flex',
-								fontSize: '24px',
+								fontSize: '20px',
 								alignItems: 'center',
 								marginTop: '24px',
 							}}
 						>
-							<span style={{ marginRight: '8px' }}>Shoppa</span>
-							<IconWrapper size="24px">
-								<VscArrowRight size="24" />
+							<span style={{ marginRight: '4px', fontSize: '20px' }}>Shoppa</span>
+							<IconWrapper size="20px">
+								<VscArrowRight size="20" />
 							</IconWrapper>
 						</a>
 					</Link>
