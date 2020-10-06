@@ -50,7 +50,7 @@ const CustomPageTripleImageView = ({ tripleImage }: CustomPageTripleImageViewPro
 		<React.Fragment>
 			<MobileWrapper style={{ background: tripleImage.color }}>
 				<Link link={tripleImage.link}>
-					<a style={{ position: 'relative', display: 'block' }}>
+					<a style={{ position: 'relative', display: 'block', color: 'black' }}>
 						<img style={{ display: 'block', width: '100%' }} src={tripleImage.firstImagePath} alt="" />
 						<div
 							style={{
