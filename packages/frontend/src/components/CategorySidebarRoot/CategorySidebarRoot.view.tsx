@@ -33,12 +33,6 @@ const CategorySidebarList = styled.ul`
 	list-style: none;
 `;
 
-const CategoryProductCount = styled.span`
-	font-size: 12px;
-	color: grey;
-	margin-left: 4px;
-`;
-
 interface CategorySideRootViewProps {
 	query: CategorySidebarRoot_query;
 }
@@ -63,13 +57,9 @@ const CategorySidebarRootView = ({ query: relayQuery }: CategorySideRootViewProp
 							>
 								<CategorySidebarLink>{category.name}</CategorySidebarLink>
 							</Link>
-							<CategoryProductCount>({category.categoryProducts.totalCount})</CategoryProductCount>
 						</React.Fragment>
 					) : (
-						<CategorySidebarNoLink>
-							{category.name}
-							<CategoryProductCount>(0)</CategoryProductCount>
-						</CategorySidebarNoLink>
+						<CategorySidebarNoLink>{category.name}</CategorySidebarNoLink>
 					)}
 				</li>
 			))}

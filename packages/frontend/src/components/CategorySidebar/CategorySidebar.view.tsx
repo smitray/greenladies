@@ -87,12 +87,6 @@ const CategorySidebarList = styled.ul`
 	list-style: none;
 `;
 
-const CategoryProductCount = styled.span`
-	font-size: 12px;
-	color: grey;
-	margin-left: 4px;
-`;
-
 interface CategorySidebarRecursiveProps {
 	category: Category;
 	currentCategoryId: string;
@@ -111,13 +105,9 @@ const CategorySidebarRecursive: React.FC<CategorySidebarRecursiveProps> = ({ cat
 					>
 						<CategorySidebarLink selected={category.id === currentCategoryId}>{category.name}</CategorySidebarLink>
 					</Link>
-					<CategoryProductCount>({category.productCount})</CategoryProductCount>
 				</React.Fragment>
 			) : (
-				<CategorySidebarNoLink>
-					{category.name}
-					<CategoryProductCount>(0)</CategoryProductCount>
-				</CategorySidebarNoLink>
+				<CategorySidebarNoLink>{category.name}</CategorySidebarNoLink>
 			)}
 			{category.children.length > 0 && (
 				<CategorySidebarList>
@@ -156,7 +146,6 @@ const CategorySidebarView: React.FC<Props> = ({ category }) => {
 						<strong style={{ fontSize: '16px' }}>{categoryTree.name}</strong>
 					</a>
 				</Link>
-				<CategoryProductCount>({categoryTree.productCount})</CategoryProductCount>
 			</div>
 			<ul style={{ margin: '0', padding: '0', listStyle: 'none' }}>
 				{categoryTree.children.map(child => (
