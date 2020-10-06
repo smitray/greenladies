@@ -319,7 +319,7 @@ export async function syncMagentoProductsAndCategories() {
 
 	const redisAllCategoryIds = redisCache.set(
 		'allCategoryIds',
-		transformedCategories.map(category => category.id),
+		transformedCategories.filter(category => category.includeInMenu).map(category => category.id),
 		ONE_DAY_IN_SECONDS,
 	);
 
