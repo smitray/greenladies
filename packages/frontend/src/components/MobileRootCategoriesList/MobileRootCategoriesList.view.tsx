@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -14,29 +14,27 @@ const CategoriesContainer = styled.ul`
 	padding: 0;
 	list-style: none;
 	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+
+	> li:nth-child(even) {
+		border-left: none;
+	}
+`;
+
+const CategoryItem = styled.li`
+	flex-basis: 50%;
+	width: 50%;
+	border: 1px solid #ddd;
 `;
 
 const CategoryLink = styled.a`
 	display: block;
 	color: black;
 	text-decoration: none;
-	border: 1px solid black;
-	padding: 0.5em 1em;
 	cursor: pointer;
-	margin-right: 0.5em;
-`;
-
-const ShowMoreButton = styled.button`
-	display: block;
-	color: black;
-	text-decoration: none;
-	border: 1px solid black;
-	padding: 0.5em 1em;
-	cursor: pointer;
-	margin-right: 0.5em;
-	outline: none;
-	background: white;
-	font-size: 1em;
+	padding: 12px 18px;
+	flex-shrink: 0;
 `;
 
 interface MobileRootCategoriesListViewProps {
@@ -44,8 +42,6 @@ interface MobileRootCategoriesListViewProps {
 }
 
 const MobileRootCategoriesListView = ({ query: relayQuery }: MobileRootCategoriesListViewProps) => {
-	const [viewAll, setViewAll] = useState(false);
-
 	const { query } = useRouter();
 
 	const processedQuery = useMemo(() => {
@@ -58,8 +54,8 @@ const MobileRootCategoriesListView = ({ query: relayQuery }: MobileRootCategorie
 
 	return (
 		<CategoriesContainer>
-			{(viewAll ? categories : categories.slice(0, 4)).map(category => (
-				<li key={category.id}>
+			{categories.map(category => (
+				<CategoryItem key={category.id}>
 					<Link
 						href={{ pathname: '/categories/[key]', query: processedQuery }}
 						as={{ pathname: `/categories/${category.urlKey}`, query: processedQuery }}
@@ -67,13 +63,8 @@ const MobileRootCategoriesListView = ({ query: relayQuery }: MobileRootCategorie
 					>
 						<CategoryLink>{category.name}</CategoryLink>
 					</Link>
-				</li>
+				</CategoryItem>
 			))}
-			{!viewAll && categories.length > 4 && (
-				<li>
-					<ShowMoreButton onClick={() => setViewAll(true)}>Visa alla</ShowMoreButton>
-				</li>
-			)}
 		</CategoriesContainer>
 	);
 };
