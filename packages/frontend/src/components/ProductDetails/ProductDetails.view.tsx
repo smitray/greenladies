@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
 import { useAddToCartMutation } from '../../mutations/shopping-cart';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../../mutations/wishlist';
@@ -46,6 +47,8 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 	const { commit: addToWishlist, pending: addingToWishlist } = useAddToWishlistMutation();
 	const { commit: removeFromWishlist, pending: removingFromWishlist } = useRemoveFromWishlistMutation();
 	const { commit: addToCart, pending: addingToCart } = useAddToCartMutation();
+
+	const { open: openShoppingCartModal } = useShoppingCartModal();
 
 	const [selectSizeButtonFocus, setSelectSizeButtonFocus] = useState(false);
 	const sizeDropdownRef = useRef<HTMLDivElement>(null);
@@ -211,6 +214,7 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 							if (!cartAddSuccess) {
 								addToCart(selectedConfiguration.id);
 								setCartAddSuccess(true);
+								openShoppingCartModal();
 								setTimeout(() => {
 									setCartAddSuccess(false);
 								}, 2000);

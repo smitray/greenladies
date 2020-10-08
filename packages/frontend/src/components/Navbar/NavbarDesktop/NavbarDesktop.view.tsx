@@ -25,8 +25,8 @@ import { MegaMenu } from './../MegaMenu';
 import { DropdownWrapper, Group, Item, ItemText, ItemWrapper, Row, Wrapper } from './Navbar.styles';
 
 const FirstRow = styled(Row)`
-	padding: 8px;
 	align-items: center;
+	height: 48px;
 
 	@media (min-width: 641px) {
 		flex-direction: row-reverse;
@@ -51,7 +51,7 @@ const LogoWrapper = styled.div`
 `;
 
 const Logo = styled.img`
-	height: 24px;
+	height: 28px;
 `;
 
 const WISHLIST_QUERY = graphql`
@@ -150,47 +150,149 @@ export const NavbarDesktopView = ({
 							</a>
 						</NextLink>
 					</LogoWrapper>
-					<Group>
-						<div style={{ display: 'flex', alignItems: 'center' }}>
-							<QueryRenderer<NavbarDesktopWishlistQuery>
-								environment={relayEnvironment}
-								query={WISHLIST_QUERY}
-								variables={{}}
-								render={({ error, props }) => {
-									if (error) {
-										return null;
-									}
+					<Group style={{ alignItems: 'center' }}>
+						<QueryRenderer<NavbarDesktopWishlistQuery>
+							environment={relayEnvironment}
+							query={WISHLIST_QUERY}
+							variables={{}}
+							render={({ error, props }) => {
+								if (error) {
+									return null;
+								}
 
-									if (props) {
-										const total = props.wishlist.products.edges.length;
+								if (props) {
+									const total = props.wishlist.products.edges.length;
 
-										return (
-											<React.Fragment>
-												<WishlistDrawer
-													wishlist={props.wishlist}
-													open={wishlistDrawerIsOpen}
-													onCloseRequest={() => setWishlistDrawerIsOpen(false)}
-												/>
-												<button
+									return (
+										<React.Fragment>
+											<WishlistDrawer
+												wishlist={props.wishlist}
+												open={wishlistDrawerIsOpen}
+												onCloseRequest={() => setWishlistDrawerIsOpen(false)}
+											/>
+											<button
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													justifyContent: 'center',
+													alignItems: 'center',
+													cursor: 'pointer',
+													background: 'none',
+													border: 'none',
+													outline: 'none',
+													padding: 'none',
+												}}
+												onClick={() => setWishlistDrawerIsOpen(true)}
+											>
+												<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+													<FaRegHeart size="20" />
+													<div
+														style={{
+															position: 'absolute',
+															background: '#ddd',
+															borderRadius: '100%',
+															fontSize: '10px',
+															lineHeight: '16px',
+															textAlign: 'center',
+															top: '0',
+															right: '-8px',
+															width: '16px',
+															height: '16px',
+															fontWeight: 'bold',
+														}}
+													>
+														{total}
+													</div>
+												</div>
+												<div style={{ fontSize: '12px' }}>Favoriter</div>
+											</button>
+										</React.Fragment>
+									);
+								}
+
+								return (
+									<button
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											justifyContent: 'center',
+											alignItems: 'center',
+											cursor: 'pointer',
+											background: 'none',
+											border: 'none',
+											outline: 'none',
+											padding: 'none',
+										}}
+										onClick={() => setWishlistDrawerIsOpen(true)}
+									>
+										<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+											<FaRegHeart size="20" />
+										</div>
+										<div style={{ fontSize: '12px' }}>Favoriter</div>
+									</button>
+								);
+							}}
+						/>
+						<QueryRenderer<NavbarDesktopShoppingCartQuery>
+							environment={relayEnvironment}
+							query={SHOPPING_CART_QUERY}
+							variables={{}}
+							render={({ error, props }) => {
+								if (error) {
+									return null;
+								}
+
+								if (props) {
+									const total = props.shoppingCart.items.edges.reduce((prev, current) => prev + current.node.amount, 0);
+
+									return (
+										<React.Fragment>
+											<button
+												style={{
+													position: 'relative',
+													background: 'none',
+													outline: 'none',
+													padding: '0',
+													borderTop: shoppingCartModalIsOpen ? '2px solid black' : '2px solid transparent',
+													borderLeft: shoppingCartModalIsOpen ? '2px solid black' : '2px solid transparent',
+													borderRight: shoppingCartModalIsOpen ? '2px solid black' : '2px solid transparent',
+													borderBottom: 'none',
+													margin: '0 0 0 8px',
+													zIndex: 40,
+													transition: 'all 300ms',
+												}}
+												onClick={() => {
+													if (shoppingCartModalButtonFocus) {
+														if (shoppingCartModalIsOpen) {
+															closeShoppingCartModal();
+														} else {
+															openShoppingCartModal();
+														}
+													}
+												}}
+											>
+												<div
 													style={{
 														display: 'flex',
 														flexDirection: 'column',
 														justifyContent: 'center',
 														alignItems: 'center',
 														cursor: 'pointer',
-														background: 'none',
-														border: 'none',
-														outline: 'none',
-														padding: 'none',
+														background: 'white',
+														padding: '4px 4px 6px',
+														zIndex: 1000,
+														position: 'relative',
 													}}
-													onClick={() => setWishlistDrawerIsOpen(true)}
+													onMouseEnter={() => setShoppingCartModalButtonFocus(true)}
+													onMouseLeave={() => setShoppingCartModalButtonFocus(false)}
 												>
 													<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-														<FaRegHeart size="20" />
+														<BiShoppingBag size="20" />
 														<div
 															style={{
 																position: 'absolute',
-																background: '#ddd',
+																background: 'black',
+																color: 'white',
 																borderRadius: '100%',
 																fontSize: '10px',
 																lineHeight: '16px',
@@ -205,143 +307,45 @@ export const NavbarDesktopView = ({
 															{total}
 														</div>
 													</div>
-													<div style={{ fontSize: '12px' }}>Favoriter</div>
-												</button>
-											</React.Fragment>
-										);
-									}
-
-									return (
-										<button
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												justifyContent: 'center',
-												alignItems: 'center',
-												cursor: 'pointer',
-												background: 'none',
-												border: 'none',
-												outline: 'none',
-												padding: 'none',
-											}}
-											onClick={() => setWishlistDrawerIsOpen(true)}
-										>
-											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-												<FaRegHeart size="20" />
-											</div>
-											<div style={{ fontSize: '12px' }}>Favoriter</div>
-										</button>
-									);
-								}}
-							/>
-							<QueryRenderer<NavbarDesktopShoppingCartQuery>
-								environment={relayEnvironment}
-								query={SHOPPING_CART_QUERY}
-								variables={{}}
-								render={({ error, props }) => {
-									if (error) {
-										return null;
-									}
-
-									if (props) {
-										const total = props.shoppingCart.items.edges.reduce(
-											(prev, current) => prev + current.node.amount,
-											0,
-										);
-
-										return (
-											<React.Fragment>
-												<button
-													style={{
-														position: 'relative',
-														background: 'none',
-														border: 'none',
-														outline: 'none',
-														padding: '0',
-														margin: '0 0 0 8px',
-													}}
-													onClick={() => {
-														if (shoppingCartModalButtonFocus) {
-															if (shoppingCartModalIsOpen) {
-																closeShoppingCartModal();
-															} else {
-																openShoppingCartModal();
-															}
-														}
-													}}
+													<div style={{ fontSize: '12px' }}>Varukorg</div>
+												</div>
+												<div
+													style={{ position: 'absolute', marginTop: '-2px', right: '-2px', zIndex: 20 }}
+													ref={cartModalWrapperRef}
 												>
-													<div
-														style={{
-															display: 'flex',
-															flexDirection: 'column',
-															justifyContent: 'center',
-															alignItems: 'center',
-															cursor: 'pointer',
-														}}
-														onMouseEnter={() => setShoppingCartModalButtonFocus(true)}
-														onMouseLeave={() => setShoppingCartModalButtonFocus(false)}
-													>
-														<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-															<BiShoppingBag size="20" />
-															<div
-																style={{
-																	position: 'absolute',
-																	background: 'black',
-																	color: 'white',
-																	borderRadius: '100%',
-																	fontSize: '10px',
-																	lineHeight: '16px',
-																	textAlign: 'center',
-																	top: '0',
-																	right: '-8px',
-																	width: '16px',
-																	height: '16px',
-																	fontWeight: 'bold',
-																}}
-															>
-																{total}
-															</div>
+													<Collapse isOpened={shoppingCartModalIsOpen}>
+														<div style={{ border: '2px solid black', background: 'white', zIndex: 20 }}>
+															<ShoppingCartModal cart={props.shoppingCart} />
 														</div>
-														<div style={{ fontSize: '12px' }}>Varukorg</div>
-													</div>
-													<div
-														style={{ position: 'absolute', marginTop: '8px', right: '0', zIndex: 30 }}
-														ref={cartModalWrapperRef}
-													>
-														{shoppingCartModalIsOpen && (
-															<div style={{ border: '2px solid lightgrey', background: 'white' }}>
-																<ShoppingCartModal cart={props.shoppingCart} />
-															</div>
-														)}
-													</div>
-												</button>
-											</React.Fragment>
-										);
-									}
-
-									return (
-										<button
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												justifyContent: 'center',
-												alignItems: 'center',
-												cursor: 'pointer',
-												background: 'none',
-												border: 'none',
-												outline: 'none',
-												padding: 'none',
-											}}
-										>
-											<div style={{ width: '20px', height: '20px', position: 'relative' }}>
-												<BiShoppingBag size="20" />
-											</div>
-											<div style={{ fontSize: '12px' }}>Varukorg</div>
-										</button>
+													</Collapse>
+												</div>
+											</button>
+										</React.Fragment>
 									);
-								}}
-							/>
-						</div>
+								}
+
+								return (
+									<button
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											justifyContent: 'center',
+											alignItems: 'center',
+											cursor: 'pointer',
+											background: 'none',
+											border: 'none',
+											outline: 'none',
+											padding: 'none',
+										}}
+									>
+										<div style={{ width: '20px', height: '20px', position: 'relative' }}>
+											<BiShoppingBag size="20" />
+										</div>
+										<div style={{ fontSize: '12px' }}>Varukorg</div>
+									</button>
+								);
+							}}
+						/>
 					</Group>
 				</FirstRow>
 			</CenterWrapper>
