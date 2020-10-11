@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 import { Collapse } from 'react-collapse';
-import { FaAngleDown, FaAngleUp, FaArrowDown, FaCaretDown } from 'react-icons/fa';
+import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 
 import { IconWrapper } from '../../../../styles/icon-wrapper';
 import {
@@ -22,7 +22,7 @@ import {
 export const FooterInfoMobileView = () => {
 	const [openSections, setOpenSections] = useState<string[]>([]);
 
-	const handleTitleClick = section => {
+	const handleTitleClick = (section: string) => {
 		if (openSections.includes(section)) {
 			setOpenSections(openSections => openSections.filter(openSection => openSection !== section));
 		} else {
