@@ -62,7 +62,7 @@ const CostSummary = ({ itemCost, shippingCost }: CustomSummarProps) => (
 					textAlign: 'center',
 				}}
 			>
-				GÅ TILL CHECKOUT
+				GÅ TILL KASSAN
 			</a>
 		</Link>
 	</React.Fragment>

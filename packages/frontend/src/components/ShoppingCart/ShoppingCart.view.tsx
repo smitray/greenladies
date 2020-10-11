@@ -10,9 +10,10 @@ import { ShoppingCart_cart } from './__generated__/ShoppingCart_cart.graphql';
 
 interface ShoppingCartViewProps {
 	cart: ShoppingCart_cart;
+	isMobile?: boolean;
 }
 
-const ShoppingCartView = ({ cart }: ShoppingCartViewProps) => {
+const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 	const { commit: removeFromCart } = useRemoveFromCartMutation();
 	const { close: closeShoppingCartModal } = useShoppingCartModal();
 
@@ -137,12 +138,13 @@ const ShoppingCartView = ({ cart }: ShoppingCartViewProps) => {
 							padding: '12px',
 							width: '100%',
 							cursor: 'not-allowed',
+							textAlign: 'center',
 						}}
 					>
-						TILL VARUKORGEN
+						{isMobile ? 'TILL VARUKORGEN' : 'TILL KASSAN'}
 					</div>
 				) : (
-					<Link href="/cart" passHref>
+					<Link href={isMobile ? '/checkout' : '/cart'} passHref>
 						<a
 							style={{
 								display: 'block',
@@ -154,10 +156,11 @@ const ShoppingCartView = ({ cart }: ShoppingCartViewProps) => {
 								padding: '12px',
 								width: '100%',
 								cursor: 'pointer',
+								textAlign: 'center',
 							}}
 							onClick={() => closeShoppingCartModal()}
 						>
-							TILL VARUKORGEN
+							{isMobile ? 'TILL VARUKORGEN' : 'TILL KASSAN'}
 						</a>
 					</Link>
 				)}
