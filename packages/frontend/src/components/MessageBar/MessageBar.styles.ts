@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
 	background: #eeeeee;
 	display: none;
 
-	@media (min-width: 641px) {
+	@media (min-width: 961px) {
 		display: block;
 	}
 `;
