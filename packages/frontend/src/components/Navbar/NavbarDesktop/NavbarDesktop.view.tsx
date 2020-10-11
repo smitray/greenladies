@@ -259,7 +259,6 @@ export const NavbarDesktopView = ({
 													borderBottom: 'none',
 													margin: '0 0 0 8px',
 													zIndex: 40,
-													transition: 'all 300ms',
 												}}
 												onClick={() => {
 													if (shoppingCartModalButtonFocus) {
@@ -310,7 +309,13 @@ export const NavbarDesktopView = ({
 													<div style={{ fontSize: '12px' }}>Varukorg</div>
 												</div>
 												<div
-													style={{ position: 'absolute', marginTop: '-2px', right: '-2px', zIndex: 20 }}
+													style={{
+														position: 'absolute',
+														marginTop: '-2px',
+														right: '-2px',
+														zIndex: 20,
+														opacity: shoppingCartModalIsOpen ? '1' : '0',
+													}}
 													ref={cartModalWrapperRef}
 												>
 													<Collapse isOpened={shoppingCartModalIsOpen}>
