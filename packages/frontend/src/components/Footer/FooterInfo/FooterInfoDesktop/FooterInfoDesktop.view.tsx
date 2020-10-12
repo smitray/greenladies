@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CenterWrapper } from '../../../../styles/center-wrapper';
 import {
 	FooterInfoImage,
-	FooterInfoImageContiner,
+	FooterInfoImageContainer,
 	FooterInfoItemItem,
 	FooterInfoItemItemContainer,
 	FooterInfoLink,
@@ -15,6 +15,9 @@ import {
 	FooterInfoDesktopItem,
 	FooterInfoDesktopItemContainer,
 	FooterInfoDesktopItemHeader,
+	FooterInfoIconImage,
+	FooterInfoIconImageText,
+	FooterInfoIconImageWrapper,
 } from './FooterInfoDesktop.styles';
 
 export const FooterInfoDesktopView = () => {
@@ -48,7 +51,7 @@ export const FooterInfoDesktopView = () => {
 					</FooterInfoDesktopItem>
 					<FooterInfoDesktopItem>
 						<FooterInfoDesktopItemHeader>Betalningsalternativ</FooterInfoDesktopItemHeader>
-						<FooterInfoImageContiner>
+						<FooterInfoImageContainer>
 							<li>
 								<FooterInfoImage src="/images/klarna.jpg" />
 							</li>
@@ -64,15 +67,15 @@ export const FooterInfoDesktopView = () => {
 							<li>
 								<FooterInfoImage src="/images/faktura.png" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoImageContainer>
 					</FooterInfoDesktopItem>
 					<FooterInfoDesktopItem>
 						<FooterInfoDesktopItemHeader>Vi skickar med</FooterInfoDesktopItemHeader>
-						<FooterInfoImageContiner>
+						<FooterInfoImageContainer>
 							<li>
 								<FooterInfoImage src="/images/dhl.jpg" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoImageContainer>
 					</FooterInfoDesktopItem>
 					<FooterInfoDesktopItem>
 						<FooterInfoDesktopItemHeader>Enkel onlineshopping</FooterInfoDesktopItemHeader>
@@ -84,29 +87,29 @@ export const FooterInfoDesktopView = () => {
 								<span style={{ marginLeft: '8px' }}>Klimatkompenserad frakt</span>
 							</FooterInfoItemItem>
 							<FooterInfoItemItem style={{ display: 'flex', alignItems: 'center' }}>
-								<div style={{ width: '24px', height: '28px', display: 'flex', alignItems: 'center' }}>
-									<img src="/images/check.png" alt="" width="100%" />
-								</div>
-								<span style={{ marginLeft: '8px' }}>Snabb och fri frakt över 999kr</span>
+								<FooterInfoIconImageWrapper>
+									<FooterInfoIconImage src="/images/check.png" />
+								</FooterInfoIconImageWrapper>
+								<FooterInfoIconImageText>Snabb och fri frakt över 999kr</FooterInfoIconImageText>
 							</FooterInfoItemItem>
 							<FooterInfoItemItem style={{ display: 'flex', alignItems: 'center' }}>
-								<div style={{ width: '24px', height: '28px', display: 'flex', alignItems: 'center' }}>
-									<img src="/images/tree.png" alt="" width="100%" />
-								</div>
-								<span style={{ marginLeft: '8px' }}>14 dagar öppet köp</span>
+								<FooterInfoIconImageWrapper>
+									<FooterInfoIconImage src="/images/tree.png" />
+								</FooterInfoIconImageWrapper>
+								<FooterInfoIconImageText>14 dagar öppet köp</FooterInfoIconImageText>
 							</FooterInfoItemItem>
 						</FooterInfoItemItemContainer>
 					</FooterInfoDesktopItem>
 					<FooterInfoDesktopItem>
 						<FooterInfoDesktopItemHeader>Trygg e-handel</FooterInfoDesktopItemHeader>
-						<FooterInfoImageContiner>
+						<FooterInfoImageContainer>
 							<li>
 								<FooterInfoImage src="/images/verified-by-visa.jpg" />
 							</li>
 							<li>
 								<FooterInfoImage src="/images/mastercard-securecode.png" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoImageContainer>
 					</FooterInfoDesktopItem>
 				</FooterInfoDesktopItemContainer>
 			</CenterWrapper>

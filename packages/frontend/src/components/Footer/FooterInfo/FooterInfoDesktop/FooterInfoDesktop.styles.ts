@@ -29,3 +29,18 @@ export const FooterInfoDesktopItemHeader = styled.div`
 	margin-bottom: 24px;
 	color: #3a3a3a;
 `;
+
+export const FooterInfoIconImageWrapper = styled.div`
+	width: 24px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+`;
+
+export const FooterInfoIconImage = styled.img`
+	width: 100%;
+`;
+
+export const FooterInfoIconImageText = styled.span`
+	margin-left: 8px;
+`;

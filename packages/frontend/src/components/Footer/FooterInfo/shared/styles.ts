@@ -13,7 +13,7 @@ export const FooterInfoItemItem = styled.li`
 	font-size: 14px;
 `;
 
-export const FooterInfoImageContiner = styled.ul`
+export const FooterInfoImageContainer = styled.ul`
 	margin: 0;
 	padding: 0;
 	list-style: none;

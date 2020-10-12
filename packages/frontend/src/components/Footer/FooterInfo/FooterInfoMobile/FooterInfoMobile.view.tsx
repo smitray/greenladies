@@ -5,18 +5,14 @@ import { Collapse } from 'react-collapse';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 
 import { IconWrapper } from '../../../../styles/icon-wrapper';
-import {
-	FooterInfoImage,
-	FooterInfoImageContiner,
-	FooterInfoItemItem,
-	FooterInfoItemItemContainer,
-	FooterInfoLink,
-} from '../shared/styles';
+import { FooterInfoImage, FooterInfoItemItem, FooterInfoLink } from '../shared/styles';
 
 import {
+	FooterInfoMobileImageContiner,
 	FooterInfoMobileItem,
 	FooterInfoMobileItemContainer,
 	FooterInfoMobileItemHeader,
+	FooterInfoMobileItemItemContainer,
 } from './FooterInfoMobile.styles';
 
 export const FooterInfoMobileView = () => {
@@ -41,7 +37,7 @@ export const FooterInfoMobileView = () => {
 						</IconWrapper>
 					</FooterInfoMobileItemHeader>
 					<Collapse isOpened={openSections.includes('common-questions')}>
-						<FooterInfoItemItemContainer style={{ paddingLeft: '16px' }}>
+						<FooterInfoMobileItemItemContainer>
 							<FooterInfoItemItem>
 								<Link
 									href="/[[...slug]]?tab=fullstandiga-kopvillkor"
@@ -61,7 +57,7 @@ export const FooterInfoMobileView = () => {
 									<FooterInfoLink>Leverans</FooterInfoLink>
 								</Link>
 							</FooterInfoItemItem>
-						</FooterInfoItemItemContainer>
+						</FooterInfoMobileItemItemContainer>
 					</Collapse>
 				</FooterInfoMobileItem>
 				<FooterInfoMobileItem>
@@ -72,7 +68,7 @@ export const FooterInfoMobileView = () => {
 						</IconWrapper>
 					</FooterInfoMobileItemHeader>
 					<Collapse isOpened={openSections.includes('payment-alternatives')}>
-						<FooterInfoImageContiner style={{ paddingLeft: '16px' }}>
+						<FooterInfoMobileItemItemContainer style={{ paddingLeft: '16px' }}>
 							<li>
 								<FooterInfoImage src="/images/klarna.jpg" />
 							</li>
@@ -88,7 +84,7 @@ export const FooterInfoMobileView = () => {
 							<li>
 								<FooterInfoImage src="/images/faktura.png" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoMobileItemItemContainer>
 					</Collapse>
 				</FooterInfoMobileItem>
 				<FooterInfoMobileItem>
@@ -99,11 +95,11 @@ export const FooterInfoMobileView = () => {
 						</IconWrapper>
 					</FooterInfoMobileItemHeader>
 					<Collapse isOpened={openSections.includes('shipping-carriers')}>
-						<FooterInfoImageContiner style={{ paddingLeft: '16px' }}>
+						<FooterInfoMobileImageContiner>
 							<li>
 								<FooterInfoImage src="/images/dhl.jpg" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoMobileImageContiner>
 					</Collapse>
 				</FooterInfoMobileItem>
 				<FooterInfoMobileItem>
@@ -114,7 +110,7 @@ export const FooterInfoMobileView = () => {
 						</IconWrapper>
 					</FooterInfoMobileItemHeader>
 					<Collapse isOpened={openSections.includes('easy-e-shopping')}>
-						<FooterInfoItemItemContainer style={{ paddingLeft: '16px' }}>
+						<FooterInfoMobileItemItemContainer>
 							<FooterInfoItemItem style={{ display: 'flex', alignItems: 'center' }}>
 								<div style={{ width: '24px', height: '28px', display: 'flex', alignItems: 'center' }}>
 									<img src="/images/car.png" alt="" width="100%" />
@@ -133,7 +129,7 @@ export const FooterInfoMobileView = () => {
 								</div>
 								<span style={{ marginLeft: '8px' }}>14 dagar öppet köp</span>
 							</FooterInfoItemItem>
-						</FooterInfoItemItemContainer>
+						</FooterInfoMobileItemItemContainer>
 					</Collapse>
 				</FooterInfoMobileItem>
 				<FooterInfoMobileItem>
@@ -144,14 +140,14 @@ export const FooterInfoMobileView = () => {
 						</IconWrapper>
 					</FooterInfoMobileItemHeader>
 					<Collapse isOpened={openSections.includes('safe-e-shopping')}>
-						<FooterInfoImageContiner style={{ paddingLeft: '16px' }}>
+						<FooterInfoMobileImageContiner>
 							<li>
 								<FooterInfoImage src="/images/verified-by-visa.jpg" />
 							</li>
 							<li>
 								<FooterInfoImage src="/images/mastercard-securecode.png" />
 							</li>
-						</FooterInfoImageContiner>
+						</FooterInfoMobileImageContiner>
 					</Collapse>
 				</FooterInfoMobileItem>
 			</FooterInfoMobileItemContainer>
