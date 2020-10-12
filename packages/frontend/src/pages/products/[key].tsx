@@ -14,9 +14,13 @@ import { CenterWrapper } from '../../styles/center-wrapper';
 
 const SomeWrapper = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	padding: 24px 0;
 	gap: 24px;
+
+	@media (min-width: 641px) {
+		grid-template-columns: 1fr 1fr;
+	}
 `;
 
 interface Props {
