@@ -73,7 +73,7 @@ const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
 								background: 'white',
 								border: '1px solid lightgrey',
 								outline: 'none',
-								zIndex: 10,
+								zIndex: 9,
 								top: 'calc(50% - 48px)',
 								left: '8px',
 								cursor: 'pointer',
