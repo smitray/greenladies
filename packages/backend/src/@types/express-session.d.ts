@@ -1,6 +1,9 @@
 declare global {
 	namespace Express {
 		interface Session {
+			auth?: {
+				userId: string;
+			};
 			guestShoppingCart?: {
 				cartId: string;
 				klarna?: {

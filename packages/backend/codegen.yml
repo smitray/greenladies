@@ -12,4 +12,5 @@ generates:
         Product: ./../types#Node
         ProductConfiguration: ./../types#Node
         ShoppingCart: ./../types#Node
+        Viewer: ./../types#Empty
         User: ./../types#Node

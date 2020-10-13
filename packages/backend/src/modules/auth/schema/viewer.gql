@@ -1,0 +1,4 @@
+type Viewer implements Node {
+	id: ID!
+	user: User
+}

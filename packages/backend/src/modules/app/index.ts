@@ -1,5 +1,6 @@
 import { GraphQLModule } from '@graphql-modules/core';
 
+import { AuthModule } from '../auth';
 import { BrandModule } from '../brand';
 import { CategoryModule } from '../category';
 import { CustomPageModule } from '../custom-page';
@@ -15,6 +16,7 @@ import { WishlistModule } from '../wishlist';
 
 export const AppModule = new GraphQLModule({
 	imports: [
+		AuthModule,
 		BrandModule,
 		CategoryModule,
 		CustomPageModule,

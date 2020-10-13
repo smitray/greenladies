@@ -1,20 +1,26 @@
 import { GraphQLModule, ModuleContext } from '@graphql-modules/core';
 import { loadFiles } from '@graphql-toolkit/file-loading';
+import { Request } from 'express';
 import path from 'path';
 
 import { GQLResolvers } from '../../__generated__/types';
 import { ApolloContext } from '../../create-apollo-server';
-import { RelayModule } from '../relay';
+import { UserModule } from '../user';
 
-import { UserProvider } from './user.provider';
+export interface AuthModuleContext {
+	request: Request;
+}
 
-export interface UserModuleContext {}
+export type AuthModuleResolversType = GQLResolvers<ModuleContext<AuthModuleContext>>;
 
-export type UserModuleResolversType = GQLResolvers<ModuleContext<UserModuleContext>>;
-
-export const UserModule = new GraphQLModule<any, ApolloContext, UserModuleContext>({
-	imports: [RelayModule],
-	providers: [UserProvider],
+export const AuthModule = new GraphQLModule<any, ApolloContext, AuthModuleContext>({
+	imports: [UserModule],
+	providers: [],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
+	context: ({ req }) => {
+		return {
+			request: req,
+		};
+	},
 });
