@@ -10,6 +10,7 @@ import { ProductModule } from '../product';
 import { RelayModule } from '../relay';
 import { SearchModule } from '../search';
 import { ShoppingCartModule } from '../shopping-cart';
+import { UserModule } from '../user';
 import { WishlistModule } from '../wishlist';
 
 export const AppModule = new GraphQLModule({
@@ -24,6 +25,7 @@ export const AppModule = new GraphQLModule({
 		RelayModule,
 		SearchModule,
 		ShoppingCartModule,
+		UserModule,
 		WishlistModule,
 	],
 });

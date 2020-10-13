@@ -10,5 +10,6 @@ generates:
         Brand: ./../types#Node
         Category: ./../types#Node
         Product: ./../types#Node
-        ShoppingCart: ./../types#Node
         ProductConfiguration: ./../types#Node
+        ShoppingCart: ./../types#Node
+        User: ./../types#Node
