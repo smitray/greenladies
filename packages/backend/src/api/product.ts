@@ -1,5 +1,7 @@
 import { stringify } from 'query-string';
 
+import { getCategory } from '../magento-sync';
+
 import { magentoAdminRequester } from './util';
 
 async function attributeOptions(code: string) {
@@ -66,25 +68,30 @@ interface MagentoFullProduct {
 	}[];
 }
 
-const attributeValueToLabelCache = new Map<string, { insertedAt: Date; value: string }>();
+const attributeValueToLabelCache = new Map<string, { insertedAt: Date; options: Map<string, string> }>();
 
 const ATTRIBUTE_VALUE_TO_LABEL_CACHE_TIME = 1000 * 60 * 15; // 15 minutes
 
 async function attributeValueToLabel(attributeCode: string, value: string) {
 	const cacheEntry = attributeValueToLabelCache.get(attributeCode);
 	if (cacheEntry && new Date(cacheEntry.insertedAt.getTime() + ATTRIBUTE_VALUE_TO_LABEL_CACHE_TIME) > new Date()) {
-		return cacheEntry.value;
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return cacheEntry.options.get(value)!;
 	}
 
-	const options = await attributeOptions(attributeCode);
-	const option = options.find(option => option.value === value);
+	const rawOptions = await attributeOptions(attributeCode);
+	const options = new Map(rawOptions.filter(option => option.label !== ' ').map(value => [value.value, value.label]));
+	const option = options.get(value);
 	if (!option) {
 		throw new Error('Invalid option, this should not happen');
 	}
 
-	attributeValueToLabelCache.set(attributeCode, { insertedAt: new Date(), value: option.label });
+	attributeValueToLabelCache.set(attributeCode, {
+		insertedAt: new Date(),
+		options: options,
+	});
 
-	return option.label;
+	return option;
 }
 
 function getCustomAttribute(
@@ -247,4 +254,324 @@ export async function getProducts({ page = 1, pageSize = 10 }) {
 	const products = data.items.filter(p => ['configurable', 'simple'].includes(p.type_id));
 
 	return Promise.all(products.map(product => transformProduct(product)));
+}
+
+/* ----------------------------------------------- */
+
+interface CreateConfigurableProductInput {
+	name: string;
+	sku: string;
+	attributeSetId: string;
+	categoryIds: string[];
+	description: string;
+	shortDescription: string;
+	washingDescription: string;
+	material: string;
+	urlKey: string;
+	metaTitle: string;
+	metaKeywords: string;
+	metaDescription: string;
+	color: string;
+	brandValue: string;
+	conditionValue: string;
+	enabled: boolean;
+}
+
+async function createConfigurableProduct({
+	name,
+	sku,
+	attributeSetId,
+	categoryIds,
+	description,
+	shortDescription,
+	washingDescription,
+	material,
+	urlKey,
+	metaTitle,
+	metaKeywords,
+	metaDescription,
+	color,
+	brandValue,
+	conditionValue,
+	enabled,
+}: CreateConfigurableProductInput) {
+	await magentoAdminRequester.post('/rest/default/V1/products', {
+		product: {
+			sku,
+			name,
+			attribute_set_id: attributeSetId,
+			status: enabled ? 1 : 0,
+			visibility: 4,
+			type_id: 'configurable',
+			extension_attributes: {
+				category_links: categoryIds.map((id, index) => ({ position: index, category_id: id })),
+			},
+			custom_attributes: [
+				{ attribute_code: 'description', value: description },
+				{ attribute_code: 'short_description', value: shortDescription },
+				{ attribute_code: 'washing_description', value: washingDescription },
+				{ attribute_code: 'material', value: material },
+				{ attribute_code: 'url_key', value: urlKey },
+				{ attribute_code: 'meta_title', value: metaTitle },
+				{ attribute_code: 'meta_keyword', value: metaKeywords },
+				{ attribute_code: 'meta_description', value: metaDescription },
+				{ attribute_code: 'color', value: color },
+				{ attribute_code: 'mgs_brand', value: brandValue },
+				{ attribute_code: 'condition', value: conditionValue },
+			],
+		},
+	});
+}
+
+interface CreateSimpleProductInput {
+	name: string;
+	sku: string;
+	attributeSetId: string;
+	price: number;
+	categoryIds: string[];
+	quantity: number;
+	color: string;
+	brandValue: string;
+	conditionValue: string;
+	sizeValue: string;
+	urlKey: string;
+	enabled: boolean;
+}
+
+async function createSimpleProduct({
+	name,
+	sku,
+	attributeSetId,
+	price,
+	categoryIds,
+	quantity,
+	color,
+	brandValue,
+	conditionValue,
+	sizeValue,
+	urlKey,
+	enabled,
+}: CreateSimpleProductInput) {
+	await magentoAdminRequester.post('/rest/default/V1/products', {
+		product: {
+			sku,
+			name,
+			attribute_set_id: attributeSetId,
+			price: price,
+			status: enabled ? 1 : 0,
+			visibility: 4,
+			type_id: 'simple',
+			extension_attributes: {
+				category_links: categoryIds.map((id, index) => ({ position: index, category_id: id })),
+				stock_item: {
+					qty: quantity,
+					is_in_stock: true,
+				},
+			},
+			custom_attributes: [
+				{
+					attribute_code: 'color',
+					value: color,
+				},
+				{
+					attribute_code: 'mgs_brand',
+					value: brandValue,
+				},
+				{
+					attribute_code: 'condition',
+					value: conditionValue,
+				},
+				{ attribute_code: 'size', value: sizeValue },
+				{ attribute_code: 'url_key', value: urlKey },
+			],
+		},
+	});
+}
+
+async function setConfigurableAttribute(sku: string, attributeId: string) {
+	await magentoAdminRequester.post(`/rest/default/V1/configurable-products/${sku}/options`, {
+		option: {
+			attribute_id: attributeId,
+			label: 'Size',
+			values: [
+				{
+					value_index: 9,
+				},
+			],
+		},
+	});
+}
+
+async function linkSimpleProductToConfigurableProduct(configurableProductSku: string, simpleProductSku: string) {
+	await magentoAdminRequester.post(`/rest/default/V1/configurable-products/${configurableProductSku}/child`, {
+		childSku: simpleProductSku,
+	});
+}
+
+async function getAttributeSetIdByName(attributeSetName: string) {
+	const query = {
+		'searchCriteria[filter_groups][0][filters][0][field]': 'attribute_set_name',
+		'searchCriteria[filter_groups][0][filters][0][value]': attributeSetName,
+		'searchCriteria[filter_groups][0][filters][0][condition_type]': 'eq',
+	};
+	const { data: attributeSetSearchData } = await magentoAdminRequester.get<{ items: { attribute_set_id: string }[] }>(
+		'/rest/default/V1/eav/attribute-sets/list?' + stringify(query),
+	);
+
+	if (attributeSetSearchData.items.length === 0) {
+		throw new Error('Attribute set Green Ladies not found');
+	}
+
+	return attributeSetSearchData.items[0].attribute_set_id;
+}
+
+async function getAttributeSetAttributes(attributeSetId: string) {
+	const { data } = await magentoAdminRequester.get<
+		{
+			attribute_id: string;
+			attribute_code: string;
+			options: { label: string; value: string }[];
+		}[]
+	>('/rest/default/V1/products/attribute-sets/' + attributeSetId + '/attributes');
+
+	return data;
+}
+
+interface CreateProductInput {
+	name: string;
+	baseSku: string;
+	categoryId: string;
+	description: string;
+	shortDescription: string;
+	washingDescription: string;
+	material: string;
+	urlKey: string;
+	metaTitle: string;
+	metaKeywords: string;
+	metaDescription: string;
+	color: string;
+	brand: string;
+	condition: string;
+	configurations: {
+		size: string;
+		price: number;
+		quantity: number;
+	}[];
+	enabled: boolean;
+}
+
+export async function createProduct({
+	name,
+	baseSku,
+	categoryId,
+	description,
+	shortDescription,
+	washingDescription,
+	material,
+	urlKey,
+	metaTitle,
+	metaKeywords,
+	metaDescription,
+	color,
+	brand,
+	condition,
+	configurations,
+	enabled,
+}: CreateProductInput) {
+	try {
+		const attributeSetId = await getAttributeSetIdByName('Green Ladies');
+
+		const attributes = await getAttributeSetAttributes(attributeSetId);
+		console.log(attributes);
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const brandValue = attributes
+			.find(attribute => attribute.attribute_code === 'mgs_brand')!
+			.options.find(option => option.label === brand)?.value;
+		if (!brandValue) {
+			throw new Error('Invalid brand: ' + brand);
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const conditionValue = attributes
+			.find(attribute => attribute.attribute_code === 'condition')!
+			.options.find(option => option.label === condition)?.value;
+		if (!conditionValue) {
+			throw new Error('Invalid condition: ' + condition);
+		}
+
+		// Fetch all parent categories
+		const categoryIds: string[] = [];
+		let currentCategoryId = categoryId;
+		// eslint-disable-next-line no-constant-condition
+		while (true) {
+			categoryIds.push(currentCategoryId);
+			const category = await getCategory({ id: currentCategoryId });
+			if (category.parentId === '2') {
+				break;
+			}
+
+			currentCategoryId = category.parentId;
+		}
+
+		await createConfigurableProduct({
+			name,
+			sku: baseSku + '-CONF',
+			attributeSetId,
+			categoryIds,
+			description,
+			shortDescription,
+			washingDescription,
+			material,
+			urlKey,
+			metaTitle,
+			metaKeywords,
+			metaDescription,
+			color,
+			brandValue,
+			conditionValue,
+			enabled,
+		});
+		console.log('Created product');
+
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const sizeAttribute = attributes.find(attribute => attribute.attribute_code === 'size')!;
+
+		await setConfigurableAttribute(baseSku + '-CONF', sizeAttribute.attribute_id);
+		console.log('Set attribute');
+
+		const configurationsWithSizeValues = configurations.map(configuration => {
+			const option = sizeAttribute.options.find(option => option.label === configuration.size);
+			if (!option) {
+				throw new Error('Invalid size: ' + configuration.size);
+			}
+
+			return {
+				...configuration,
+				sizeValue: option.value,
+			};
+		});
+
+		for (const configuration of configurationsWithSizeValues) {
+			await createSimpleProduct({
+				name,
+				sku: baseSku + '-' + configuration.size,
+				attributeSetId,
+				price: configuration.price,
+				categoryIds,
+				quantity: configuration.quantity,
+				color,
+				brandValue,
+				conditionValue,
+				sizeValue: configuration.sizeValue,
+				urlKey: urlKey + '-' + configuration.size,
+				enabled,
+			});
+			console.log('Create simple', configuration.size);
+			await linkSimpleProductToConfigurableProduct(baseSku + '-CONF', baseSku + '-' + configuration.size);
+			console.log('Linked simple', configuration.size);
+		}
+	} catch (e) {
+		console.log(e);
+	}
 }
