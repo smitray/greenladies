@@ -1,0 +1,39 @@
+{
+	"name": "@greenladies/admin",
+	"version": "0.0.1",
+	"repository": "greenladies/admin",
+	"private": true,
+	"scripts": {
+		"build": "yarn --cwd ../backend generate-graphql-schema && yarn relay && next build",
+		"clean": "rimraf dist **/__generated__",
+		"dev": "concurrently \"yarn relay:watch\" \"next\"",
+		"lint": "eslint --ext .ts,.tsx --ignore-path ../../.gitignore . && yarn prettier:check",
+		"lint:fix": "eslint --ext .ts,.tsx --ignore-path ../../.gitignore --fix . && yarn prettier:format",
+		"prettier:check": "prettier --list-different --ignore-path ../../.gitignore \"**/*.{js,jsx,json,yml,yaml}\"",
+		"prettier:format": "prettier --write --ignore-path ../../.gitignore --loglevel error \"**/*.{js,jsx,json,yml,yaml}\"",
+		"relay": "relay-compiler",
+		"relay:watch": "relay-compiler --watch",
+		"start": "next start",
+		"test": "jest \".*\\.test\\.(ts|js)\" --passWithNoTests"
+	},
+	"dependencies": {
+		"next": "^9.4.4",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
+		"react-relay": "^10.0.1",
+		"relay-runtime": "^10.0.1"
+	},
+	"devDependencies": {
+		"@types/react": "^16.9.43",
+		"@types/react-relay": "^7.0.8",
+		"@types/relay-runtime": "^10.0.1",
+		"babel-plugin-relay": "^10.0.1",
+		"eslint-plugin-react": "^7.20.3",
+		"eslint-plugin-react-hooks": "^4.0.8",
+		"relay-compiler": "^10.0.1",
+		"relay-compiler-language-typescript": "^13.0.0",
+		"relay-config": "^10.0.1",
+		"ts-node": "^8.10.2",
+		"vscode-apollo-relay": "^1.5.0"
+	}
+}

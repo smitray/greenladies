@@ -40,6 +40,18 @@ services:
       - traefik.http.routers.backend.tls=true
       - traefik.http.routers.backend.tls.certresolver=letsencrypt
 
+  admin:
+    image: ${REGISTRY_HOST}/greenladies-admin:latest
+    build:
+      context: .
+      dockerfile: packages/admin/Dockerfile
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.admin.rule=Host(`${DOMAIN}`)&&PathPrefix(`/admin`)
+      - traefik.http.routers.admin.entryPoints=https
+      - traefik.http.routers.admin.tls=true
+      - traefik.http.routers.admin.tls.certresolver=letsencrypt
+
   redis-cache:
     image: redis:6.0.6
 

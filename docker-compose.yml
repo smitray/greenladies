@@ -40,6 +40,20 @@ services:
       - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
       - traefik.http.routers.backend.entryPoints=https
 
+  admin:
+    build:
+      context: .
+      dockerfile: packages/admin/dev.Dockerfile
+    volumes:
+      - /usr/src/app/packages/admin/node_modules
+      - ./packages/admin:/usr/src/app/packages/admin
+      - /usr/src/app/packages/backend/node_modules
+      - ./packages/backend:/usr/src/app/packages/backend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.admin.rule=Host(`${DOMAIN}`)&&PathPrefix(`/admin`)
+      - traefik.http.routers.admin.entryPoints=https
+
   redis-cache:
     image: redis:6.0.6
 
