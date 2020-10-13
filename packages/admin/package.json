@@ -17,6 +17,9 @@
 		"test": "jest \".*\\.test\\.(ts|js)\" --passWithNoTests"
 	},
 	"dependencies": {
+		"@ant-design/icons": "^4.2.2",
+		"antd": "^4.7.0",
+		"babel-plugin-import": "^1.13.1",
 		"next": "^9.4.4",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",

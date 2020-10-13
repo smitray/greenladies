@@ -1,28 +1,14 @@
-import 'rc-slider/assets/index.css';
-import 'rc-drawer/assets/index.css';
-import 'react-photoswipe/lib/photoswipe.css';
+import 'antd/dist/antd.css';
 
 import React from 'react';
 
 import { AppType } from 'next/dist/next-server/lib/utils';
 import { QueryRenderer } from 'react-relay';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
-import { createGlobalStyle } from 'styled-components';
 
+import { AuthProvider } from '../contexts/auth-context';
 import { createRelayEnvironment } from '../lib/relay-environment';
 import { APP_QUERY, AppQuery } from '../queries/app';
-
-const GlobalStyles = createGlobalStyle`
-  * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-  }
-`;
 
 const MyApp: AppType = ({ Component, pageProps }) => {
 	const environment = createRelayEnvironment();
@@ -42,8 +28,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 					if (props) {
 						return (
 							<React.Fragment>
-								<GlobalStyles />
-								<Component {...pageProps} />
+								<AuthProvider viewer={props.viewer}>
+									<Component {...pageProps} />
+								</AuthProvider>
 							</React.Fragment>
 						);
 					}
