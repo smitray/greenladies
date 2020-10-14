@@ -4,7 +4,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Button, Collapse, message, Spin, Table, Upload } from 'antd';
 import { useRouter } from 'next/router';
 import Papa from 'papaparse';
-import { QueryRenderer } from 'react-relay';
+import { fetchQuery, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
 import { useAuth } from '../contexts/auth-context';
@@ -315,6 +315,12 @@ const Home: MyNextPage = () => {
 			/>
 		</React.Fragment>
 	);
+};
+
+Home.getInitialProps = async ({ relayEnvironment }) => {
+	await fetchQuery<HomeQuery>(relayEnvironment, HOME_QUERY, {});
+
+	return {};
 };
 
 export default Home;
