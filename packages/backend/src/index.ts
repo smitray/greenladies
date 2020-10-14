@@ -288,7 +288,7 @@ const sessionOptions: SessionOptions = {
 	const userRepository = getRepository(User);
 	const users = await userRepository.find();
 	if (users.length === 0) {
-		const password = crypto.randomBytes(64).toString('hex');
+		const password = crypto.randomBytes(32).toString('hex');
 		const user = userRepository.create({
 			username: 'admin',
 			password,
