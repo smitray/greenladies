@@ -12,8 +12,6 @@ const resolvers: SearchModuleResolversType = {
 			const brands = await injector.get(BrandProvider).getBrands();
 			const categories = await injector.get(CategoryProvider).getCategories();
 
-			// console.log(products);
-
 			const foundProductsPromise = fuzzysort.goAsync(query, products, {
 				allowTypo: true,
 				limit: 16,

@@ -478,100 +478,96 @@ export async function createProduct({
 	configurations,
 	enabled,
 }: CreateProductInput) {
-	try {
-		const attributeSetId = await getAttributeSetIdByName('Green Ladies');
+	const attributeSetId = await getAttributeSetIdByName('Green Ladies');
 
-		const attributes = await getAttributeSetAttributes(attributeSetId);
-		console.log(attributes);
+	const attributes = await getAttributeSetAttributes(attributeSetId);
+	console.log(attributes);
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const brandValue = attributes
-			.find(attribute => attribute.attribute_code === 'mgs_brand')!
-			.options.find(option => option.label === brand)?.value;
-		if (!brandValue) {
-			throw new Error('Invalid brand: ' + brand);
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const brandValue = attributes
+		.find(attribute => attribute.attribute_code === 'mgs_brand')!
+		.options.find(option => option.label === brand)?.value;
+	if (!brandValue) {
+		throw new Error('Invalid brand: ' + brand);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const conditionValue = attributes
+		.find(attribute => attribute.attribute_code === 'condition')!
+		.options.find(option => option.label === condition.toLowerCase())?.value;
+	if (!conditionValue) {
+		throw new Error('Invalid condition: ' + condition);
+	}
+
+	// Fetch all parent categories
+	const categoryIds: string[] = [];
+	let currentCategoryId = categoryId;
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		categoryIds.push(currentCategoryId);
+		const category = await getCategory({ id: currentCategoryId });
+		if (category.parentId === '2') {
+			break;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const conditionValue = attributes
-			.find(attribute => attribute.attribute_code === 'condition')!
-			.options.find(option => option.label === condition)?.value;
-		if (!conditionValue) {
-			throw new Error('Invalid condition: ' + condition);
+		currentCategoryId = category.parentId;
+	}
+
+	await createConfigurableProduct({
+		name,
+		sku: baseSku + '-CONF',
+		attributeSetId,
+		categoryIds,
+		description,
+		shortDescription,
+		washingDescription,
+		material,
+		urlKey,
+		metaTitle,
+		metaKeywords,
+		metaDescription,
+		color,
+		brandValue,
+		conditionValue,
+		enabled,
+	});
+	console.log('Created product');
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const sizeAttribute = attributes.find(attribute => attribute.attribute_code === 'size')!;
+
+	await setConfigurableAttribute(baseSku + '-CONF', sizeAttribute.attribute_id);
+	console.log('Set attribute');
+
+	const configurationsWithSizeValues = configurations.map(configuration => {
+		const option = sizeAttribute.options.find(option => option.label === configuration.size);
+		if (!option) {
+			throw new Error('Invalid size: ' + configuration.size);
 		}
 
-		// Fetch all parent categories
-		const categoryIds: string[] = [];
-		let currentCategoryId = categoryId;
-		// eslint-disable-next-line no-constant-condition
-		while (true) {
-			categoryIds.push(currentCategoryId);
-			const category = await getCategory({ id: currentCategoryId });
-			if (category.parentId === '2') {
-				break;
-			}
+		return {
+			...configuration,
+			sizeValue: option.value,
+		};
+	});
 
-			currentCategoryId = category.parentId;
-		}
-
-		await createConfigurableProduct({
+	for (const configuration of configurationsWithSizeValues) {
+		await createSimpleProduct({
 			name,
-			sku: baseSku + '-CONF',
+			sku: baseSku + '-' + configuration.size,
 			attributeSetId,
+			price: configuration.price,
 			categoryIds,
-			description,
-			shortDescription,
-			washingDescription,
-			material,
-			urlKey,
-			metaTitle,
-			metaKeywords,
-			metaDescription,
+			quantity: configuration.quantity,
 			color,
 			brandValue,
 			conditionValue,
+			sizeValue: configuration.sizeValue,
+			urlKey: urlKey + '-' + configuration.size,
 			enabled,
 		});
-		console.log('Created product');
-
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const sizeAttribute = attributes.find(attribute => attribute.attribute_code === 'size')!;
-
-		await setConfigurableAttribute(baseSku + '-CONF', sizeAttribute.attribute_id);
-		console.log('Set attribute');
-
-		const configurationsWithSizeValues = configurations.map(configuration => {
-			const option = sizeAttribute.options.find(option => option.label === configuration.size);
-			if (!option) {
-				throw new Error('Invalid size: ' + configuration.size);
-			}
-
-			return {
-				...configuration,
-				sizeValue: option.value,
-			};
-		});
-
-		for (const configuration of configurationsWithSizeValues) {
-			await createSimpleProduct({
-				name,
-				sku: baseSku + '-' + configuration.size,
-				attributeSetId,
-				price: configuration.price,
-				categoryIds,
-				quantity: configuration.quantity,
-				color,
-				brandValue,
-				conditionValue,
-				sizeValue: configuration.sizeValue,
-				urlKey: urlKey + '-' + configuration.size,
-				enabled,
-			});
-			console.log('Create simple', configuration.size);
-			await linkSimpleProductToConfigurableProduct(baseSku + '-CONF', baseSku + '-' + configuration.size);
-			console.log('Linked simple', configuration.size);
-		}
-	} catch (e) {
-		console.log(e);
+		console.log('Create simple', configuration.size);
+		await linkSimpleProductToConfigurableProduct(baseSku + '-CONF', baseSku + '-' + configuration.size);
+		console.log('Linked simple', configuration.size);
 	}
 }

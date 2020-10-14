@@ -8,6 +8,10 @@ const resolvers: ProductModuleResolversType = {
 		id: ({ id }) => {
 			return toGlobalId('Product', id);
 		},
+		sku: async ({ id }, _args, { injector }) => {
+			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
+			return product.sku;
+		},
 		urlKey: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
 			return product.urlKey;

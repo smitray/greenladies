@@ -126,7 +126,6 @@ const resolvers: ShoppingCartModuleResolversType = {
 						cartSnippet: order.html_snippet,
 					};
 				} catch (error) {
-					console.log(error);
 					throw new Error('Could not create Klarna order');
 				}
 			}

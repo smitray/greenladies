@@ -1,0 +1,35 @@
+input CreateProductsProductConfigurationInput {
+	size: String!
+	price: Int!
+	quantity: Int!
+}
+
+input CreateProductsProductInput {
+	name: String!
+	baseSku: String!
+	categoryName: String!
+	description: String!
+	shortDescription: String!
+	washingDescription: String!
+	material: String!
+	urlKey: String!
+	metaTitle: String!
+	metaKeywords: String!
+	metaDescription: String!
+	color: String!
+	brand: String!
+	condition: String!
+	configurations: [CreateProductsProductConfigurationInput!]!
+}
+
+input CreateProductsInput {
+	products: [CreateProductsProductInput!]!
+}
+
+type CreateProductsPayload {
+	success: Boolean!
+}
+
+type Mutation {
+	createProducts(input: CreateProductsInput!): CreateProductsPayload!
+}

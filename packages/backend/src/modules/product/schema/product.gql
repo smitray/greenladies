@@ -12,6 +12,7 @@ type ProductConfiguration implements Node {
 
 type Product implements Node {
 	id: ID!
+	sku: String!
 	urlKey: String!
 	name: String!
 	brand: String!
