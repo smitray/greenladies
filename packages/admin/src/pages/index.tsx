@@ -133,7 +133,7 @@ const Home: MyNextPage = () => {
 									const baseUrlKey = urlKeyParts.slice(0, urlKeyParts.length - 1).join('-');
 									products.set(baseSku, {
 										name: row.name,
-										baseSku: row.sku,
+										baseSku,
 										categoryName: row.category_name,
 										description: row.description,
 										shortDescription: row.short_description,
