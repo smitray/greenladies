@@ -83,7 +83,7 @@ const Home: MyNextPage = () => {
 	const router = useRouter();
 
 	if (!isAuthenticated) {
-		router.replace('/login');
+		typeof window !== 'undefined' && router.replace('/login');
 		return null;
 	}
 

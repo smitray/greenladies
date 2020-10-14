@@ -14,7 +14,7 @@ const Login: MyNextPage = () => {
 	const router = useRouter();
 
 	if (isAuthenticated) {
-		router.replace('/');
+		typeof window !== 'undefined' && router.replace('/');
 		return null;
 	}
 
