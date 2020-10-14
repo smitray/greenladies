@@ -21,7 +21,7 @@ COPY --from=builder /usr/src/app/package.json /usr/src/app/package.json
 COPY --from=builder /usr/src/app/yarn.lock /usr/src/app/yarn.lock
 COPY --from=builder /usr/src/app/packages/admin/package.json /usr/src/app/packages/admin/package.json
 COPY --from=builder /usr/src/app/packages/admin/.next /usr/src/app/packages/admin/.next
-# COPY --from=builder /usr/src/app/packages/admin/public /usr/src/app/packages/admin/public
+COPY --from=builder /usr/src/app/packages/admin/next.config.js /usr/src/app/packages/admin/next.config.js
 
 RUN apt-get update && apt-get install -y python make
 
