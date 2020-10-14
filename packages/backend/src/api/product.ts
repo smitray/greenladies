@@ -482,7 +482,6 @@ export async function createProduct({
 	const attributeSetId = await getAttributeSetIdByName('Green Ladies');
 
 	const attributes = await getAttributeSetAttributes(attributeSetId);
-	console.log(attributes);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const brandValue = attributes
@@ -532,13 +531,11 @@ export async function createProduct({
 		conditionValue,
 		enabled,
 	});
-	console.log('Created product');
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const sizeAttribute = attributes.find(attribute => attribute.attribute_code === 'size')!;
 
 	await setConfigurableAttribute(baseSku + '-CONF', sizeAttribute.attribute_id);
-	console.log('Set attribute');
 
 	const configurationsWithSizeValues = configurations.map(configuration => {
 		const option = sizeAttribute.options.find(option => option.label === configuration.size);
@@ -567,8 +564,6 @@ export async function createProduct({
 			urlKey: urlKey + '-' + configuration.size,
 			enabled,
 		});
-		console.log('Create simple', configuration.size);
 		await linkSimpleProductToConfigurableProduct(baseSku + '-CONF', baseSku + '-' + configuration.size);
-		console.log('Linked simple', configuration.size);
 	}
 }
