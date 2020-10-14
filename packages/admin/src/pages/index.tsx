@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import { UploadOutlined } from '@ant-design/icons';
-import create from '@ant-design/icons/lib/components/IconFont';
 import { Button, Collapse, message, Spin, Table, Upload } from 'antd';
 import { useRouter } from 'next/router';
 import Papa from 'papaparse';
@@ -83,10 +82,10 @@ const Home: MyNextPage = () => {
 
 	const router = useRouter();
 
-	// if (!isAuthenticated) {
-	// 	router.replace('/login');
-	// 	return null;
-	// }
+	if (!isAuthenticated) {
+		router.replace('/login');
+		return null;
+	}
 
 	return (
 		<React.Fragment>

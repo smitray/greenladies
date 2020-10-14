@@ -2,17 +2,19 @@ import 'reflect-metadata';
 
 import axios from 'axios';
 import RedisSession from 'connect-redis';
+import crypto from 'crypto';
 import express from 'express';
 import session, { SessionOptions } from 'express-session';
 import { gql, GraphQLClient } from 'graphql-request';
 import moment from 'moment';
 import cron from 'node-cron';
 import path from 'path';
-import { createConnection } from 'typeorm';
+import { createConnection, getRepository } from 'typeorm';
 
 import { getGuestShoppingCartItems } from './api/shopping-cart';
 import { createApolloServer } from './create-apollo-server';
 import { createGreenLadiesAttributeSet } from './create-attribute-set';
+import { User } from './entities/user';
 import { initCustomPages, initMegamenu } from './init-db';
 import {
 	getConfigurableProduct,
@@ -275,11 +277,25 @@ const sessionOptions: SessionOptions = {
 
 	syncMagentoProductsAndCategories()
 		.then(() => console.log('Successfully synced magento to redis'))
-		.catch(error => console.log('Could not sync magento', error.message, error));
+		.catch(() => console.log('Could not sync magento'));
+	// .catch(error => console.log('Could not sync magento', error.message, error));
 
 	createGreenLadiesAttributeSet()
 		.then(() => console.log('Successfully created attribute set'))
-		.catch(error => console.log('Could not create attribute set', error.message, error));
+		.catch(() => console.log('Could not create attribute set'));
+	// .catch(error => console.log('Could not create attribute set', error.message, error));
+
+	const userRepository = getRepository(User);
+	const users = await userRepository.find();
+	if (users.length === 0) {
+		const password = crypto.randomBytes(64).toString('hex');
+		const user = userRepository.create({
+			username: 'admin',
+			password,
+		});
+		await userRepository.save(user);
+		console.log('Create admin user with password:', password);
+	}
 
 	// Every hour
 	cron.schedule('0 */1 * * *', () => {

@@ -1,16 +1,31 @@
 import React from 'react';
 
 import { Button, Card, Form, Input } from 'antd';
+import { useRouter } from 'next/router';
 
+import { useAuth } from '../contexts/auth-context';
 import { MyNextPage } from '../lib/types';
 
 const Login: MyNextPage = () => {
 	const [form] = Form.useForm();
 
+	const { login, isAuthenticated } = useAuth();
+
+	const router = useRouter();
+
+	if (isAuthenticated) {
+		router.replace('/');
+		return null;
+	}
+
+	const handleSubmit = (values: any) => {
+		login(values.username, values.password);
+	};
+
 	return (
 		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 			<Card title="Default size card" style={{ width: 360 }}>
-				<Form form={form} name="login" labelCol={{ span: 10 }} wrapperCol={{ span: 16 }}>
+				<Form form={form} name="login" labelCol={{ span: 10 }} wrapperCol={{ span: 16 }} onFinish={handleSubmit}>
 					<Form.Item
 						label="Användarnamn"
 						name="username"
