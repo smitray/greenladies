@@ -251,7 +251,8 @@ export async function getProducts({ page = 1, pageSize = 10 }) {
 	const { data } = await magentoAdminRequester.get<{ items: MagentoFullProduct[] }>(
 		'/rest/default/V1/products?' + stringify(query),
 	);
-	const products = data.items.filter(p => ['configurable', 'simple'].includes(p.type_id));
+
+	const products = data.items.filter(p => p.status === 1).filter(p => ['configurable', 'simple'].includes(p.type_id));
 
 	return Promise.all(products.map(product => transformProduct(product)));
 }
