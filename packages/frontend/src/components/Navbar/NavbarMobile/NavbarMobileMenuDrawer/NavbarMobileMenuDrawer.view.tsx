@@ -54,7 +54,7 @@ const OuterCategoryListItemHeader = styled.a`
 	text-decoration: none;
 	flex-grow: 1;
 	padding: 20px 0;
-	font-size: 20px;
+	font-size: 18px;
 `;
 
 const OuterCategoryListItemCaretWrapper = styled.button`
@@ -83,7 +83,7 @@ const CategoryLink = styled.a`
 	text-decoration: none;
 	padding: 20px 0;
 	display: block;
-	font-size: 20px;
+	font-size: 18px;
 `;
 
 interface NavbarMobileMenuDrawerViewProps {
