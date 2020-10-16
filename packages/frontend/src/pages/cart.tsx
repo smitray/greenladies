@@ -156,9 +156,6 @@ const Cart: MyNextPage = () => {
 																),
 															)}
 														</select>
-														{item.product.quantity === 1 && (
-															<div style={{ color: 'red', marginTop: '4px' }}>(Bara 1 kvar)</div>
-														)}
 													</div>
 													<div>
 														<div
