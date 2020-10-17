@@ -48,7 +48,7 @@ export const FooterEmailSignupCardView = () => {
 					},
 				},
 				onCompleted: () => {
-					setSuccessMessage('Du är nu prenumererad!');
+					setSuccessMessage('Tack för att du prenumererar. Vi hörs!');
 					setErrorMessage(null);
 				},
 				onError: () => {
@@ -90,11 +90,11 @@ export const FooterEmailSignupCardView = () => {
 			{successMessage && <SignupSuccessMessage>{successMessage}</SignupSuccessMessage>}
 			<SignupDisclaimer>
 				Genom att registrera dig godkänner du våra{' '}
-				<Link href="/" passHref>
+				<Link href="/[[...slug]]?tab=fullstandiga-kopvillkor" as="/kundservice?tab=fullstandiga-kopvillkor" passHref>
 					<SignupDisclaimerLink>Villkor</SignupDisclaimerLink>
 				</Link>{' '}
 				och vår{' '}
-				<Link href="/" passHref>
+				<Link href="/[[...slug]]?tab=integritetspolicy" as="/kundservice?tab=integritetspolicy" passHref>
 					<SignupDisclaimerLink>Integritetspolicy</SignupDisclaimerLink>
 				</Link>
 				. Klicka på Avregistrera i våra mejl för att säga upp prenumerationen.
