@@ -189,8 +189,25 @@ const Home: MyNextPage = () => {
 										setProducts(null);
 										setDuplicateProducts(null);
 									},
-									onError: () => {
-										message.error('Kunde inte skapa artiklar');
+									onError: error => {
+										const actaulError = (error as any).source.errors[0];
+										const errorMessage = actaulError.message;
+										const errorCode = actaulError.extensions.code;
+										const BASE_MESSAGE = 'Kunde inte skapa artiklar: ';
+										switch (errorCode) {
+											case 'INVALID_CATEGORY':
+												message.error(BASE_MESSAGE + 'Ogiltig kategori ' + errorMessage);
+												break;
+											case 'INVALID_COLOR':
+												message.error(BASE_MESSAGE + 'Ogiltig färg ' + errorMessage);
+												break;
+											case 'PRODUCT_CREATION_FAILED':
+												message.error(BASE_MESSAGE + 'Något hände när ' + errorMessage + ' skulle skapas i Magento');
+												break;
+											default:
+												message.error(BASE_MESSAGE + 'Något okänt förhindrade skapningen av produkterna');
+												break;
+										}
 									},
 								});
 							};
