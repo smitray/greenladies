@@ -125,18 +125,6 @@ export async function syncMagentoProductsAndCategories() {
 						name: product.brand,
 					});
 					configurableProducts.push(product);
-					for (const categoryId of product.categoryIds) {
-						const categoryProductIds = categoriesProductIds.get(categoryId);
-						if (categoryProductIds) {
-							categoriesProductIds.set(categoryId, [...categoryProductIds, product.id]);
-						} else {
-							categoriesProductIds.set(categoryId, [product.id]);
-						}
-					}
-
-					for (const productConfigurationId of product.productConfigurationIds) {
-						productConfigurationParentIds.set(productConfigurationId, product.id);
-					}
 				}
 				break;
 			case 'SimpleProduct':
@@ -182,6 +170,64 @@ export async function syncMagentoProductsAndCategories() {
 	const skuToConfigurableProductMap = new Map(configurableProducts.map(product => [product.sku, product]));
 	const idToProductConfigurationMap = new Map(productConfigurations.map(product => [product.id, product]));
 
+	const transformedConfigurableProducts: ConfigurableProduct[] = [];
+	configurableProducts.forEach(product => {
+		try {
+			const productConfigurationsLocal: MagentoProductConfiguration[] = [];
+			product.productConfigurationIds.forEach(id => {
+				const productConfiguration = idToProductConfigurationMap.get(id);
+				if (!productConfiguration) {
+					return;
+					// throw new Error(`Product configuration ${id} for product ${product.id} could not be found`);
+				}
+
+				productConfigurationsLocal.push(productConfiguration);
+			});
+
+			const firstProductConfiguration = productConfigurationsLocal[0];
+			if (!firstProductConfiguration) {
+				throw new Error(`Product configurations for product ${product.id} could not be found`);
+			}
+
+			const relatedProductIds: string[] = [];
+			product.relatedProductSkus.forEach(sku => {
+				const relatedProduct = skuToConfigurableProductMap.get(sku);
+				if (!relatedProduct) {
+					return;
+					// throw new Error(`Related product ${sku} for product ${product.id} could not be found`);
+				}
+
+				relatedProductIds.push(relatedProduct.id);
+			});
+
+			for (const categoryId of product.categoryIds) {
+				const categoryProductIds = categoriesProductIds.get(categoryId);
+				if (categoryProductIds) {
+					categoriesProductIds.set(categoryId, [...categoryProductIds, product.id]);
+				} else {
+					categoriesProductIds.set(categoryId, [product.id]);
+				}
+			}
+
+			for (const productConfigurationId of product.productConfigurationIds) {
+				productConfigurationParentIds.set(productConfigurationId, product.id);
+			}
+
+			transformedConfigurableProducts.push({
+				...product,
+				colors: [...new Set(productConfigurationsLocal.flatMap(configuration => configuration.colors))],
+				sizes: [...new Set(productConfigurationsLocal.map(configuration => configuration.size))],
+				price: firstProductConfiguration.price.originalPrice,
+				specialPrice: firstProductConfiguration.price.specialPrice,
+				currency: firstProductConfiguration.price.currency,
+				totalStock: configurableProductStockMap.get(product.id) || 0,
+				relatedProductIds,
+			});
+		} catch (error) {
+			return;
+		}
+	});
+
 	const idToMagentoCategoryMap = new Map(magentoCategories.map(category => [category.id, category]));
 	const transformedCategories = magentoCategories.map<Category>(category => {
 		const children = category.childrenIds.map(id => {
@@ -198,47 +244,6 @@ export async function syncMagentoProductsAndCategories() {
 			childrenIds: children.filter(child => child.includeInMenu).map(child => child.id),
 			productIds: categoriesProductIds.get(category.id) || [],
 		};
-	});
-
-	const transformedConfigurableProducts: ConfigurableProduct[] = [];
-	configurableProducts.forEach(product => {
-		try {
-			const productConfigurationsLocal = product.productConfigurationIds.map(id => {
-				const productConfiguration = idToProductConfigurationMap.get(id);
-				if (!productConfiguration) {
-					throw new Error(`Product configuration ${id} for product ${product.id} could not be found`);
-				}
-
-				return productConfiguration;
-			});
-
-			const relatedProductIds = product.relatedProductSkus.map(sku => {
-				const relatedProduct = skuToConfigurableProductMap.get(sku);
-				if (!relatedProduct) {
-					throw new Error(`Related product ${sku} for product ${product.id} could not be found`);
-				}
-
-				return relatedProduct.id;
-			});
-
-			const firstProductConfiguration = productConfigurationsLocal[0];
-			if (!firstProductConfiguration) {
-				throw new Error(`Product configurations for product ${product.id} could not be found`);
-			}
-
-			transformedConfigurableProducts.push({
-				...product,
-				colors: [...new Set(productConfigurationsLocal.flatMap(configuration => configuration.colors))],
-				sizes: [...new Set(productConfigurationsLocal.map(configuration => configuration.size))],
-				price: firstProductConfiguration.price.originalPrice,
-				specialPrice: firstProductConfiguration.price.specialPrice,
-				currency: firstProductConfiguration.price.currency,
-				totalStock: configurableProductStockMap.get(product.id) || 0,
-				relatedProductIds,
-			});
-		} catch (error) {
-			return;
-		}
 	});
 
 	const transformedProductConfigurations: ProductConfiguration[] = [];
