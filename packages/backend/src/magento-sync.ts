@@ -80,8 +80,8 @@ export interface Brand {
 export async function syncMagentoProductsAndCategories() {
 	const magentoCategories = await getMagentoCategories();
 
-	const PRODUCT_FETCH_CHUNK_SIZE = 50;
-	const PRODUCT_FETCH_TIME_GAP_MS = 1000;
+	const PRODUCT_FETCH_CHUNK_SIZE = 100;
+	const PRODUCT_FETCH_TIME_GAP_MS = 500;
 	const magentoProducts: Product[] = [];
 
 	// const magentoProducts = await getProducts({ pageSize: 1000000 });
@@ -200,58 +200,68 @@ export async function syncMagentoProductsAndCategories() {
 		};
 	});
 
-	const transformedConfigurableProducts = configurableProducts.map<ConfigurableProduct>(product => {
-		const productConfigurationsLocal = product.productConfigurationIds.map(id => {
-			const productConfiguration = idToProductConfigurationMap.get(id);
-			if (!productConfiguration) {
-				throw new Error(`Product configuration ${id} for product ${product.id} could not be found`);
+	const transformedConfigurableProducts: ConfigurableProduct[] = [];
+	configurableProducts.forEach(product => {
+		try {
+			const productConfigurationsLocal = product.productConfigurationIds.map(id => {
+				const productConfiguration = idToProductConfigurationMap.get(id);
+				if (!productConfiguration) {
+					throw new Error(`Product configuration ${id} for product ${product.id} could not be found`);
+				}
+
+				return productConfiguration;
+			});
+
+			const relatedProductIds = product.relatedProductSkus.map(sku => {
+				const relatedProduct = skuToConfigurableProductMap.get(sku);
+				if (!relatedProduct) {
+					throw new Error(`Related product ${sku} for product ${product.id} could not be found`);
+				}
+
+				return relatedProduct.id;
+			});
+
+			const firstProductConfiguration = productConfigurationsLocal[0];
+			if (!firstProductConfiguration) {
+				throw new Error(`Product configurations for product ${product.id} could not be found`);
 			}
 
-			return productConfiguration;
-		});
-
-		const relatedProductIds = product.relatedProductSkus.map(sku => {
-			const relatedProduct = skuToConfigurableProductMap.get(sku);
-			if (!relatedProduct) {
-				throw new Error(`Related product ${sku} for product ${product.id} could not be found`);
-			}
-
-			return relatedProduct.id;
-		});
-
-		const firstProductConfiguration = productConfigurationsLocal[0];
-		if (!firstProductConfiguration) {
-			throw new Error(`Product configurations for product ${product.id} could not be found`);
+			transformedConfigurableProducts.push({
+				...product,
+				colors: [...new Set(productConfigurationsLocal.flatMap(configuration => configuration.colors))],
+				sizes: [...new Set(productConfigurationsLocal.map(configuration => configuration.size))],
+				price: firstProductConfiguration.price.originalPrice,
+				specialPrice: firstProductConfiguration.price.specialPrice,
+				currency: firstProductConfiguration.price.currency,
+				totalStock: configurableProductStockMap.get(product.id) || 0,
+				relatedProductIds,
+			});
+		} catch (error) {
+			return;
 		}
-
-		return {
-			...product,
-			colors: [...new Set(productConfigurationsLocal.flatMap(configuration => configuration.colors))],
-			sizes: [...new Set(productConfigurationsLocal.map(configuration => configuration.size))],
-			price: firstProductConfiguration.price.originalPrice,
-			specialPrice: firstProductConfiguration.price.specialPrice,
-			currency: firstProductConfiguration.price.currency,
-			totalStock: configurableProductStockMap.get(product.id) || 0,
-			relatedProductIds,
-		};
 	});
 
-	const transformedProductConfigurations = productConfigurations.map<ProductConfiguration>(configuration => {
-		const parentId = productConfigurationParentIds.get(configuration.id);
-		if (!parentId) {
-			throw new Error(`Could not get parent for configuration ${configuration.id}`);
-		}
+	const transformedProductConfigurations: ProductConfiguration[] = [];
+	productConfigurations.forEach(configuration => {
+		try {
+			const parentId = productConfigurationParentIds.get(configuration.id);
+			if (!parentId) {
+				throw new Error(`Could not get parent for configuration ${configuration.id}`);
+			}
 
-		const salableQuantity = productStock.get(configuration.id);
-		if (salableQuantity === undefined) {
-			throw new Error(`Could not get quantity for configuration ${configuration.id}`);
-		}
+			const salableQuantity = productStock.get(configuration.id);
+			if (salableQuantity === undefined) {
+				throw new Error(`Could not get quantity for configuration ${configuration.id}`);
+			}
 
-		return {
-			...configuration,
-			parentId,
-			quantity: salableQuantity,
-		};
+			transformedProductConfigurations.push({
+				...configuration,
+				parentId,
+				quantity: salableQuantity,
+			});
+		} catch (error) {
+			return;
+		}
 	});
 
 	const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
