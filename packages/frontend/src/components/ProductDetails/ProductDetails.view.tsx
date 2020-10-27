@@ -1,16 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import Drawer from 'rc-drawer';
 import { Collapse } from 'react-collapse';
 import { BiShoppingBag } from 'react-icons/bi';
 import { FaAngleDown, FaAngleUp, FaCheck, FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FiCheck } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../hooks/use-click-outside';
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { useAddToCartMutation } from '../../mutations/shopping-cart';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../../mutations/wishlist';
+import { IconWrapper } from '../../styles/icon-wrapper';
 
 import { ProductDetails_product } from './__generated__/ProductDetails_product.graphql';
 
@@ -50,6 +54,8 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 
 	const { open: openShoppingCartModal } = useShoppingCartModal();
 
+	const { width: windowWidth } = useWindowDimensions();
+
 	const [selectSizeButtonFocus, setSelectSizeButtonFocus] = useState(false);
 	const sizeDropdownRef = useRef<HTMLDivElement>(null);
 	useClickOutside(sizeDropdownRef, () => {
@@ -57,6 +63,8 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 			setSelectSizeOpen(false);
 		}
 	});
+
+	const [productAddedToCartDrawerOpen, setProductAddedToCartDrawerOpen] = useState(false);
 
 	return (
 		<React.Fragment>
@@ -214,10 +222,14 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 							if (!cartAddSuccess) {
 								addToCart(selectedConfiguration.id);
 								setCartAddSuccess(true);
-								openShoppingCartModal();
 								setTimeout(() => {
 									setCartAddSuccess(false);
 								}, 2000);
+								if (windowWidth > 960) {
+									openShoppingCartModal();
+								} else {
+									setProductAddedToCartDrawerOpen(true);
+								}
 							}
 						}
 					}}
@@ -285,6 +297,45 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 				</CollapseContentWrapper>
 			</Collapse>
 			<div style={{ borderTop: '1px solid #ddd' }}></div>
+			<Drawer
+				level={null}
+				open={productAddedToCartDrawerOpen}
+				placement="top"
+				handler={false}
+				afterVisibleChange={open => {
+					if (open) {
+						setTimeout(() => setProductAddedToCartDrawerOpen(false), 4000);
+					}
+				}}
+				onClose={() => setProductAddedToCartDrawerOpen(false)}
+				showMask={false}
+			>
+				<div
+					style={{
+						background: '#73c79e',
+						padding: '32px 16px 48px 16px',
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						color: 'white',
+						textAlign: 'center',
+					}}
+				>
+					<IconWrapper size="64px" style={{ marginBottom: '16px' }}>
+						<FiCheck size="64px" />
+					</IconWrapper>
+					<div style={{ marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>
+						Produkten är tillagd i varukorgen
+					</div>
+					<div style={{ marginBottom: '32px' }}>Gå till kassan för att avsluta köpet eller lägg till fler varor</div>
+					<button
+						style={{ border: 'none', outline: 'none', background: 'none', color: 'inherit', cursor: 'pointer' }}
+						onClick={() => setProductAddedToCartDrawerOpen(false)}
+					>
+						Stäng
+					</button>
+				</div>
+			</Drawer>
 		</React.Fragment>
 	);
 };
