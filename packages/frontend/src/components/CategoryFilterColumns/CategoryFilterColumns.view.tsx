@@ -2,7 +2,13 @@ import React, { useRef } from 'react';
 
 import { useElementDimensions } from '../../hooks/use-element-dimensions';
 
-import { CloseButton, LeftColumn, MiddleColumn, RightColumn } from './CategoryFilterColumns.styles';
+import {
+	CloseButton,
+	CloseButtonWrapper,
+	Column,
+	ColumnContainer,
+	ColumnWrapper,
+} from './CategoryFilterColumns.styles';
 
 interface Props {
 	columns: React.ReactNode[];
@@ -15,37 +21,43 @@ export const CategoryFilterColumnsView: React.FC<Props> = ({ columns, onCloseReq
 
 	if (columns.length === 1) {
 		return (
-			<MiddleColumn>
-				{columns[0]}
-				<CloseButton onClick={onCloseRequest}>Stäng</CloseButton>
-			</MiddleColumn>
+			<ColumnWrapper extractedWidth={0}>
+				<ColumnContainer>
+					<Column>{columns[0]}</Column>
+				</ColumnContainer>
+				<CloseButtonWrapper>
+					<CloseButton onClick={onCloseRequest}>Stäng</CloseButton>
+				</CloseButtonWrapper>
+			</ColumnWrapper>
 		);
 	}
 
 	if (columns.length === 2) {
 		return (
-			<React.Fragment>
-				<MiddleColumn>{columns[0]}</MiddleColumn>
-				<RightColumn>
-					{columns[1]}
+			<ColumnWrapper extractedWidth={0}>
+				<ColumnContainer>
+					<Column>{columns[0]}</Column>
+					<Column>{columns[1]}</Column>
+				</ColumnContainer>
+				<CloseButtonWrapper>
 					<CloseButton onClick={onCloseRequest}>Stäng</CloseButton>
-				</RightColumn>
-			</React.Fragment>
+				</CloseButtonWrapper>
+			</ColumnWrapper>
 		);
 	}
 
 	if (columns.length === 3) {
 		return (
-			<React.Fragment>
-				<LeftColumn extractedWidth={leftColumnDimensions.width} ref={leftColumnRef}>
-					{columns[0]}
-				</LeftColumn>
-				<MiddleColumn>{columns[1]}</MiddleColumn>
-				<RightColumn>
-					{columns[2]}
+			<ColumnWrapper extractedWidth={leftColumnDimensions.width}>
+				<ColumnContainer>
+					<Column ref={leftColumnRef}>{columns[0]}</Column>
+					<Column>{columns[1]}</Column>
+					<Column>{columns[2]}</Column>
+				</ColumnContainer>
+				<CloseButtonWrapper>
 					<CloseButton onClick={onCloseRequest}>Stäng</CloseButton>
-				</RightColumn>
-			</React.Fragment>
+				</CloseButtonWrapper>
+			</ColumnWrapper>
 		);
 	}
 

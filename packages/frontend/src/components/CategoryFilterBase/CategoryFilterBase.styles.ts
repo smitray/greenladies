@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { IconWrapper } from '../../styles/icon-wrapper';
+
 interface FilterBoxWrapperProps {
 	open: boolean;
 }
@@ -27,17 +29,23 @@ export const FilterBoxTitle = styled.a`
 	color: black;
 `;
 
+export const FilterBoxCaret = styled(IconWrapper)`
+	position: absolute;
+	right: 4px;
+	top: 9px;
+`;
+
 export const FilterColumnWrapper = styled.div`
 	position: absolute;
-	width: auto;
-	min-width: 180px;
+	// width: auto;
+	// min-width: 180px;
 	margin-top: 10px;
 
-	> *:first-child {
-		border-left: 1px solid #eaeaea;
-	}
+	// > *:first-child {
+	// 	border-left: 1px solid #eaeaea;
+	// }
 
-	> *:last-child {
-		border-right: 1px solid #eaeaea;
-	}
+	// > *:last-child {
+	// 	border-right: 1px solid #eaeaea;
+	// }
 `;

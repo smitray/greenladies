@@ -1,37 +1,39 @@
 import styled from 'styled-components';
 
-const Column = styled.ul`
-	margin: 0;
-	padding: 12px 12px 48px 12px;
-	list-style: none;
-	border-top: 1px solid #eaeaea;
-	border-bottom: 1px solid #eaeaea;
-	background: white;
-	top: 0;
-	min-width: 180px;
-`;
-
-interface LeftColumnProps {
+interface ColumnWrapperProps {
 	extractedWidth: number;
 }
 
-export const LeftColumn = styled(Column)<LeftColumnProps>`
+export const ColumnWrapper = styled.div<ColumnWrapperProps>`
 	position: absolute;
 	left: ${({ extractedWidth }) => `-${extractedWidth}px`};
+	background: white;
+	border: 1px solid #eaeaea;
 `;
 
-export const MiddleColumn = styled(Column)``;
+export const ColumnContainer = styled.div`
+	max-height: 370px;
+	overflow: auto;
+	display: flex;
+`;
 
-export const RightColumn = styled(Column)`
-	position: absolute;
-	left: 100%;
+export const Column = styled.ul`
+	margin: 0;
+	padding: 12px;
+	list-style: none;
+	background: white;
+	// top: 0;
+	min-width: 180px;
+`;
+
+export const CloseButtonWrapper = styled.div`
+	display: flex;
+	flex-direction: row-reverse;
+	padding: 12px;
 `;
 
 export const CloseButton = styled.button`
 	padding: 4px 8px;
-	position: absolute;
-	bottom: 12px;
-	right: 12px;
 	background: white;
 	border: none;
 	cursor: pointer;

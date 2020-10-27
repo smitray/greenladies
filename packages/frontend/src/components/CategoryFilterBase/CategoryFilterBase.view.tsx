@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FaAngleDown } from 'react-icons/fa';
 
-import { FilterBoxTitle, FilterBoxWrapper, FilterColumnWrapper } from './CategoryFilterBase.styles';
+import { FilterBoxCaret, FilterBoxTitle, FilterBoxWrapper, FilterColumnWrapper } from './CategoryFilterBase.styles';
 
 interface Props {
 	open: boolean;
@@ -23,9 +23,9 @@ export const CategoryFilterBaseView: React.FC<Props> = ({ open, title, content, 
 				}}
 			>
 				{title}
-				<div style={{ position: 'absolute', height: '16px', width: '16px', right: '4px', top: '9px' }}>
-					<FaAngleDown size="16" />
-				</div>
+				<FilterBoxCaret size="16px">
+					<FaAngleDown size="16px" />
+				</FilterBoxCaret>
 			</FilterBoxTitle>
 			{open && <FilterColumnWrapper>{content}</FilterColumnWrapper>}
 		</FilterBoxWrapper>
