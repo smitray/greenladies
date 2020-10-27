@@ -3,8 +3,8 @@ import React from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { CenterWrapper } from '../../styles/center-wrapper';
-import { Link } from '../Link';
+import { CenterWrapper } from '../../../styles/center-wrapper';
+import { Link } from '../../Link';
 
 import { CustomPageBanner_banner } from './__generated__/CustomPageBanner_banner.graphql';
 
