@@ -11,6 +11,7 @@ import {
 	RangeInputPostfix,
 	RangeInputSeparator,
 	RangeInputWrapper,
+	RangeSliderKnob,
 	RangeWrapper,
 } from './CategoryFilterRangeSelect.styles';
 
@@ -25,19 +26,13 @@ const GROW_FACTOR = 1.15;
 
 const SliderHandle: React.FC<SliderHandleProps> = ({ index, dragging, offset }) => {
 	return (
-		<div
+		<RangeSliderKnob
 			key={index}
 			style={{
 				width: `${dragging ? KNOB_SIZE * GROW_FACTOR : KNOB_SIZE}px`,
 				height: `${dragging ? KNOB_SIZE * GROW_FACTOR : KNOB_SIZE}px`,
-				background: 'black',
-				borderRadius: '100%',
-				position: 'absolute',
-				transform: 'translateX(-50%)',
 				marginTop: `-${((dragging ? KNOB_SIZE * GROW_FACTOR : KNOB_SIZE) - 2) / 2}px`,
 				left: `${offset}%`,
-				transition: 'all 50ms ease -in -out',
-				cursor: 'pointer',
 			}}
 		/>
 	);

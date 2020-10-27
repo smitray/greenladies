@@ -45,3 +45,12 @@ export const RangeWrapper = styled.div`
 	padding: 0 12px;
 	margin-bottom: 12px;
 `;
+
+export const RangeSliderKnob = styled.div`
+	background: black;
+	border-radius: 100%;
+	position: absolute;
+	transform: translateX(-50%);
+	transition: all 50ms ease -in -out;
+	cursor: pointer;
+`;
