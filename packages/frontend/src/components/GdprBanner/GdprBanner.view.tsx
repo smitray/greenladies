@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 
-import { GdprAcceptButton, GdprBannerInfoText, GdprBannerLink, GdprBannerWrapper } from './CookieBanner.styles';
+import { GdprAcceptButton, GdprBannerInfoText, GdprBannerLink, GdprBannerWrapper } from './GdprBanner.styles';
 
-export const CookieBannerView = () => {
+export const GdprBannerView = () => {
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {

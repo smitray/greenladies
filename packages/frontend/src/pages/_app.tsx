@@ -11,8 +11,8 @@ import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import { Record as RelayRecord } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { createGlobalStyle } from 'styled-components';
 
-import { CookieBanner } from '../components/CookieBanner';
 import { Footer } from '../components/Footer';
+import { GdprBanner } from '../components/GdprBanner';
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
 import { ShoppingCartModalProvider } from '../contexts/shopping-cart-model-context';
@@ -71,7 +71,7 @@ const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
 									<Navbar megamenu={props.megamenu} query={props} />
 									<Component {...pageProps} />
 									<Footer query={props} />
-									<CookieBanner />
+									<GdprBanner />
 								</React.Fragment>
 							);
 						}
