@@ -99,7 +99,15 @@ const CustomPageTripleImageView = ({ tripleImage }: CustomPageTripleImageViewPro
 							>
 								<div>
 									<div style={{ fontSize: '32px', fontWeight: 'bold' }}>{tripleImage.smallTitle}</div>
-									<div style={{ fontSize: '52px', fontWeight: 'bold' }}>{tripleImage.bigTitle}</div>
+									<div style={{ fontSize: '52px', fontWeight: 'bold' }}>
+										{tripleImage.bigTitle.split('\n').reduce<React.ReactNode[]>((prev, current, index) => {
+											if (index === 0) {
+												return [current];
+											}
+
+											return [...prev, <br key={index} />, current];
+										}, [])}
+									</div>
 								</div>
 								<Link link={tripleImage.link}>
 									<a
