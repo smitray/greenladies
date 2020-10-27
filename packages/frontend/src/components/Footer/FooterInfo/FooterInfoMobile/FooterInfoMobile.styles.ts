@@ -1,20 +1,22 @@
 import styled from 'styled-components';
 
-import { FooterInfoImageContainer, FooterInfoItemItemContainer } from '../shared/styles';
+export const FooterInfoMobileWrapper = styled.div`
+	background: #eceaeb;
+`;
 
-export const FooterInfoMobileItemContainer = styled.ul`
+export const FooterInfoMobileSectionsContainer = styled.ul`
 	padding: 0;
 	margin: 0;
 	list-style: none;
 `;
 
-export const FooterInfoMobileItem = styled.li`
+export const FooterInfoMobileSection = styled.li`
 	&:not(:last-child) {
 		border-bottom: 1px solid #ddd;
 	}
 `;
 
-export const FooterInfoMobileItemHeader = styled.div`
+export const FooterInfoMobileSectionHeader = styled.div`
 	font-weight: bold;
 	font-size: 14px;
 	padding: 20px 16px;
@@ -23,10 +25,6 @@ export const FooterInfoMobileItemHeader = styled.div`
 	cursor: pointer;
 `;
 
-export const FooterInfoMobileItemItemContainer = styled(FooterInfoItemItemContainer)`
-	padding: 0 0 16px 16px;
-`;
-
-export const FooterInfoMobileImageContiner = styled(FooterInfoImageContainer)`
-	padding-left: 16px;
+export const FooterInfoMobileSectionContentWrapper = styled.div`
+	padding: 0 16px 16px;
 `;
