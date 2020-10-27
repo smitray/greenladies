@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Drawer from 'rc-drawer';
 import { Collapse } from 'react-collapse';
-import { FaAngleDown, FaAngleRight, FaAngleUp, FaTimes } from 'react-icons/fa';
+import { FiMinus, FiPlus, FiX } from 'react-icons/fi';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
@@ -22,11 +22,11 @@ const Header = styled.div`
 
 const CloseButton = styled.button`
 	position: absolute;
-	background: white;
+	background: transparent;
 	border: none;
 	outline: none;
 	cursor: pointer;
-	right: 12px;
+	right: 4px;
 	padding: 12px;
 `;
 
@@ -53,7 +53,7 @@ const OuterCategoryListItemHeader = styled.a`
 	color: black;
 	text-decoration: none;
 	flex-grow: 1;
-	padding: 20px 0;
+	padding: 16px 0;
 	font-size: 18px;
 `;
 
@@ -81,7 +81,7 @@ const InnerCategoryListItem = styled.li`
 const CategoryLink = styled.a`
 	color: black;
 	text-decoration: none;
-	padding: 20px 0;
+	padding: 16px 0;
 	display: block;
 	font-size: 18px;
 `;
@@ -111,18 +111,18 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 					<img src="/images/greenladies-logo.png" alt="" style={{ height: '24px' }} />
 					<CloseButton onClick={onCloseRequest}>
 						<IconWrapper size="24px">
-							<FaTimes size="24px" />
+							<FiX size="24px" />
 						</IconWrapper>
 					</CloseButton>
 				</Header>
-				<div style={{ background: '#eee', flexGrow: 1 }}>
+				<div style={{ background: '#f2f2f2', flexGrow: 1 }}>
 					<div
 						style={{
 							textTransform: 'uppercase',
 							color: '#555',
 							fontWeight: 'bold',
 							fontSize: '14px',
-							margin: '12px 0 4px 4px',
+							margin: '12px 0 4px 20px',
 						}}
 					>
 						Kategorier
@@ -151,7 +151,7 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 											}}
 										>
 											<IconWrapper size="24px">
-												{isOpened ? <FaAngleUp size="24px" /> : <FaAngleDown size="24px" />}
+												{isOpened ? <FiMinus size="24px" /> : <FiPlus size="24px" />}
 											</IconWrapper>
 										</OuterCategoryListItemCaretWrapper>
 									</OuterCategoryListItemHeaderWrapper>
@@ -176,7 +176,7 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 							color: '#555',
 							fontWeight: 'bold',
 							fontSize: '14px',
-							margin: '12px 0 4px 4px',
+							margin: '12px 0 4px 20px',
 						}}
 					>
 						Service
@@ -187,11 +187,6 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 								<Link href="/[...slug]?tab=om-green-ladies" as="/kundservice?tab=om-green-ladies" passHref>
 									<OuterCategoryListItemHeader>Om Green Ladies</OuterCategoryListItemHeader>
 								</Link>
-								<OuterCategoryListItemCaretWrapper>
-									<IconWrapper size="24px">
-										<FaAngleRight size="24px" />
-									</IconWrapper>
-								</OuterCategoryListItemCaretWrapper>
 							</OuterCategoryListItemHeaderWrapper>
 						</OuterCategoryListItem>
 						<OuterCategoryListItem>
@@ -199,11 +194,6 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 								<Link href="/[[...slug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
 									<OuterCategoryListItemHeader>Klimatkompenserad frakt</OuterCategoryListItemHeader>
 								</Link>
-								<OuterCategoryListItemCaretWrapper>
-									<IconWrapper size="24px">
-										<FaAngleRight size="24px" />
-									</IconWrapper>
-								</OuterCategoryListItemCaretWrapper>
 							</OuterCategoryListItemHeaderWrapper>
 						</OuterCategoryListItem>
 						<OuterCategoryListItem>
@@ -211,11 +201,6 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 								<Link href="/[[...slug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 									<OuterCategoryListItemHeader>Trygg & säker betalning</OuterCategoryListItemHeader>
 								</Link>
-								<OuterCategoryListItemCaretWrapper>
-									<IconWrapper size="24px">
-										<FaAngleRight size="24px" />
-									</IconWrapper>
-								</OuterCategoryListItemCaretWrapper>
 							</OuterCategoryListItemHeaderWrapper>
 						</OuterCategoryListItem>
 					</OuterCategoryList>
