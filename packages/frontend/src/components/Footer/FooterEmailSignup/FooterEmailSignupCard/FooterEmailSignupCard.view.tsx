@@ -53,7 +53,7 @@ export const FooterEmailSignupCardView = () => {
 				},
 				onError: () => {
 					setSuccessMessage(null);
-					setErrorMessage('Något gick fel...');
+					setErrorMessage('E-postadressen är redan registrerad');
 				},
 			});
 		} else {
