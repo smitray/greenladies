@@ -8,9 +8,9 @@ import styled from 'styled-components';
 
 import { IconWrapper } from '../../styles/icon-wrapper';
 import { colorCodeToDisplay } from '../../utils/products-filtering-and-ordering';
-import { FilterMultiSelect } from '../filters/FilterMultiSelect';
-import { FilterRangeSelect } from '../filters/FilterRangeSelect';
-import { FilterSingleSelect } from '../filters/FilterSingleSelect';
+import { FilterMultiSelect } from '../filter/FilterMultiSelect';
+import { FilterRangeSelect } from '../filter/FilterRangeSelect';
+import { FilterSingleSelect } from '../filter/FilterSingleSelect';
 
 import { ProductFilters_products } from './__generated__/ProductFilters_products.graphql';
 
