@@ -4,10 +4,10 @@ import Head from 'next/head';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 
-import { CustomPageBanner } from '../components/CustomPageBanner';
-import { CustomPageProductCarousel } from '../components/CustomPageProductCarousel';
-import CustomPageTabsView from '../components/CustomPageTabs/CustomPageTabs.view';
-import { CustomPageTripleImage } from '../components/CustomPageTripleImage';
+import { CustomPageBanner } from '../components/custom-page/CustomPageBanner';
+import { CustomPageProductCarousel } from '../components/custom-page/CustomPageProductCarousel';
+import { CustomPageTabs } from '../components/custom-page/CustomPageTabs';
+import { CustomPageTripleImage } from '../components/custom-page/CustomPageTripleImage';
 import { MyNextPage } from '../lib/types';
 import { CUSTOM_PAGE_QUERY, CustomPageQuery } from '../queries/custom-page';
 
@@ -54,7 +54,7 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 					case 'CustomPageProductCarousel':
 						return <CustomPageProductCarousel key={index} carousel={section} />;
 					case 'CustomPageTab':
-						return <CustomPageTabsView key={index} tabs={section} />;
+						return <CustomPageTabs key={index} tabs={section} />;
 					case 'CustomPageTripleImage': {
 						// Add white space if next component is another triple image or a banner
 						if (index < sections.length - 1) {
