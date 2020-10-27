@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { chunkifyArray } from '../../utils/chunkify-array';
-import { CategoryFilterBase } from '../CategoryFilterBase';
-import { CategoryFilterColumnListItem, CategoryFilterColumns } from '../CategoryFilterColumns';
+import { chunkifyArray } from '../../../utils/chunkify-array';
+import { FilterBase } from '../FilterBase';
+import { FilterColumnListItem, FilterColumns } from '../FilterColumns';
 
 interface Props {
 	open: boolean;
@@ -17,7 +17,7 @@ interface Props {
 	onItemSelected?: (itemId: string) => void;
 }
 
-export const CategoryFilterSingleSelectView: React.FC<Props> = ({
+export const FilterSingleSelectView: React.FC<Props> = ({
 	open,
 	onOpenRequest,
 	onCloseRequest,
@@ -29,18 +29,18 @@ export const CategoryFilterSingleSelectView: React.FC<Props> = ({
 	const itemChunks = useMemo(() => chunkifyArray(items), [items]);
 
 	return (
-		<CategoryFilterBase
+		<FilterBase
 			open={open}
 			onOpenRequest={onOpenRequest}
 			onCloseRequest={onCloseRequest}
 			title={title}
 			content={
-				<CategoryFilterColumns
+				<FilterColumns
 					onCloseRequest={onCloseRequest}
 					columns={itemChunks.map((chunk, index) => (
 						<React.Fragment key={index}>
 							{chunk.map(item => (
-								<CategoryFilterColumnListItem
+								<FilterColumnListItem
 									key={item.id}
 									selected={item.id === selectedItemId}
 									onClick={() => {
@@ -54,7 +54,7 @@ export const CategoryFilterSingleSelectView: React.FC<Props> = ({
 									}}
 								>
 									{item.node}
-								</CategoryFilterColumnListItem>
+								</FilterColumnListItem>
 							))}
 						</React.Fragment>
 					))}

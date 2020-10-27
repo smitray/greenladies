@@ -8,9 +8,9 @@ import styled from 'styled-components';
 
 import { IconWrapper } from '../../styles/icon-wrapper';
 import { colorCodeToDisplay } from '../../utils/products-filtering-and-ordering';
-import { CategoryFilterMultiSelect } from '../CategoryFilterMultiSelect';
-import { CategoryFilterRangeSelect } from '../CategoryFilterRangeSelect';
-import { CategoryFilterSingleSelect } from '../CategoryFilterSingleSelect';
+import { FilterMultiSelect } from '../filters/FilterMultiSelect';
+import { FilterRangeSelect } from '../filters/FilterRangeSelect';
+import { FilterSingleSelect } from '../filters/FilterSingleSelect';
 
 import { ProductFilters_products } from './__generated__/ProductFilters_products.graphql';
 
@@ -512,7 +512,7 @@ const ProductFiltersView = ({
 			</MobileWrapper>
 			<NotMobileWrapper>
 				<FiltersContainer>
-					<CategoryFilterSingleSelect
+					<FilterSingleSelect
 						title="Sortera på"
 						items={[
 							{ id: 'created_DESC', node: 'Nyheter' },
@@ -526,7 +526,7 @@ const ProductFiltersView = ({
 						onOpenRequest={handleCategoryFilterOpen('order')}
 						onCloseRequest={handleCategoryFilterClose('order')}
 					/>
-					<CategoryFilterMultiSelect
+					<FilterMultiSelect
 						title="Märke"
 						items={products.availableFilters.brands.map(brand => ({
 							id: brand,
@@ -539,7 +539,7 @@ const ProductFiltersView = ({
 						onOpenRequest={handleCategoryFilterOpen('brand')}
 						onCloseRequest={handleCategoryFilterClose('brand')}
 					/>
-					<CategoryFilterMultiSelect
+					<FilterMultiSelect
 						title="Storlek"
 						items={products.availableFilters.sizes.map(size => ({
 							id: size,
@@ -552,7 +552,7 @@ const ProductFiltersView = ({
 						onOpenRequest={handleCategoryFilterOpen('size')}
 						onCloseRequest={handleCategoryFilterClose('size')}
 					/>
-					<CategoryFilterMultiSelect
+					<FilterMultiSelect
 						title="Färg"
 						items={products.availableFilters.colors.map(color => ({
 							id: color,
@@ -570,7 +570,7 @@ const ProductFiltersView = ({
 						onOpenRequest={handleCategoryFilterOpen('color')}
 						onCloseRequest={handleCategoryFilterClose('color')}
 					/>
-					<CategoryFilterRangeSelect
+					<FilterRangeSelect
 						title="Pris"
 						min={products.availableFilters.price.from}
 						max={products.availableFilters.price.to}

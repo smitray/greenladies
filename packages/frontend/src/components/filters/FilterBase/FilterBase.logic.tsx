@@ -1,8 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 
-import { useClickOutside } from '../../hooks/use-click-outside';
+import { useClickOutside } from '../../../hooks/use-click-outside';
 
-import { CategoryFilterBaseView } from './CategoryFilterBase.view';
+import { FilterBaseView } from './FilterBase.view';
 
 interface Props {
 	open: boolean;
@@ -12,7 +12,7 @@ interface Props {
 	content: React.ReactNode;
 }
 
-export const CategoryFilterBaseLogic: React.FC<Props> = ({ open, onOpenRequest, onCloseRequest, title, content }) => {
+export const FilterBaseLogic: React.FC<Props> = ({ open, onOpenRequest, onCloseRequest, title, content }) => {
 	const wrapperRef = useRef<HTMLLIElement>(null);
 	useClickOutside(wrapperRef, () => {
 		if (onCloseRequest) {
@@ -31,7 +31,7 @@ export const CategoryFilterBaseLogic: React.FC<Props> = ({ open, onOpenRequest, 
 	}, [open, onOpenRequest, onCloseRequest]);
 
 	return (
-		<CategoryFilterBaseView
+		<FilterBaseView
 			open={open}
 			handleTitleClick={handleTitleClick}
 			title={title}

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { Range } from 'rc-slider';
 
-import { CategoryFilterBase } from '../CategoryFilterBase';
-import { CategoryFilterColumns } from '../CategoryFilterColumns';
+import { FilterBase } from '../FilterBase';
+import { FilterColumns } from '../FilterColumns';
 
 import {
 	RangeInput,
@@ -13,7 +13,7 @@ import {
 	RangeInputWrapper,
 	RangeSliderKnob,
 	RangeWrapper,
-} from './CategoryFilterRangeSelect.styles';
+} from './FilterRangeSelect.styles';
 
 interface SliderHandleProps {
 	index: number;
@@ -63,7 +63,7 @@ interface Props {
 	onUpperValueChange?: (upperValue: number) => void;
 }
 
-export const CategoryFilterRangeSelectView: React.FC<Props> = ({
+export const FilterRangeSelectView: React.FC<Props> = ({
 	open,
 	onOpenRequest,
 	onCloseRequest,
@@ -105,13 +105,13 @@ export const CategoryFilterRangeSelectView: React.FC<Props> = ({
 	}, [upperValueInternal, upperValueInputFocused]);
 
 	return (
-		<CategoryFilterBase
+		<FilterBase
 			open={open}
 			onOpenRequest={onOpenRequest}
 			onCloseRequest={onCloseRequest}
 			title={title}
 			content={
-				<CategoryFilterColumns
+				<FilterColumns
 					onCloseRequest={onCloseRequest}
 					columns={[
 						<li key="0">

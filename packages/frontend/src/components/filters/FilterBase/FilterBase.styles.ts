@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { IconWrapper } from '../../styles/icon-wrapper';
+import { IconWrapper } from '../../../styles/icon-wrapper';
 
 interface FilterBoxWrapperProps {
 	open: boolean;

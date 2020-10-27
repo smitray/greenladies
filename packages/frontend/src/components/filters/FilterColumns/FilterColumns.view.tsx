@@ -1,21 +1,15 @@
 import React, { useRef } from 'react';
 
-import { useElementDimensions } from '../../hooks/use-element-dimensions';
+import { useElementDimensions } from '../../../hooks/use-element-dimensions';
 
-import {
-	CloseButton,
-	CloseButtonWrapper,
-	Column,
-	ColumnContainer,
-	ColumnWrapper,
-} from './CategoryFilterColumns.styles';
+import { CloseButton, CloseButtonWrapper, Column, ColumnContainer, ColumnWrapper } from './FilterColumns.styles';
 
 interface Props {
 	columns: React.ReactNode[];
 	onCloseRequest?: () => void;
 }
 
-export const CategoryFilterColumnsView: React.FC<Props> = ({ columns, onCloseRequest }) => {
+export const FilterColumnsView: React.FC<Props> = ({ columns, onCloseRequest }) => {
 	const leftColumnRef = useRef<HTMLUListElement>(null);
 	const leftColumnDimensions = useElementDimensions(leftColumnRef);
 

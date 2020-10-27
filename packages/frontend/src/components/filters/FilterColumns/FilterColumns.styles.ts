@@ -47,11 +47,11 @@ export const CloseButton = styled.button`
 	}
 `;
 
-interface CategoryFilterColumnListItemProps {
+interface FilterColumnListItemProps {
 	selected: boolean;
 }
 
-export const CategoryFilterColumnListItem = styled.li<CategoryFilterColumnListItemProps>`
+export const FilterColumnListItem = styled.li<FilterColumnListItemProps>`
 	padding: 8px;
 	font-weight: ${({ selected }) => (selected ? 'bold' : 'normal')};
 	cursor: pointer;

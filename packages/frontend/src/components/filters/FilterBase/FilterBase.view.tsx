@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FaAngleDown } from 'react-icons/fa';
 
-import { FilterBoxCaret, FilterBoxTitle, FilterBoxWrapper, FilterColumnWrapper } from './CategoryFilterBase.styles';
+import { FilterBoxCaret, FilterBoxTitle, FilterBoxWrapper, FilterColumnWrapper } from './FilterBase.styles';
 
 interface Props {
 	open: boolean;
@@ -12,7 +12,7 @@ interface Props {
 	handleTitleClick: () => void;
 }
 
-export const CategoryFilterBaseView: React.FC<Props> = ({ open, title, content, wrapperRef, handleTitleClick }) => {
+export const FilterBaseView: React.FC<Props> = ({ open, title, content, wrapperRef, handleTitleClick }) => {
 	return (
 		<FilterBoxWrapper open={open} ref={wrapperRef}>
 			<FilterBoxTitle

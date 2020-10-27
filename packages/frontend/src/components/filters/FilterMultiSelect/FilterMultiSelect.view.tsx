@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 
 import { FaCheckSquare, FaRegSquare } from 'react-icons/fa';
 
-import { chunkifyArray } from '../../utils/chunkify-array';
-import { CategoryFilterBase } from '../CategoryFilterBase';
-import { CategoryFilterColumnListItem, CategoryFilterColumns } from '../CategoryFilterColumns';
+import { chunkifyArray } from '../../../utils/chunkify-array';
+import { FilterBase } from '../FilterBase';
+import { FilterColumnListItem, FilterColumns } from '../FilterColumns';
 
 interface Props {
 	open: boolean;
@@ -20,7 +20,7 @@ interface Props {
 	onItemUnselected?: (itemId: string) => void;
 }
 
-export const CategoryFilterMultiSelectView: React.FC<Props> = ({
+export const FilterMultiSelectView: React.FC<Props> = ({
 	open,
 	onOpenRequest,
 	onCloseRequest,
@@ -33,20 +33,20 @@ export const CategoryFilterMultiSelectView: React.FC<Props> = ({
 	const itemChunks = useMemo(() => chunkifyArray(items), [items]);
 
 	return (
-		<CategoryFilterBase
+		<FilterBase
 			open={open}
 			onOpenRequest={onOpenRequest}
 			onCloseRequest={onCloseRequest}
 			title={title}
 			content={
-				<CategoryFilterColumns
+				<FilterColumns
 					onCloseRequest={onCloseRequest}
 					columns={itemChunks.map((chunk, index) => (
 						<React.Fragment key={index}>
 							{chunk.map(item => {
 								const selected = selectedItemIds.findIndex(itemId => itemId === item.id) !== -1;
 								return (
-									<CategoryFilterColumnListItem
+									<FilterColumnListItem
 										key={item.id}
 										selected={selected}
 										onClick={() => {
@@ -65,7 +65,7 @@ export const CategoryFilterMultiSelectView: React.FC<Props> = ({
 											</div>
 											{item.node}
 										</div>
-									</CategoryFilterColumnListItem>
+									</FilterColumnListItem>
 								);
 							})}
 						</React.Fragment>
