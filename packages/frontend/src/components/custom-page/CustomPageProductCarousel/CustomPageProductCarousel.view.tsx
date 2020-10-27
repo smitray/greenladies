@@ -5,9 +5,9 @@ import { VscArrowRight } from 'react-icons/vsc';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { CenterWrapper } from '../../styles/center-wrapper';
-import { IconWrapper } from '../../styles/icon-wrapper';
-import { ProductCarousel } from '../ProductCarousel';
+import { CenterWrapper } from '../../../styles/center-wrapper';
+import { IconWrapper } from '../../../styles/icon-wrapper';
+import { ProductCarousel } from '../../ProductCarousel';
 
 import { CustomPageProductCarousel_carousel } from './__generated__/CustomPageProductCarousel_carousel.graphql';
 

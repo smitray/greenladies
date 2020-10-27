@@ -3,9 +3,9 @@ import React from 'react';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
-import { useWindowDimensions } from '../../hooks/use-window-dimensions';
-import { CenterWrapper } from '../../styles/center-wrapper';
-import { Link } from '../Link';
+import { useWindowDimensions } from '../../../hooks/use-window-dimensions';
+import { CenterWrapper } from '../../../styles/center-wrapper';
+import { Link } from '../../Link';
 
 import { CustomPageTripleImage_tripleImage } from './__generated__/CustomPageTripleImage_tripleImage.graphql';
 
