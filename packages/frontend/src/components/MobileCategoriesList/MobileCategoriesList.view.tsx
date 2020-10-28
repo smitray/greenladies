@@ -16,16 +16,23 @@ const CategoriesContainer = styled.ul`
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
-
-	> li:nth-child(even) {
-		border-left: none;
-	}
 `;
 
 const CategoryItem = styled.li`
 	flex-basis: 50%;
 	width: 50%;
-	border: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+
+	&:nth-child(1),
+	&:nth-child(2) {
+		border-top: 1px solid #ddd;
+	}
+
+	&:nth-child(even) {
+		border-left: none;
+	}
 `;
 
 const CategoryLink = styled.a`
