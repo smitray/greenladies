@@ -1,32 +1,20 @@
 import React from 'react';
 
 import Link from 'next/link';
-import { VscArrowRight } from 'react-icons/vsc';
+import { FiArrowRight } from 'react-icons/fi';
 import { createFragmentContainer, graphql } from 'react-relay';
-import styled from 'styled-components';
 
-import { CenterWrapper } from '../../../styles/center-wrapper';
-import { IconWrapper } from '../../../styles/icon-wrapper';
 import { ProductCarousel } from '../../ProductCarousel';
 
 import { CustomPageProductCarousel_carousel } from './__generated__/CustomPageProductCarousel_carousel.graphql';
-
-const SomeKindOfWrapper = styled.div`
-	padding: 72px 0;
-`;
-
-const WrapOnMobile = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	flex-direction: column;
-	margin-bottom: 32px;
-
-	@media (min-width: 641px) {
-		flex-direction: row;
-		align-items: flex-end;
-	}
-`;
+import {
+	ProductCarouselComponentWrapper,
+	ProductCarouselShopIconWrapper,
+	ProductCarouselShopLink,
+	ProductCarouselSubtitle,
+	ProductCarouselTitle,
+	ProductCarouselTitleWrapper,
+} from './CustomPageProductCarousel.styles';
 
 interface CustomPageProductCarouselViewProps {
 	carousel: CustomPageProductCarousel_carousel;
@@ -34,49 +22,29 @@ interface CustomPageProductCarouselViewProps {
 
 const CustomPageProductCarouselView = ({ carousel }: CustomPageProductCarouselViewProps) => {
 	return (
-		<SomeKindOfWrapper>
-			<CenterWrapper>
-				<WrapOnMobile>
-					<div>
-						<h2 style={{ margin: '0', fontSize: '32px' }}>
-							<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
-								<a style={{ color: 'inherit', textDecoration: 'none' }}>{carousel.title}</a>
-							</Link>
-						</h2>
-						<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
-							<a
-								style={{
-									fontFamily: 'Arimo, sans-serif',
-									fontSize: '28px',
-									color: 'inherit',
-									textDecoration: 'none',
-								}}
-							>
-								{carousel.subtitle}
-							</a>
-						</Link>
-					</div>
+		<ProductCarouselComponentWrapper>
+			<ProductCarouselTitleWrapper>
+				<div>
 					<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
-						<a
-							style={{
-								color: 'inherit',
-								textDecoration: 'none',
-								display: 'flex',
-								fontSize: '20px',
-								alignItems: 'center',
-								marginTop: '24px',
-							}}
-						>
-							<span style={{ marginRight: '4px', fontSize: '20px' }}>Shoppa</span>
-							<IconWrapper size="20px">
-								<VscArrowRight size="20" />
-							</IconWrapper>
-						</a>
+						<ProductCarouselTitle>{carousel.title}</ProductCarouselTitle>
 					</Link>
-				</WrapOnMobile>
-			</CenterWrapper>
+					<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
+						<ProductCarouselSubtitle>{carousel.subtitle}</ProductCarouselSubtitle>
+					</Link>
+				</div>
+				<div>
+					<Link href="/categories/special/[key]" as={`/categories/special/${carousel.category.urlKey}`}>
+						<ProductCarouselShopLink>
+							<span>Shoppa</span>
+							<ProductCarouselShopIconWrapper size="20px">
+								<FiArrowRight size="20px" />
+							</ProductCarouselShopIconWrapper>
+						</ProductCarouselShopLink>
+					</Link>
+				</div>
+			</ProductCarouselTitleWrapper>
 			<ProductCarousel products={carousel.category.products} />
-		</SomeKindOfWrapper>
+		</ProductCarouselComponentWrapper>
 	);
 };
 
