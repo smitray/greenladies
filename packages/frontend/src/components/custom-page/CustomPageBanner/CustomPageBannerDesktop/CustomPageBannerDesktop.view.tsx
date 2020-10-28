@@ -41,12 +41,10 @@ export default createFragmentContainer(CustomPageBannerDesktopView, {
 	banner: graphql`
 		fragment CustomPageBannerDesktop_banner on CustomPageBanner {
 			title
-			subtitle
 			link {
 				...Link_link
 			}
 			imagePath
-			mobileImagePath
 		}
 	`,
 });

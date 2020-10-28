@@ -38,11 +38,9 @@ export default createFragmentContainer(CustomPageBannerMobileView, {
 	banner: graphql`
 		fragment CustomPageBannerMobile_banner on CustomPageBanner {
 			title
-			subtitle
 			link {
 				...Link_link
 			}
-			imagePath
 			mobileImagePath
 		}
 	`,
