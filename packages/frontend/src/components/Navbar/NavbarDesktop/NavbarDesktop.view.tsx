@@ -377,10 +377,7 @@ export const NavbarDesktopView = ({
 						</Group>
 						<Group
 							style={{
-								flexBasis: '40%',
-								minWidth: '400px',
-								borderLeft: '1px solid lightgrey',
-								borderRight: '1px solid lightgrey',
+								width: '275px',
 								position: 'relative',
 							}}
 						>
