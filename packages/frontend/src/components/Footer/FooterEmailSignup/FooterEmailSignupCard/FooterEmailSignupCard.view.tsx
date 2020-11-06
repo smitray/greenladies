@@ -71,7 +71,7 @@ export const FooterEmailSignupCardView = () => {
 			<form onSubmit={handleSubmit}>
 				<SignupTextInput
 					type="text"
-					placeholder="E-postadress"
+					placeholder="Fyll i din email"
 					value={email}
 					onChange={e => {
 						setEmail(e.target.value);
