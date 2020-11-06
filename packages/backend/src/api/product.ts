@@ -329,6 +329,7 @@ interface CreateSimpleProductInput {
 	sku: string;
 	attributeSetId: string;
 	price: number;
+	specialPrice?: number | null;
 	categoryIds: string[];
 	quantity: number;
 	color: string;
@@ -344,6 +345,7 @@ async function createSimpleProduct({
 	sku,
 	attributeSetId,
 	price,
+	specialPrice,
 	categoryIds,
 	quantity,
 	color,
@@ -384,6 +386,7 @@ async function createSimpleProduct({
 				},
 				{ attribute_code: 'size', value: sizeValue },
 				{ attribute_code: 'url_key', value: urlKey },
+				...(specialPrice ? [{ attribute_code: 'special_price', value: specialPrice }] : []),
 			],
 		},
 	});
@@ -456,6 +459,7 @@ interface CreateProductInput {
 	configurations: {
 		size: string;
 		price: number;
+		specialPrice?: number | null;
 		quantity: number;
 	}[];
 	enabled: boolean;
@@ -555,6 +559,7 @@ export async function createProduct({
 			sku: baseSku + '-' + configuration.size,
 			attributeSetId,
 			price: configuration.price,
+			specialPrice: configuration.specialPrice,
 			categoryIds,
 			quantity: configuration.quantity,
 			color,

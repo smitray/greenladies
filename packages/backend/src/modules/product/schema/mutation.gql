@@ -1,6 +1,7 @@
 input CreateProductsProductConfigurationInput {
 	size: String!
 	price: Int!
+	specialPrice: Int
 	quantity: Int!
 }
 

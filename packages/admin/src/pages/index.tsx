@@ -24,6 +24,7 @@ const REQUIRED_COLUMNS = [
 	'name',
 	'description',
 	'short_description',
+	'special_price',
 	'price',
 	'url_key',
 	'meta_title',
@@ -67,6 +68,7 @@ interface Product {
 	configurations: {
 		size: string;
 		price: number;
+		specialPrice: number | null;
 		quantity: number;
 	}[];
 }
@@ -123,6 +125,7 @@ const Home: MyNextPage = () => {
 											...product.configurations,
 											{
 												price: parseInt(row.price, 10),
+												specialPrice: row.special_price ? parseInt(row.special_price) : null,
 												quantity: parseInt(row.qty, 10),
 												size: row.size,
 											},
@@ -149,6 +152,7 @@ const Home: MyNextPage = () => {
 										configurations: [
 											{
 												price: parseInt(row.price, 10),
+												specialPrice: row.special_price ? parseInt(row.special_price) : null,
 												quantity: parseInt(row.qty, 10),
 												size: row.size,
 											},
@@ -235,6 +239,11 @@ const Home: MyNextPage = () => {
 															key: 'price',
 														},
 														{
+															title: 'Nedsatt pris',
+															dataIndex: 'specialPrice',
+															key: 'specialPrice',
+														},
+														{
 															title: 'Antal',
 															dataIndex: 'quantity',
 															key: 'quantity',
@@ -265,6 +274,11 @@ const Home: MyNextPage = () => {
 																	title: 'Pris',
 																	dataIndex: 'price',
 																	key: 'price',
+																},
+																{
+																	title: 'Nedsatt pris',
+																	dataIndex: 'specialPrice',
+																	key: 'specialPrice',
 																},
 																{
 																	title: 'Antal',
