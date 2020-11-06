@@ -35,3 +35,15 @@ type RemoveProductFromCartPayload {
 type Mutation {
 	removeProductFromCart(input: RemoveProductFromCartInput!): RemoveProductFromCartPayload!
 }
+
+input AddCouponToCartInput {
+	code: String!
+}
+
+type AddCouponToCartPayload {
+	shoppingCart: ShoppingCart!
+}
+
+type Mutation {
+	addCouponToCart(input: AddCouponToCartInput!): AddCouponToCartPayload!
+}

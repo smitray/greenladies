@@ -1,11 +1,13 @@
 import { Injectable, ProviderScope } from '@graphql-modules/di';
 
 import {
+	addCouponToShoppingCart,
 	addProductToGuestShoppingCart,
 	createGuestShoppingCart,
 	deleteProductFromGuestShoppingCart,
 	getGuestShoppingCart,
 	getGuestShoppingCartItems,
+	getShoppingCartTotals,
 	updateGuestShoppingCartProductQuantity,
 } from '../../api/shopping-cart';
 import { ProductProvider } from '../product/product.provider';
@@ -65,5 +67,13 @@ export class ShoppingCartProvider {
 			cartId,
 			itemId,
 		});
+	}
+
+	addCouponToShoppingCart({ cartId, code }: { cartId: string; code: string }) {
+		return addCouponToShoppingCart({ cartId, code });
+	}
+
+	getShoppingCartTotals(cartId: string) {
+		return getShoppingCartTotals({ cartId });
 	}
 }

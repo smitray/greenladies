@@ -132,6 +132,26 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			return request.session.guestShoppingCart.klarna.cartSnippet;
 		},
+		grandTotal: async ({ id }, _args, { injector }) => {
+			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
+
+			return totals.subtotal_with_discount + (totals.subtotal_with_discount > 999 ? 59 : 0);
+		},
+		subTotal: async ({ id }, _args, { injector }) => {
+			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
+
+			return totals.subtotal_with_discount;
+		},
+		discountAmount: async ({ id }, _args, { injector }) => {
+			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
+
+			return -totals.discount_amount;
+		},
+		shippingCost: async ({ id }, _args, { injector }) => {
+			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
+
+			return totals.subtotal_with_discount > 999 ? 59 : 0;
+		},
 	},
 };
 

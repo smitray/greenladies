@@ -95,6 +95,28 @@ const resolvers: ShoppingCartModuleResolversType = {
 				success,
 			};
 		},
+		addCouponToCart: async (_parent, { input }, { injector, request }) => {
+			if (!request.session) {
+				throw new Error('There is no session available');
+			}
+
+			if (!request.session.guestShoppingCart) {
+				throw new Error('There is no cart available');
+			}
+
+			const cartId = request.session.guestShoppingCart.cartId;
+
+			await injector.get(ShoppingCartProvider).addCouponToShoppingCart({
+				cartId,
+				code: input.code,
+			});
+
+			return {
+				shoppingCart: {
+					id: cartId,
+				},
+			};
+		},
 	},
 };
 

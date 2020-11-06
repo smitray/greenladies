@@ -439,3 +439,18 @@ export async function deleteProductFromGuestShoppingCart({ cartId, itemId }: { c
 
 	return data;
 }
+
+export async function addCouponToShoppingCart({ cartId, code }: { cartId: string; code: string }) {
+	const { data } = await magentoGuestRequester.put<boolean>(`/rest/default/V1/guest-carts/${cartId}/coupons/${code}`);
+
+	return data;
+}
+
+export async function getShoppingCartTotals({ cartId }: { cartId: string }) {
+	const { data } = await magentoGuestRequester.put<{
+		subtotal_with_discount: number;
+		discount_amount: number;
+	}>(`/rest/default/V1/guest-carts/${cartId}/totals`);
+
+	return data;
+}

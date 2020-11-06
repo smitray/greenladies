@@ -1,5 +1,9 @@
 type ShoppingCart {
 	items(first: Int, after: String, last: Int, before: String): ShoppingCartItemConnection!
+	grandTotal: Float!
+	subTotal: Float!
+	discountAmount: Float!
+	shippingCost: Float!
 	klarnaCartSnippet: String!
 	klarnaConfirmSnippet: String!
 }
