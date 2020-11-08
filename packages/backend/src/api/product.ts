@@ -192,7 +192,7 @@ async function transformConfigurableProduct(product: MagentoFullProduct): Promis
 		},
 		description: {
 			short: getCustomAttribute(product.id, product.custom_attributes, 'short_description', false),
-			full: getCustomAttribute(product.id, product.custom_attributes, 'description'),
+			full: getCustomAttribute(product.id, product.custom_attributes, 'description', false),
 		},
 		washingDescription: getCustomAttribute(product.id, product.custom_attributes, 'washing_description', false),
 		condition,
