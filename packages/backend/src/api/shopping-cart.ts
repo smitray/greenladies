@@ -447,8 +447,8 @@ export async function addCouponToShoppingCart({ cartId, code }: { cartId: string
 }
 
 export async function getShoppingCartTotals({ cartId }: { cartId: string }) {
-	const { data } = await magentoGuestRequester.put<{
-		subtotal_with_discount: number;
+	const { data } = await magentoGuestRequester.get<{
+		subtotal: number;
 		discount_amount: number;
 	}>(`/rest/default/V1/guest-carts/${cartId}/totals`);
 
