@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Head from 'next/head';
 import Link from 'next/link';
+import { Collapse } from 'react-collapse';
 import { FaTrashAlt } from 'react-icons/fa';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 import { fetchQuery } from 'react-relay';
 import { useLazyLoadQuery } from 'react-relay/hooks';
 import styled from 'styled-components';
 
 import { useWindowDimensions } from '../hooks/use-window-dimensions';
 import { MyNextPage } from '../lib/types';
-import { useRemoveFromCartMutation, useUpdateCartAmountMutation } from '../mutations/shopping-cart';
+import {
+	useAddCouponToCartMutation,
+	useRemoveFromCartMutation,
+	useUpdateCartAmountMutation,
+} from '../mutations/shopping-cart';
 import { CART_QUERY, CartQuery } from '../queries/cart';
 import { CenterWrapper } from '../styles/center-wrapper';
+import { IconWrapper } from '../styles/icon-wrapper';
 import { NORMAL_TABLET_SIZE } from '../utils/device-size';
 
 const SomeKindOfWrapper = styled.div`
@@ -21,52 +28,122 @@ const SomeKindOfWrapper = styled.div`
 `;
 
 interface CustomSummarProps {
+	grandTotal: number;
+	subTotal: number;
+	discountAmount: number;
 	shippingCost: number;
-	itemCost: number;
 }
 
-const CostSummary = ({ itemCost, shippingCost }: CustomSummarProps) => (
-	<React.Fragment>
-		<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Totalsumma</h1>
-		<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
-			<div>Deltotal</div>
-			<div>{itemCost.toFixed(2).replace(',', '.')} kr</div>
-		</div>
-		<div
-			style={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				borderBottom: '1px solid lightgrey',
-				padding: '12px 0',
-			}}
-		>
-			<div>Frakt</div>
-			<div>{shippingCost === 0 ? 'fri frakt' : `${shippingCost.toFixed(2).replace(',', '.')} kr`}</div>
-		</div>
-		<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 24px 0' }}>
-			<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
-			<div style={{ fontWeight: 'bold' }}>{(itemCost + shippingCost).toFixed(2).replace(',', '.')} kr</div>
-		</div>
-		<Link href="/checkout" passHref>
-			<a
+const CostSummary = ({ grandTotal, subTotal, discountAmount, shippingCost }: CustomSummarProps) => {
+	const [coupon, setCoupon] = useState('');
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [couponInputOpen, setCouponInputOpen] = useState(false);
+
+	const { commit: addCouponToCart } = useAddCouponToCartMutation();
+
+	return (
+		<React.Fragment>
+			<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Totalsumma</h1>
+			<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
+				<div>Deltotal</div>
+				<div>{subTotal.toFixed(2).replace(',', '.')} kr</div>
+			</div>
+			{discountAmount > 0 && (
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						padding: '12px 0',
+					}}
+				>
+					<div>Rabatt</div>
+					<div>-{discountAmount.toFixed(2).replace(',', '.')} kr</div>
+				</div>
+			)}
+			<div
 				style={{
-					display: 'block',
-					textDecoration: 'none',
-					background: '#024b3f',
-					width: '100%',
-					padding: '12px',
-					color: 'white',
-					fontWeight: 'bold',
-					cursor: 'pointer',
-					fontSize: '14px',
-					textAlign: 'center',
+					display: 'flex',
+					justifyContent: 'space-between',
+					borderBottom: '1px solid lightgrey',
+					padding: '12px 0',
 				}}
 			>
-				GÅ TILL KASSAN
-			</a>
-		</Link>
-	</React.Fragment>
-);
+				<div>Frakt</div>
+				<div>{shippingCost === 0 ? 'fri frakt' : `${shippingCost.toFixed(2).replace(',', '.')} kr`}</div>
+			</div>
+			<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
+				<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
+				<div style={{ fontWeight: 'bold' }}>{grandTotal.toFixed(2).replace(',', '.')} kr</div>
+			</div>
+			<div>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						cursor: 'pointer',
+						padding: '12px 0',
+					}}
+					onClick={() => setCouponInputOpen(o => !o)}
+				>
+					<span>Lägg till rabattkod</span>
+					<IconWrapper size="20px">{couponInputOpen ? <FiMinus size="20px" /> : <FiPlus size="20px" />}</IconWrapper>
+				</div>
+				<Collapse isOpened={couponInputOpen}>
+					<div style={{ paddingBottom: '12px' }}>
+						<div style={{ display: 'flex' }}>
+							<input
+								style={{ padding: '8px', marginRight: '8px', flexGrow: 1, borderRadius: 0, border: '1px solid black' }}
+								type="text"
+								placeholder="Fyll i din rabattkod"
+								value={coupon}
+								onChange={e => {
+									setErrorMessage(null);
+									setCoupon(e.target.value);
+								}}
+							/>
+							<button
+								style={{
+									padding: '8px 16px',
+									background: 'white',
+									border: '1px solid black',
+									fontWeight: 'bold',
+									cursor: 'pointer',
+								}}
+								onClick={() => {
+									addCouponToCart(coupon)
+										.then(() => setCoupon(''))
+										.catch(() => setErrorMessage('Kunde inte lägga till rabattkoden'));
+								}}
+							>
+								Lägg till
+							</button>
+						</div>
+						{errorMessage && <div style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errorMessage}</div>}
+					</div>
+				</Collapse>
+			</div>
+			<Link href="/checkout" passHref>
+				<a
+					style={{
+						display: 'block',
+						textDecoration: 'none',
+						background: '#024b3f',
+						width: '100%',
+						padding: '12px',
+						color: 'white',
+						fontWeight: 'bold',
+						cursor: 'pointer',
+						fontSize: '14px',
+						textAlign: 'center',
+					}}
+				>
+					GÅ TILL KASSAN
+				</a>
+			</Link>
+		</React.Fragment>
+	);
+};
 
 const Cart: MyNextPage = () => {
 	const { shoppingCart } = useLazyLoadQuery<CartQuery>(CART_QUERY, {}, { fetchPolicy: 'store-only' });
@@ -75,13 +152,6 @@ const Cart: MyNextPage = () => {
 
 	const { commit: removeFromCart } = useRemoveFromCartMutation();
 	const { commit: updateCartAmount } = useUpdateCartAmountMutation();
-
-	const itemCost = shoppingCart.items.edges.reduce(
-		(prev, { node: item }) => prev + item.amount * item.product.specialPrice,
-		0,
-	);
-	const shippingCost = itemCost > 999 ? 0 : 59;
-	const numberOfItems = shoppingCart.items.edges.reduce((prev, { node: item }) => prev + item.amount, 0);
 
 	return (
 		<React.Fragment>
@@ -93,7 +163,7 @@ const Cart: MyNextPage = () => {
 				<SomeKindOfWrapper>
 					<div style={{ flexGrow: 1 }}>
 						<div>
-							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Varukorg ({numberOfItems})</h1>
+							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Varukorg</h1>
 							<ul style={{ padding: '0', margin: '0', listStyle: 'none' }}>
 								{shoppingCart.items.edges.map(({ node: item }) => {
 									return (
@@ -200,7 +270,12 @@ const Cart: MyNextPage = () => {
 						</div>
 						{windowWidth <= 961 && (
 							<div style={{ padding: '48px 0 24px 0' }}>
-								<CostSummary itemCost={itemCost} shippingCost={shippingCost} />
+								<CostSummary
+									grandTotal={shoppingCart.grandTotal}
+									subTotal={shoppingCart.subTotal}
+									discountAmount={shoppingCart.discountAmount}
+									shippingCost={shoppingCart.shippingCost}
+								/>
 							</div>
 						)}
 						<div style={{ background: 'white', padding: '24px 0' }}>
@@ -222,7 +297,12 @@ const Cart: MyNextPage = () => {
 						<div
 							style={{ background: 'white', padding: '24px', marginLeft: '24px', flexBasis: '360px', flexShrink: 0 }}
 						>
-							<CostSummary itemCost={itemCost} shippingCost={shippingCost} />
+							<CostSummary
+								grandTotal={shoppingCart.grandTotal}
+								subTotal={shoppingCart.subTotal}
+								discountAmount={shoppingCart.discountAmount}
+								shippingCost={shoppingCart.shippingCost}
+							/>
 						</div>
 					)}
 				</SomeKindOfWrapper>

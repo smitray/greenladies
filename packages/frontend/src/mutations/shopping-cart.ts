@@ -2,6 +2,7 @@ import { graphql } from 'react-relay';
 import { useMutation } from 'react-relay/hooks';
 import { ConnectionHandler } from 'relay-runtime';
 
+import { shoppingCartAddCouponToCartMutation } from './__generated__/shoppingCartAddCouponToCartMutation.graphql';
 import { shoppingCartAddProductToCartMutation } from './__generated__/shoppingCartAddProductToCartMutation.graphql';
 import { shoppingCartRemoveProductFromCartMutation } from './__generated__/shoppingCartRemoveProductFromCartMutation.graphql';
 import { shoppingCartUpdateCartAmountMutation } from './__generated__/shoppingCartUpdateCartAmountMutation.graphql';
@@ -9,6 +10,13 @@ import { shoppingCartUpdateCartAmountMutation } from './__generated__/shoppingCa
 const ADD_PRODUCT_TO_CART = graphql`
 	mutation shoppingCartAddProductToCartMutation($productId: ID!) {
 		addProductToCart(input: { product: { id: $productId }, quantity: 1 }) {
+			cart {
+				id
+				grandTotal
+				subTotal
+				discountAmount
+				shippingCost
+			}
 			shoppingCartItemEdge {
 				node {
 					id
@@ -68,6 +76,13 @@ export const useAddToCartMutation = () => {
 const UPDATE_CART_AMOUNT = graphql`
 	mutation shoppingCartUpdateCartAmountMutation($itemId: ID!, $quantity: Int!) {
 		updateProductAmountInCart(input: { itemId: $itemId, quantity: $quantity }) {
+			cart {
+				id
+				grandTotal
+				subTotal
+				discountAmount
+				shippingCost
+			}
 			shoppingCartItemEdge {
 				node {
 					id
@@ -98,7 +113,13 @@ export const useUpdateCartAmountMutation = () => {
 const REMOVE_PRODUCT_FROM_CART = graphql`
 	mutation shoppingCartRemoveProductFromCartMutation($itemId: ID!) {
 		removeProductFromCart(input: { itemId: $itemId }) {
-			success
+			cart {
+				id
+				grandTotal
+				subTotal
+				discountAmount
+				shippingCost
+			}
 		}
 	}
 `;
@@ -136,6 +157,39 @@ export const useRemoveFromCartMutation = () => {
 					onError: () => {
 						reject();
 					},
+				}),
+			);
+		},
+		pending,
+	};
+};
+
+const ADD_COUPON_TO_CART = graphql`
+	mutation shoppingCartAddCouponToCartMutation($coupon: String!) {
+		addCouponToCart(input: { code: $coupon }) {
+			cart {
+				id
+				grandTotal
+				subTotal
+				discountAmount
+				shippingCost
+			}
+		}
+	}
+`;
+
+export const useAddCouponToCartMutation = () => {
+	const [commitAddCoupon, pending] = useMutation<shoppingCartAddCouponToCartMutation>(ADD_COUPON_TO_CART);
+
+	return {
+		commit: (coupon: string) => {
+			return new Promise((resolve, reject) =>
+				commitAddCoupon({
+					variables: {
+						coupon,
+					},
+					onCompleted: () => resolve(),
+					onError: () => reject(),
 				}),
 			);
 		},

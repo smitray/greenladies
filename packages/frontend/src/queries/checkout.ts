@@ -16,6 +16,10 @@ export const CHECKOUT_QUERY = graphql`
 				}
 			}
 			klarnaCartSnippet
+			grandTotal
+			subTotal
+			discountAmount
+			shippingCost
 		}
 	}
 `;

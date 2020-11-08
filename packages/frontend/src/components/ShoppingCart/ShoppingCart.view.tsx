@@ -17,9 +17,6 @@ const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 	const { commit: removeFromCart } = useRemoveFromCartMutation();
 	const { close: closeShoppingCartModal } = useShoppingCartModal();
 
-	const itemCost = cart.items.edges.reduce((prev, { node: item }) => prev + item.amount * item.product.specialPrice, 0);
-	const shippingCost = itemCost > 999 ? 0 : 59;
-
 	return (
 		<React.Fragment>
 			<div style={{ overflowY: 'auto', flexGrow: 1 }}>
@@ -114,17 +111,21 @@ const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 				<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
 					<div style={{ fontSize: '16px' }}>Frakt</div>
 					<div style={{ fontSize: '16px' }}>
-						{shippingCost === 0 ? 'fri frakt' : `${shippingCost.toFixed(2).replace('.', ',')} kr`}
+						{cart.shippingCost === 0 ? 'fri frakt' : `${cart.shippingCost.toFixed(2).replace('.', ',')} kr`}
 					</div>
 				</div>
+				{cart.discountAmount > 0 && (
+					<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+						<div style={{ fontSize: '16px' }}>Rabatt</div>
+						<div style={{ fontSize: '16px' }}>-{cart.discountAmount.toFixed(2).replace('.', ',')} kr</div>
+					</div>
+				)}
 				<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
 					<div>
 						<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Totalsumma</span>
 						<span style={{ fontSize: '14px', color: 'lightgrey', marginLeft: '8px' }}>(inkl. moms)</span>
 					</div>
-					<div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-						{(itemCost + shippingCost).toFixed(2).replace('.', ',')} kr
-					</div>
+					<div style={{ fontSize: '18px', fontWeight: 'bold' }}>{cart.grandTotal.toFixed(2).replace('.', ',')} kr</div>
 				</div>
 				{cart.items.totalCount === 0 ? (
 					<div
@@ -141,7 +142,7 @@ const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 							textAlign: 'center',
 						}}
 					>
-						{isMobile ? 'TILL VARUKORGEN' : 'TILL KASSAN'}
+						{isMobile ? 'TILL KASSAN' : 'TILL VARUKORGEN'}
 					</div>
 				) : (
 					<Link href={isMobile ? '/checkout' : '/cart'} passHref>
@@ -160,7 +161,7 @@ const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 							}}
 							onClick={() => closeShoppingCartModal()}
 						>
-							{isMobile ? 'TILL VARUKORGEN' : 'TILL KASSAN'}
+							{isMobile ? 'TILL KASSAN' : 'TILL VARUKORGEN'}
 						</a>
 					</Link>
 				)}
@@ -172,6 +173,7 @@ const ShoppingCartView = ({ cart, isMobile }: ShoppingCartViewProps) => {
 export default createFragmentContainer(ShoppingCartView, {
 	cart: graphql`
 		fragment ShoppingCart_cart on ShoppingCart {
+			id
 			items(first: 10000) @connection(key: "ShoppingCart_items") {
 				edges {
 					node {
@@ -192,6 +194,9 @@ export default createFragmentContainer(ShoppingCartView, {
 				}
 				totalCount
 			}
+			discountAmount
+			grandTotal
+			shippingCost
 		}
 	`,
 });

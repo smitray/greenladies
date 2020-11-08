@@ -59,7 +59,7 @@ const NavbarMobileShoppingCartModalView = ({ cart, open, onCloseRequest }: Navba
 						</IconWrapper>
 					</CloseButton>
 				</Header>
-				<ShoppingCart cart={cart} />
+				<ShoppingCart cart={cart} isMobile />
 			</div>
 		</Drawer>
 	);

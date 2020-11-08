@@ -31,6 +31,9 @@ const resolvers: ShoppingCartModuleResolversType = {
 			});
 
 			return {
+				cart: {
+					id: cartId,
+				},
 				shoppingCartItemEdge: {
 					node: {
 						id: item.item_id.toString(),
@@ -63,6 +66,9 @@ const resolvers: ShoppingCartModuleResolversType = {
 			const product = await injector.get(ProductProvider).getProductConfiguration({ sku: item.sku });
 
 			return {
+				cart: {
+					id: cartId,
+				},
 				shoppingCartItemEdge: {
 					node: {
 						id: item.item_id.toString(),
@@ -86,13 +92,13 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const cartId = request.session.guestShoppingCart.cartId;
 
-			const success = await injector.get(ShoppingCartProvider).deleteProductFromGuestShoppingCart({
+			await injector.get(ShoppingCartProvider).deleteProductFromGuestShoppingCart({
 				cartId,
 				itemId: fromGlobalId(input.itemId).id,
 			});
 
 			return {
-				success,
+				cart: { id: cartId },
 			};
 		},
 		addCouponToCart: async (_parent, { input }, { injector, request }) => {
@@ -106,16 +112,21 @@ const resolvers: ShoppingCartModuleResolversType = {
 
 			const cartId = request.session.guestShoppingCart.cartId;
 
-			await injector.get(ShoppingCartProvider).addCouponToShoppingCart({
-				cartId,
-				code: input.code,
-			});
+			try {
+				await injector.get(ShoppingCartProvider).addCouponToShoppingCart({
+					cartId,
+					code: input.code,
+				});
 
-			return {
-				shoppingCart: {
-					id: cartId,
-				},
-			};
+				return {
+					cart: {
+						id: cartId,
+					},
+				};
+			} catch (error) {
+				console.log(error);
+				throw new Error('Could not apply coupon on cart');
+			}
 		},
 	},
 };

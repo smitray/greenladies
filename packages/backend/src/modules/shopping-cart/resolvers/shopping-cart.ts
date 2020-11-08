@@ -3,12 +3,14 @@ import axios from 'axios';
 import { ShoppingCartModuleResolversType } from '..';
 import { getRedisCache } from '../../../redis-connection';
 import { base64 } from '../../../utils/base64';
+import { toGlobalId } from '../../../utils/global-id';
 import { connectionFromArray } from '../../../utils/relay';
 import { ProductProvider } from '../../product/product.provider';
 import { ShoppingCartProvider } from '../shopping-cart.provider';
 
 const resolvers: ShoppingCartModuleResolversType = {
 	ShoppingCart: {
+		id: ({ id }) => toGlobalId('ShoppingCart', id),
 		items: async ({ id }, args, { injector }) => {
 			const items = await injector.get(ShoppingCartProvider).getGuestShoppingCartItems(id);
 
@@ -135,12 +137,12 @@ const resolvers: ShoppingCartModuleResolversType = {
 		grandTotal: async ({ id }, _args, { injector }) => {
 			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
 
-			return totals.subtotal_with_discount + (totals.subtotal_with_discount > 999 ? 59 : 0);
+			return totals.subtotal_with_discount + (totals.subtotal_with_discount > 999 ? 0 : 59);
 		},
 		subTotal: async ({ id }, _args, { injector }) => {
 			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
 
-			return totals.subtotal_with_discount;
+			return totals.subtotal;
 		},
 		discountAmount: async ({ id }, _args, { injector }) => {
 			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
@@ -150,7 +152,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 		shippingCost: async ({ id }, _args, { injector }) => {
 			const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(id);
 
-			return totals.subtotal_with_discount > 999 ? 59 : 0;
+			return totals.subtotal_with_discount > 999 ? 0 : 59;
 		},
 	},
 };
