@@ -446,11 +446,145 @@ export async function addCouponToShoppingCart({ cartId, code }: { cartId: string
 	return data;
 }
 
+interface GuestCartTotals {
+	grand_total: number;
+	base_grand_total: number;
+	subtotal: number;
+	base_subtotal: number;
+	discount_amount: number;
+	base_discount_amount: number;
+	subtotal_with_discount: number;
+	base_subtotal_with_discount: number;
+	shipping_amount: number;
+	base_shipping_amount: number;
+	shipping_discount_amount: number;
+	base_shipping_discount_amount: number;
+	tax_amount: number;
+	base_tax_amount: number;
+	weee_tax_applied_amount: number;
+	shipping_tax_amount: number;
+	base_shipping_tax_amount: number;
+	subtotal_incl_tax: number;
+	base_subtotal_incl_tax: number;
+	shipping_incl_tax: number;
+	base_shipping_incl_tax: number;
+	base_currency_code: string;
+	quote_currency_code: string;
+	coupon_code: string;
+	items_qty: number;
+	items: [
+		{
+			item_id: number;
+			price: number;
+			base_price: number;
+			qty: number;
+			row_total: number;
+			base_row_total: number;
+			row_total_with_discount: number;
+			tax_amount: number;
+			base_tax_amount: number;
+			tax_percent: number;
+			discount_amount: number;
+			base_discount_amount: number;
+			discount_percent: number;
+			price_incl_tax: number;
+			base_price_incl_tax: number;
+			row_total_incl_tax: number;
+			base_row_total_incl_tax: number;
+			options: string;
+			weee_tax_applied_amount: number;
+			weee_tax_applied: string;
+			extension_attributes: {
+				negotiable_quote_item_totals: {
+					cost: number;
+					catalog_price: number;
+					base_catalog_price: number;
+					catalog_price_incl_tax: number;
+					base_catalog_price_incl_tax: number;
+					cart_price: number;
+					base_cart_price: number;
+					cart_tax: number;
+					base_cart_tax: number;
+					cart_price_incl_tax: number;
+					base_cart_price_incl_tax: number;
+					extension_attributes: any;
+				};
+			};
+			name: string;
+		},
+	];
+	total_segments: {
+		code: string;
+		title: string;
+		value: number;
+		area: string;
+		extension_attributes: {
+			tax_grandtotal_details: {
+				amount: number;
+				rates: [
+					{
+						percent: string;
+						title: string;
+					},
+				];
+				group_id: number;
+			}[];
+			gift_cards: string;
+			gw_order_id: string;
+			gw_item_ids: [string];
+			gw_allow_gift_receipt: string;
+			gw_add_card: string;
+			gw_price: string;
+			gw_base_price: string;
+			gw_items_price: string;
+			gw_items_base_price: string;
+			gw_card_price: string;
+			gw_card_base_price: string;
+			gw_base_tax_amount: string;
+			gw_tax_amount: string;
+			gw_items_base_tax_amount: string;
+			gw_items_tax_amount: string;
+			gw_card_base_tax_amount: string;
+			gw_card_tax_amount: string;
+			gw_price_incl_tax: string;
+			gw_base_price_incl_tax: string;
+			gw_card_price_incl_tax: string;
+			gw_card_base_price_incl_tax: string;
+			gw_items_price_incl_tax: string;
+			gw_items_base_price_incl_tax: string;
+			vertex_tax_calculation_messages: string[];
+		};
+	}[];
+	extension_attributes: {
+		coupon_label: string;
+		negotiable_quote_totals: {
+			items_count: number;
+			quote_status: string;
+			created_at: string;
+			updated_at: string;
+			customer_group: number;
+			base_to_quote_rate: number;
+			cost_total: number;
+			base_cost_total: number;
+			original_total: number;
+			base_original_total: number;
+			original_tax: number;
+			base_original_tax: number;
+			original_price_incl_tax: number;
+			base_original_price_incl_tax: number;
+			negotiated_price_type: number;
+			negotiated_price_value: number;
+		};
+		base_customer_balance_amount: number;
+		customer_balance_amount: number;
+		reward_points_balance: number;
+		reward_currency_amount: number;
+		base_reward_currency_amount: number;
+	};
+}
+
 export async function getShoppingCartTotals({ cartId }: { cartId: string }) {
-	const { data } = await magentoGuestRequester.get<{
-		subtotal: number;
-		discount_amount: number;
-	}>(`/rest/default/V1/guest-carts/${cartId}/totals`);
+	const { data } = await magentoGuestRequester.get<GuestCartTotals>(`/rest/default/V1/guest-carts/${cartId}/totals`);
 
 	return data;
 }

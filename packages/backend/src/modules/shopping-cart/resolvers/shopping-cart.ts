@@ -43,21 +43,31 @@ const resolvers: ShoppingCartModuleResolversType = {
 			if (!request.session.guestShoppingCart.klarna) {
 				try {
 					const items = await injector.get(ShoppingCartProvider).getGuestShoppingCartItems(cartId);
-					const orderItems = items.map(item => {
-						const totalAmount = item.price * item.qty * 100;
-						const taxAmount = Math.round(totalAmount - (totalAmount * 10000) / (10000 + 2500));
+					const totals = await injector.get(ShoppingCartProvider).getShoppingCartTotals(cartId);
 
+					const TAX_RATE = 2500; // 25%
+
+					const orderItems = totals.items.map(totalItem => {
+						const totalAmount = Math.round((totalItem.row_total - totalItem.discount_amount) * 100);
+						const taxAmount = Math.round(totalAmount - (totalAmount * 10000) / (10000 + TAX_RATE));
+
+						const item = items.find(i => (i.item_id = totalItem.item_id));
+						if (!item) {
+							throw new Error('Item is in totals but not in items');
+						}
 						return {
 							type: 'physical',
 							reference: item.sku,
 							name: item.name.replace('\n', ''),
-							quantity: item.qty,
-							unit_price: item.price * 100,
-							tax_rate: 2500,
+							quantity: totalItem.qty,
+							unit_price: totalItem.price * 100,
+							total_discount_amount: Math.round(totalItem.discount_amount * 100),
+							tax_rate: TAX_RATE,
 							total_amount: totalAmount,
 							total_tax_amount: taxAmount,
 						};
 					});
+
 					const orderAmount = orderItems.reduce((prev, current) => {
 						return prev + current.total_amount;
 					}, 0);
@@ -128,6 +138,7 @@ const resolvers: ShoppingCartModuleResolversType = {
 						cartSnippet: order.html_snippet,
 					};
 				} catch (error) {
+					console.log(error);
 					throw new Error('Could not create Klarna order');
 				}
 			}

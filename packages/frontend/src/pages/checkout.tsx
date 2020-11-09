@@ -71,12 +71,12 @@ const Checkout: MyNextPage = () => {
 							<h1 style={{ fontSize: '24px', margin: '0 0 12px 0' }}>Översikt</h1>
 							<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
 								<div>Deltotal</div>
-								<div>{shoppingCart.subTotal.toFixed(2).replace(',', '.')} kr</div>
+								<div>{shoppingCart.subTotal.toFixed(2).replace('.', ',')} kr</div>
 							</div>
 							{shoppingCart.discountAmount > 0 && (
 								<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }}>
 									<div>Rabatt</div>
-									<div>-{shoppingCart.discountAmount.toFixed(2).replace(',', '.')} kr</div>
+									<div>-{shoppingCart.discountAmount.toFixed(2).replace('.', ',')} kr</div>
 								</div>
 							)}
 							<div
@@ -96,7 +96,7 @@ const Checkout: MyNextPage = () => {
 							</div>
 							<div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 24px 0' }}>
 								<div style={{ fontWeight: 'bold' }}>Totalsumma (inkl. moms)</div>
-								<div style={{ fontWeight: 'bold' }}>{shoppingCart.grandTotal.toFixed(2).replace(',', '.')} kr</div>
+								<div style={{ fontWeight: 'bold' }}>{shoppingCart.grandTotal.toFixed(2).replace('.', ',')} kr</div>
 							</div>
 						</div>
 					)}
