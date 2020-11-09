@@ -1,6 +1,7 @@
 import 'rc-slider/assets/index.css';
 import 'rc-drawer/assets/index.css';
 import 'react-photoswipe/lib/photoswipe.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import React from 'react';
 

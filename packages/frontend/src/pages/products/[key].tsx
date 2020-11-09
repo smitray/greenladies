@@ -11,14 +11,16 @@ import { ProductImageGallery } from '../../components/ProductImageGallery';
 import { MyNextPage } from '../../lib/types';
 import { PRODUCT_QUERY, ProductQuery } from '../../queries/product';
 import { CenterWrapper } from '../../styles/center-wrapper';
+import { HideOnMinSize, ShowOnMinSize } from '../../styles/responsive';
 
 const SomeWrapper = styled.div`
 	display: grid;
 	grid-template-columns: 1fr;
-	padding: 24px 0;
 	gap: 24px;
+	padding-bottom: 24px;
 
 	@media (min-width: 641px) {
+		padding: 24px 0;
 		grid-template-columns: 1fr 1fr;
 	}
 `;
@@ -42,16 +44,31 @@ const Category: MyNextPage<Props> = ({ productUrlKey }) => {
 				<meta name="description" content={product.metaDescription} />
 				<meta name="robots" content="index,follow" />
 			</Head>
-			<CenterWrapper>
+			<HideOnMinSize size="m">
 				<SomeWrapper>
 					<div>
 						<ProductImageGallery product={product} />
 					</div>
 					<div>
-						<ProductDetails product={product} />
+						<CenterWrapper>
+							<ProductDetails product={product} />
+						</CenterWrapper>
 					</div>
 				</SomeWrapper>
-			</CenterWrapper>
+			</HideOnMinSize>
+			<ShowOnMinSize size="m">
+				<CenterWrapper>
+					<SomeWrapper>
+						<div>
+							<ProductImageGallery product={product} />
+						</div>
+						<div>
+							<ProductDetails product={product} />
+						</div>
+					</SomeWrapper>
+				</CenterWrapper>
+			</ShowOnMinSize>
+
 			{product.relatedProducts.totalCount > 0 && (
 				<React.Fragment>
 					<CenterWrapper style={{ marginTop: '24px' }}>
