@@ -118,7 +118,7 @@ export async function getProductStock(sku: string) {
 		stock_item: {
 			qty: number;
 		};
-	}>(`/rest/default/V1/stockStatuses/${sku}`);
+	}>(`/rest/default/V1/stockStatuses/${encodeURIComponent(sku)}`);
 
 	return {
 		salableQuantity: data.qty,
