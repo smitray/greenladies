@@ -17,6 +17,7 @@ import { GdprBanner } from '../components/GdprBanner';
 import { MessageBar } from '../components/MessageBar';
 import { Navbar } from '../components/Navbar';
 import { ShoppingCartModalProvider } from '../contexts/shopping-cart-model-context';
+import { usePixelPageview } from '../hooks/use-pixel-pageview';
 import { createRelayEnvironment } from '../lib/relay-environment';
 import { APP_QUERY, AppQuery } from '../queries/app';
 
@@ -49,6 +50,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const MyApp: MyAppType = ({ Component, pageProps, serverState }) => {
+	usePixelPageview();
 	const environment = createRelayEnvironment(serverState);
 
 	return (
