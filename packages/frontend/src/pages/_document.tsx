@@ -4,6 +4,7 @@ import Document, { DocumentContext, DocumentInitialProps, Head, Html, Main, Next
 import { ServerStyleSheet } from 'styled-components';
 
 import { FB_PIXEL_ID } from '../lib/facebook-pixel';
+import { GA_TRACKING_ID } from '../lib/google-tag';
 
 class MyDocument extends Document {
 	static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
@@ -48,8 +49,23 @@ class MyDocument extends Document {
                 t.src=v;s=b.getElementsByTagName(e)[0];
                 s.parentNode.insertBefore(t,s)}(window, document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', ${FB_PIXEL_ID});
+                fbq('init', '${FB_PIXEL_ID}');
               `,
+						}}
+					/>
+					{/* Global Site Tag (gtag.js) - Google Analytics */}
+					<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
+					<script
+						dangerouslySetInnerHTML={{
+							__html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_TRACKING_ID}', {
+              page_path: window.location.pathname,
+            });
+          `,
 						}}
 					/>
 				</Head>
