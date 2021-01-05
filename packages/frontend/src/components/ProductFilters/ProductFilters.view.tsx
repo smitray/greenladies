@@ -73,6 +73,8 @@ function colorCodeToSquare(code: string) {
 			return <ColorSquare color="white" />;
 		case 'yellow':
 			return <ColorSquare color="yellow" />;
+		case 'transparent':
+			return <ColorSquare color="transparent" />;
 		default:
 			return <ColorSquare color="white" />;
 	}

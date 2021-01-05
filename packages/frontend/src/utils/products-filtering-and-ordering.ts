@@ -35,6 +35,7 @@ const colorCodeDisplayMapping: Record<string, string> = {
 	purple: 'Lila',
 	red: 'Röd',
 	silver: 'Silver',
+	transparent: 'Transparent',
 	white: 'Vit',
 	yellow: 'Gul',
 };
