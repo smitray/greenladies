@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { CenterWrapper } from '../../styles/center-wrapper';
 import { ProductCard } from '../ProductCard';
 
 import { ProductCarousel_products } from './__generated__/ProductCarousel_products.graphql';
-
-const CAROUSEL_ITEMS_IN_VIEW = 4;
-const UPPER_ITEM_INDEX_OFFSET = CAROUSEL_ITEMS_IN_VIEW - 1;
 
 const ProductsContainer = styled.ul`
 	margin: 0;
@@ -34,8 +32,25 @@ interface ProductCarouselViewProps {
 	products: ProductCarousel_products;
 }
 
+function calculateItemsInView(windowWidth: number) {
+	if (windowWidth >= 961) {
+		return 4;
+	}
+
+	if (windowWidth >= 641) {
+		return 3;
+	}
+
+	return 2;
+}
+
 const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
+	const { width: windowWidth } = useWindowDimensions();
 	const [index, setIndex] = useState(0);
+	const [carouselItemsInView, setCarouselItemsInView] = useState(calculateItemsInView(windowWidth));
+	useEffect(() => {
+		setCarouselItemsInView(calculateItemsInView(windowWidth));
+	}, [windowWidth]);
 
 	return (
 		<div>
@@ -87,7 +102,7 @@ const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
 							</div>
 						</button>
 					)}
-					{index + UPPER_ITEM_INDEX_OFFSET < products.edges.length - 1 && (
+					{index + carouselItemsInView < products.edges.length && (
 						<button
 							style={{
 								position: 'absolute',
