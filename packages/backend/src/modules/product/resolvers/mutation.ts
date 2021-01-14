@@ -9,6 +9,7 @@ const ALLOWED_COLORS = [
 	'black',
 	'blue',
 	'brown',
+	'copper',
 	'darkgreen',
 	'gold',
 	'green',

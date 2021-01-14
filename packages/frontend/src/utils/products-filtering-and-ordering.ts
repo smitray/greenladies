@@ -25,6 +25,7 @@ const colorCodeDisplayMapping: Record<string, string> = {
 	black: 'Svart',
 	blue: 'Blå',
 	brown: 'Brun',
+	copper: 'Koppar',
 	darkgreen: 'Mörkgrön',
 	gold: 'Guld',
 	green: 'Grön',

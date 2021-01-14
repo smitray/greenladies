@@ -42,6 +42,8 @@ function colorCodeToSquare(code: string) {
 			return <ColorSquare color="blue" />;
 		case 'brown':
 			return <ColorSquare color="brown" />;
+		case 'copper':
+			return <ColorSquare color="#b87333" />;
 		case 'darkgreen':
 			return <ColorSquare color="darkgreen" />;
 		case 'gold':
