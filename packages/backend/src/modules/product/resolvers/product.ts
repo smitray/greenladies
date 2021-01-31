@@ -42,6 +42,7 @@ const resolvers: ProductModuleResolversType = {
 			let description = product.description.full;
 			description = description.replace(/<p>/g, '');
 			description = description.replace(/<\/p>/g, '');
+			description = description.replace(/\*/g, '\n*');
 			return description;
 		},
 		shortDescription: async ({ id }, _args, { injector }) => {
