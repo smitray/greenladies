@@ -92,7 +92,7 @@ export function getRedisCache() {
 							return reject(new Error('Something went wrong'));
 						}
 
-						return resolve();
+						return resolve(undefined);
 					},
 				);
 			});
@@ -112,7 +112,7 @@ export function getRedisCache() {
 										reject(new Error('Key does not exist'));
 									}
 
-									resolve();
+									resolve(undefined);
 								});
 							}),
 					),

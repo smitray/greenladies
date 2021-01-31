@@ -23,10 +23,10 @@ glob('src/modules/**/*.gql', async (error, files) => {
 							reject(error);
 						}
 
-						resolve();
+						resolve(undefined);
 					});
 				} else {
-					resolve();
+					resolve(undefined);
 				}
 			});
 		})
@@ -34,7 +34,7 @@ glob('src/modules/**/*.gql', async (error, files) => {
 				return new Promise(resolve => {
 					fs.copyFile(from, to, () => {
 						console.log('Copied', from, 'to', to);
-						resolve();
+						resolve(undefined);
 					});
 				});
 			})
