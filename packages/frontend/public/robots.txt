@@ -1,0 +1,6 @@
+Sitemap: https://greenladies.se/api/sitemap
+
+User-agent: *
+Allow: /*
+
+Disallow: /api/*

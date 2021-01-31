@@ -23,8 +23,8 @@ const resolvers: CategoryModuleResolversType = {
 
 			return { id: String(category.id) };
 		},
-		categories: (_parent, _args, { injector }) => {
-			return injector.get(CategoryProvider).getCategories();
+		categories: async (_parent, _args, { injector }) => {
+			return (await injector.get(CategoryProvider).getCategories()).filter(({ includeInMenu }) => includeInMenu);
 		},
 		rootCategories: (_parent, _args, { injector }) => {
 			return injector.get(CategoryProvider).getRootCategories();
@@ -46,6 +46,9 @@ const resolvers: CategoryModuleResolversType = {
 			}
 
 			return { id: String(category.id) };
+		},
+		specialCategories: async (_parent, _args, { injector }) => {
+			return (await injector.get(CategoryProvider).getCategories()).filter(({ includeInMenu }) => !includeInMenu);
 		},
 	},
 };
