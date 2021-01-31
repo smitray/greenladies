@@ -39,7 +39,10 @@ const resolvers: ProductModuleResolversType = {
 		},
 		fullDescription: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
-			return product.description.full;
+			let description = product.description.full;
+			description = description.replace(/<p>/g, '');
+			description = description.replace(/<\/p>/g, '');
+			return description;
 		},
 		shortDescription: async ({ id }, _args, { injector }) => {
 			const product = await injector.get(ProductProvider).getConfigurableProduct({ id });
