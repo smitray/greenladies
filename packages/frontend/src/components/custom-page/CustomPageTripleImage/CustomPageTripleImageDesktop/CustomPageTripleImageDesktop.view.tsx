@@ -38,7 +38,15 @@ const CustomPageTripleImageDesktopView = ({ tripleImage }: CustomPageTripleImage
 			<TripleImageDesktopItemsContainer>
 				<TripleImageDesktopTextItem widthPercentage={100 / (1 + images.length)}>
 					<div>
-						<TripleImageDesktopSmallTitle>{tripleImage.smallTitle}</TripleImageDesktopSmallTitle>
+						<TripleImageDesktopSmallTitle>
+							{tripleImage.smallTitle.split('\n').reduce<React.ReactNode[]>((prev, current, index) => {
+								if (index === 0) {
+									return [current];
+								}
+
+								return [...prev, <br key={index} />, current];
+							}, [])}
+						</TripleImageDesktopSmallTitle>
 						<TripleImageDesktopBigTitle>
 							{tripleImage.bigTitle.split('\n').reduce<React.ReactNode[]>((prev, current, index) => {
 								if (index === 0) {
