@@ -28,23 +28,21 @@ export const FooterInfoMobileView = () => {
 	return (
 		<FooterInfoMobileWrapper>
 			<FooterInfoMobileSectionsContainer>
-				<FooterInfoMobileSection>
-					{sections.map(section => (
-						<FooterInfoMobileSection key={section.id}>
-							<FooterInfoMobileSectionHeader onClick={() => handleTitleClick(section.id)}>
-								<span>{section.title}</span>
-								<IconWrapper size="14px">
-									{openSections.includes(section.id) ? <FiChevronUp size="14px" /> : <FiChevronDown size="14px" />}
-								</IconWrapper>
-							</FooterInfoMobileSectionHeader>
-							<Collapse isOpened={openSections.includes(section.id)}>
-								<FooterInfoMobileSectionContentWrapper>
-									<section.component />
-								</FooterInfoMobileSectionContentWrapper>
-							</Collapse>
-						</FooterInfoMobileSection>
-					))}
-				</FooterInfoMobileSection>
+				{sections.map(section => (
+					<FooterInfoMobileSection key={section.id}>
+						<FooterInfoMobileSectionHeader onClick={() => handleTitleClick(section.id)}>
+							<span>{section.title}</span>
+							<IconWrapper size="14px">
+								{openSections.includes(section.id) ? <FiChevronUp size="14px" /> : <FiChevronDown size="14px" />}
+							</IconWrapper>
+						</FooterInfoMobileSectionHeader>
+						<Collapse isOpened={openSections.includes(section.id)}>
+							<FooterInfoMobileSectionContentWrapper>
+								<section.component />
+							</FooterInfoMobileSectionContentWrapper>
+						</Collapse>
+					</FooterInfoMobileSection>
+				))}
 			</FooterInfoMobileSectionsContainer>
 		</FooterInfoMobileWrapper>
 	);
