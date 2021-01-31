@@ -81,7 +81,7 @@ const resolvers: CustomPageModuleResolversType = {
 								}
 
 								const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
-								const DOMAIN = String(process.env.DOMAIN);
+								const DOMAIN = 'api.' + String(process.env.DOMAIN);
 
 								return {
 									__typename: 'CustomPageTripleImage',

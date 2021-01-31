@@ -37,7 +37,7 @@ services:
       - ./packages/backend:/usr/src/app/packages/backend
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
+      - traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)
       - traefik.http.routers.backend.entryPoints=https
 
   admin:

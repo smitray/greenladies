@@ -94,11 +94,11 @@ const resolvers: ShoppingCartModuleResolversType = {
 							merchant_urls: {
 								terms: `${protocol}://${DOMAIN}/terms`,
 								checkout: `${protocol}://${DOMAIN}/checkout`,
-								confirmation: `${protocol}://${DOMAIN}/api/klarna/order-confirmation/{checkout.order.id}`,
-								push: `${protocol}://${DOMAIN}/api/push?order_id={checkout.order.id}`,
+								confirmation: `${protocol}://api.${DOMAIN}/klarna/order-confirmation/{checkout.order.id}`,
+								push: `${protocol}://api.${DOMAIN}/push?order_id={checkout.order.id}`,
 								validation:
 									process.env.NODE_ENV === 'production'
-										? `${protocol}://${DOMAIN}/api/klarna/order-validation`
+										? `${protocol}://api.${DOMAIN}/klarna/order-validation`
 										: undefined,
 							},
 							shipping_options: [

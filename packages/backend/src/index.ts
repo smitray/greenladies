@@ -46,7 +46,7 @@ const sessionOptions: SessionOptions = {
 (async function () {
 	const app = express();
 
-	app.use('/api/static', express.static(path.join(__dirname, '..', 'static')));
+	app.use('/static', express.static(path.join(__dirname, '..', 'static')));
 
 	await createConnection(typeormConfig);
 
@@ -83,14 +83,14 @@ const sessionOptions: SessionOptions = {
 		}
 	});
 
-	app.post('/api/klarna/order-validation', (req, res) => {
+	app.post('/klarna/order-validation', (req, res) => {
 		console.log(req);
 		// TODO: this is called when the customer presses buy, but before they are redirected, this is where we create the order
 		// cannot take more than 3000ms
 		return res.status(200);
 	});
 
-	app.get('/api/klarna/order-confirmation/:orderId', async (req, res) => {
+	app.get('/klarna/order-confirmation/:orderId', async (req, res) => {
 		const KLARNA_USER_ID = String(process.env.KLARNA_USER_ID);
 		const KLARNA_PASSWORD = String(process.env.KLARNA_PASSWORD);
 		const KLARNA_API = String(process.env.KLARNA_API);
@@ -254,7 +254,9 @@ const sessionOptions: SessionOptions = {
 			);
 		} catch (error) {
 			// Could not create order
-			return res.redirect('/order-failure');
+			const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+			const DOMAIN = String(process.env.DOMAIN);
+			return res.redirect(`${PROTOCOL}${DOMAIN}/order-failure`);
 		}
 
 		await redisCache.set(`klarnaOrderConfirmSnippet:${order.order_id}`, order.html_snippet, 60 * 60 * 24 * 7);
@@ -272,7 +274,9 @@ const sessionOptions: SessionOptions = {
 			});
 		}
 
-		return res.redirect('/order-success/' + order.order_id);
+		const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+		const DOMAIN = String(process.env.DOMAIN);
+		return res.redirect(`${PROTOCOL}${DOMAIN}/order-success/${order.order_id}`);
 	});
 
 	syncMagentoProductsAndCategories()
@@ -311,13 +315,15 @@ const sessionOptions: SessionOptions = {
 		asyncRun();
 	});
 
+	const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+	const DOMAIN = String(process.env.DOMAIN);
 	const server = await createApolloServer();
 	server.applyMiddleware({
 		app,
-		path: '/api/graphql',
+		path: '/graphql',
 		cors: {
 			credentials: true,
-			origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : false,
+			origin: `${PROTOCOL}${DOMAIN}`,
 		},
 	});
 

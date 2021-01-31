@@ -12,7 +12,7 @@ import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 function fetchQueryServer(cookieHeader?: string) {
 	return async function (operation: RequestParameters, variables: Variables) {
-		const response = await fetch('http://backend:3000/api/graphql', {
+		const response = await fetch('http://backend:3000/graphql', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ async function fetchQueryClient(operation: RequestParameters, variables: Variabl
 		return fromCache;
 	}
 
-	const response = await fetch('/api/graphql', {
+	const response = await fetch(`${window.location.protocol}//api.${window.location.hostname}/graphql`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
