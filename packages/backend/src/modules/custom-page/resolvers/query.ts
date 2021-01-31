@@ -69,6 +69,7 @@ const resolvers: CustomPageModuleResolversType = {
 									link: transformLink(banner.link) as any,
 									imagePath: banner.imagePath,
 									mobileImagePath: banner.mobileImagePath,
+									textColor: banner.textColor,
 								};
 							}
 							case 'triple-image': {

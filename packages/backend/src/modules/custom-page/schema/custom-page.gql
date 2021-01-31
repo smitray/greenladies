@@ -14,6 +14,7 @@ type CustomPageBanner {
 	link: Link!
 	imagePath: String!
 	mobileImagePath: String!
+	textColor: String!
 }
 
 type CustomPageProductCarousel {

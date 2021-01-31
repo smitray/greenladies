@@ -20,4 +20,7 @@ export class CustomPageBannerComponent extends BaseEntity {
 
 	@Column()
 	mobileImagePath: string;
+
+	@Column()
+	textColor: string;
 }

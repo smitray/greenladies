@@ -27,8 +27,10 @@ const CustomPageBannerDesktopView = ({ banner }: CustomPageBannerDesktopViewProp
 				<BannerDesktopImageOverlay>
 					<BannerDesktopTextWrapper>
 						<CenterWrapper>
-							<BannerDesktopTitle>{banner.title}</BannerDesktopTitle>
-							<BannerDesktopShopMore>Shoppa</BannerDesktopShopMore>
+							<BannerDesktopTitle style={{ color: banner.textColor }}>{banner.title}</BannerDesktopTitle>
+							<BannerDesktopShopMore style={{ color: banner.textColor, borderBottomColor: banner.textColor }}>
+								Shoppa
+							</BannerDesktopShopMore>
 						</CenterWrapper>
 					</BannerDesktopTextWrapper>
 				</BannerDesktopImageOverlay>
@@ -45,6 +47,7 @@ export default createFragmentContainer(CustomPageBannerDesktopView, {
 				...Link_link
 			}
 			imagePath
+			textColor
 		}
 	`,
 });
