@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ProductCardWrapper = styled.a`
+export const ProductCardWrapper = styled.div`
 	cursor: pointer;
 	color: black;
 	text-decoration: none;

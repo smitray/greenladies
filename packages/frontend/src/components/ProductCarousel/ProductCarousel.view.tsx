@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
+import { useSwipeable } from 'react-swipeable';
 import styled from 'styled-components';
 
 import { useWindowDimensions } from '../../hooks/use-window-dimensions';
@@ -29,7 +30,7 @@ const ProductsContainer = styled.ul`
 	}
 `;
 
-const ArrowButton = styled.button`
+const SlideButton = styled.button`
 	position: absolute;
 	padding: 8px;
 	background: white;
@@ -70,54 +71,76 @@ const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
 	useEffect(() => {
 		setCarouselItemsInView(calculateItemsInView(windowWidth));
 	}, [windowWidth]);
+	const handles = useSwipeable({
+		onSwiped: ({ dir }) => {
+			if (dir === 'Right' && index > 0) {
+				handleSlideLeft();
+			}
+			if (dir === 'Left' && index + carouselItemsInView < products.edges.length) {
+				handleSlideRight();
+			}
+		},
+		trackMouse: true,
+		trackTouch: true,
+	});
+
+	const handleSlideLeft = () => {
+		setIndex(index => Math.max(0, index - calculateItemsInView(windowWidth)));
+	};
+
+	const handleSlideRight = () => {
+		setIndex(index => Math.min(products.edges.length - carouselItemsInView, index + calculateItemsInView(windowWidth)));
+	};
 
 	return (
-		<div
-			style={{
-				overflow: 'hidden',
-			}}
-		>
-			<CenterWrapper style={{ position: 'relative' }}>
-				<div style={{ margin: '0 -8px' }}>
-					<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
-						{products.edges.map(({ node: product }, index) => {
-							return (
-								<ProductItem id={index.toString()} key={index}>
-									<ProductCard product={product} />
-								</ProductItem>
-							);
-						})}
-					</ProductsContainer>
-				</div>
-				{index > 0 && (
-					<ArrowButton
-						style={{
-							left: '8px',
-						}}
-						onClick={() => {
-							setIndex(index => index - 1);
-						}}
-					>
-						<IconWrapper size="32px">
-							<FaAngleLeft size="32px" />
-						</IconWrapper>
-					</ArrowButton>
-				)}
-				{index + carouselItemsInView < products.edges.length && (
-					<ArrowButton
-						style={{
-							right: '8px',
-						}}
-						onClick={() => {
-							setIndex(index => index + 1);
-						}}
-					>
-						<IconWrapper size="32px">
-							<FaAngleRight size="32px" />
-						</IconWrapper>
-					</ArrowButton>
-				)}
-			</CenterWrapper>
+		<div {...(windowWidth < 961 ? handles : {})} style={{ userSelect: 'none' }}>
+			<div
+				style={{
+					overflow: 'hidden',
+				}}
+			>
+				<CenterWrapper style={{ position: 'relative' }}>
+					<div style={{ margin: '0 -8px' }}>
+						<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
+							{products.edges.map(({ node: product }, index) => {
+								return (
+									<ProductItem id={index.toString()} key={index}>
+										<ProductCard product={product} />
+									</ProductItem>
+								);
+							})}
+						</ProductsContainer>
+					</div>
+					{windowWidth >= 961 && index > 0 && (
+						<SlideButton
+							style={{
+								left: '8px',
+							}}
+							onClick={() => {
+								handleSlideLeft();
+							}}
+						>
+							<IconWrapper size="32px">
+								<FaAngleLeft size="32px" />
+							</IconWrapper>
+						</SlideButton>
+					)}
+					{windowWidth >= 961 && index + carouselItemsInView < products.edges.length && (
+						<SlideButton
+							style={{
+								right: '8px',
+							}}
+							onClick={() => {
+								handleSlideRight();
+							}}
+						>
+							<IconWrapper size="32px">
+								<FaAngleRight size="32px" />
+							</IconWrapper>
+						</SlideButton>
+					)}
+				</CenterWrapper>
+			</div>
 		</div>
 	);
 };

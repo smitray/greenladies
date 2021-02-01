@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 
@@ -27,6 +27,8 @@ interface ProductCardViewProps {
 }
 
 const ProductCardView = ({ product }: ProductCardViewProps) => {
+	const router = useRouter();
+
 	const { commit: addToWishlist, pending: addToWishlistPending } = useAddToWishlistMutation();
 	const { commit: removeFromWishlist, pending: removeFromWishlistPending } = useRemoveFromWishlistMutation();
 
@@ -41,40 +43,42 @@ const ProductCardView = ({ product }: ProductCardViewProps) => {
 	const discount = Math.round(((product.originalPrice - product.specialPrice) / product.originalPrice) * 100);
 
 	return (
-		<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
-			<ProductCardWrapper>
-				<ProductImageWrapper>
-					<div style={{ position: 'absolute', top: '0', right: '5%', bottom: '0', left: '5%' }}>
-						<ProductImage src={product.image} />
+		<ProductCardWrapper
+			onClick={() => {
+				router.push('/products/[key]', `/products/${product.urlKey}`);
+			}}
+		>
+			<ProductImageWrapper>
+				<div style={{ position: 'absolute', top: '0', right: '5%', bottom: '0', left: '5%' }}>
+					<ProductImage src={product.image} />
+				</div>
+				<ProductTagsContainer>
+					<ProductTagCondition>{product.condition === 'new' ? 'NY' : 'VINTAGE'}</ProductTagCondition>
+					{discount > 0 && <ProductTagDiscount>-{discount}%</ProductTagDiscount>}
+				</ProductTagsContainer>
+				<ProductWishlist
+					disabled={addToWishlistPending || removeFromWishlistPending}
+					onClick={e => {
+						e.preventDefault();
+						handleWishlistClick();
+					}}
+				>
+					{product.inWishlist ? <FaHeart color="red" size="20" /> : <FaRegHeart size="20" />}
+				</ProductWishlist>
+			</ProductImageWrapper>
+			<ProductDetails>
+				<div style={{ display: 'flex' }}>
+					<div style={{ marginRight: '8px', overflow: 'hidden', flexGrow: 1 }}>
+						<ProductBrand>{product.brand}</ProductBrand>
+						<ProductName>{product.name}</ProductName>
 					</div>
-					<ProductTagsContainer>
-						<ProductTagCondition>{product.condition === 'new' ? 'NY' : 'VINTAGE'}</ProductTagCondition>
-						{discount > 0 && <ProductTagDiscount>-{discount}%</ProductTagDiscount>}
-					</ProductTagsContainer>
-					<ProductWishlist
-						disabled={addToWishlistPending || removeFromWishlistPending}
-						onClick={e => {
-							e.preventDefault();
-							handleWishlistClick();
-						}}
-					>
-						{product.inWishlist ? <FaHeart color="red" size="20" /> : <FaRegHeart size="20" />}
-					</ProductWishlist>
-				</ProductImageWrapper>
-				<ProductDetails>
-					<div style={{ display: 'flex' }}>
-						<div style={{ marginRight: '8px', overflow: 'hidden', flexGrow: 1 }}>
-							<ProductBrand>{product.brand}</ProductBrand>
-							<ProductName>{product.name}</ProductName>
-						</div>
-						<div>
-							<ProductPrice>{product.originalPrice} kr</ProductPrice>
-							<ProductSpecialPrice>{product.specialPrice} kr</ProductSpecialPrice>
-						</div>
+					<div>
+						<ProductPrice>{product.originalPrice} kr</ProductPrice>
+						<ProductSpecialPrice>{product.specialPrice} kr</ProductSpecialPrice>
 					</div>
-				</ProductDetails>
-			</ProductCardWrapper>
-		</Link>
+				</div>
+			</ProductDetails>
+		</ProductCardWrapper>
 	);
 };
 
