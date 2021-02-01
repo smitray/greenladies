@@ -302,7 +302,7 @@ const sessionOptions: SessionOptions = {
 	}
 
 	// Every hour
-	cron.schedule('0 */1 * * *', () => {
+	cron.schedule('*/20 * * * *', () => {
 		const asyncRun = async () => {
 			try {
 				await syncMagentoProductsAndCategories();
