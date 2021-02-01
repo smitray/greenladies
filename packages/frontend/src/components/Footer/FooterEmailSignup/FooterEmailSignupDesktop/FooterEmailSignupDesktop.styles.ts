@@ -14,7 +14,7 @@ export const DesktopSignupCenterWrapper = styled(CenterWrapper)`
 `;
 
 export const DesktopSignupImage = styled.div`
-	background: url(/images/email-signup-1.jpg);
+	background: url(/images/email-signup.jpg);
 	background-size: cover;
 	background-position: center;
 	width: 100%;
