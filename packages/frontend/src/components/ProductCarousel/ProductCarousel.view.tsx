@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { CenterWrapper } from '../../styles/center-wrapper';
+import { IconWrapper } from '../../styles/icon-wrapper';
 import { ProductCard } from '../ProductCard';
 
 import { ProductCarousel_products } from './__generated__/ProductCarousel_products.graphql';
@@ -26,6 +27,24 @@ const ProductsContainer = styled.ul`
 	@media (min-width: 961px) {
 		width: 100%;
 	}
+`;
+
+const ArrowButton = styled.button`
+	position: absolute;
+	padding: 8px;
+	background: white;
+	border: 1px solid lightgrey;
+	outline: none;
+	z-index: 10;
+	top: calc(50% - 48px);
+	cursor: pointer;
+`;
+
+const ProductItem = styled.li`
+	width: 25%;
+	flex-grow: 0;
+	flex-shrink: 0;
+	padding: 0 8px;
 `;
 
 interface ProductCarouselViewProps {
@@ -53,79 +72,52 @@ const ProductCarouselView = ({ products }: ProductCarouselViewProps) => {
 	}, [windowWidth]);
 
 	return (
-		<div>
-			<div
-				style={{
-					overflow: 'hidden',
-				}}
-			>
-				<CenterWrapper style={{ position: 'relative' }}>
-					<div style={{ margin: '0 -8px' }}>
-						<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
-							{products.edges.map(({ node: product }, index) => {
-								return (
-									<li
-										id={index.toString()}
-										key={index}
-										style={{
-											width: '25%',
-											flexGrow: 0,
-											flexShrink: 0,
-											padding: '0 8px',
-										}}
-									>
-										<ProductCard product={product} />
-									</li>
-								);
-							})}
-						</ProductsContainer>
-					</div>
-					{index > 0 && (
-						<button
-							style={{
-								position: 'absolute',
-								padding: '8px',
-								background: 'white',
-								border: '1px solid lightgrey',
-								outline: 'none',
-								zIndex: 9,
-								top: 'calc(50% - 48px)',
-								left: '8px',
-								cursor: 'pointer',
-							}}
-							onClick={() => {
-								setIndex(index => index - 1);
-							}}
-						>
-							<div style={{ width: '32px', height: '32px' }}>
-								<FaAngleLeft size="32" />
-							</div>
-						</button>
-					)}
-					{index + carouselItemsInView < products.edges.length && (
-						<button
-							style={{
-								position: 'absolute',
-								padding: '8px',
-								background: 'white',
-								border: '1px solid lightgrey',
-								outline: 'none',
-								zIndex: 10,
-								top: 'calc(50% - 48px)',
-								right: '8px',
-								cursor: 'pointer',
-							}}
-							onClick={() => {
-								setIndex(index => index + 1);
-							}}
-						>
-							<div style={{ width: '32px', height: '32px' }}>
-								<FaAngleRight size="32" />
-							</div>
-						</button>
-					)}
-				</CenterWrapper>
-			</div>
+		<div
+			style={{
+				overflow: 'hidden',
+			}}
+		>
+			<CenterWrapper style={{ position: 'relative' }}>
+				<div style={{ margin: '0 -8px' }}>
+					<ProductsContainer style={{ transform: `translateX(-${25 * index}%)` }}>
+						{products.edges.map(({ node: product }, index) => {
+							return (
+								<ProductItem id={index.toString()} key={index}>
+									<ProductCard product={product} />
+								</ProductItem>
+							);
+						})}
+					</ProductsContainer>
+				</div>
+				{index > 0 && (
+					<ArrowButton
+						style={{
+							left: '8px',
+						}}
+						onClick={() => {
+							setIndex(index => index - 1);
+						}}
+					>
+						<IconWrapper size="32px">
+							<FaAngleLeft size="32px" />
+						</IconWrapper>
+					</ArrowButton>
+				)}
+				{index + carouselItemsInView < products.edges.length && (
+					<ArrowButton
+						style={{
+							right: '8px',
+						}}
+						onClick={() => {
+							setIndex(index => index + 1);
+						}}
+					>
+						<IconWrapper size="32px">
+							<FaAngleRight size="32px" />
+						</IconWrapper>
+					</ArrowButton>
+				)}
+			</CenterWrapper>
 		</div>
 	);
 };
