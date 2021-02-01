@@ -34,8 +34,8 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 							const next = sections[index + 1];
 							if (next.__typename === 'CustomPageBanner' || next.__typename === 'CustomPageTripleImage') {
 								return (
-									<React.Fragment>
-										<CustomPageBanner key={index} banner={section} />
+									<React.Fragment key={index}>
+										<CustomPageBanner banner={section} />
 										<div style={{ height: '72px' }}></div>
 									</React.Fragment>
 								);
@@ -44,8 +44,8 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 						// Add white space if it is the last component, to add spacing between this and the email signup
 						if (index === sections.length - 1) {
 							return (
-								<React.Fragment>
-									<CustomPageBanner key={index} banner={section} />
+								<React.Fragment key={index}>
+									<CustomPageBanner banner={section} />
 									<div style={{ height: '72px' }}></div>
 								</React.Fragment>
 							);
@@ -61,8 +61,8 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 							const next = sections[index + 1];
 							if (next.__typename === 'CustomPageBanner' || next.__typename === 'CustomPageTripleImage') {
 								return (
-									<React.Fragment>
-										<CustomPageTripleImage key={index} tripleImage={section} />
+									<React.Fragment key={index}>
+										<CustomPageTripleImage tripleImage={section} />
 										<div style={{ height: '72px' }}></div>
 									</React.Fragment>
 								);
@@ -71,8 +71,8 @@ const CustomPage: MyNextPage<Props> = ({ path }) => {
 						// Add white space if it is the last component, to add spacing between this and the email signup
 						if (index === sections.length - 1) {
 							return (
-								<React.Fragment>
-									<CustomPageTripleImage key={index} tripleImage={section} />
+								<React.Fragment key={index}>
+									<CustomPageTripleImage tripleImage={section} />
 									<div style={{ height: '72px' }}></div>
 								</React.Fragment>
 							);
