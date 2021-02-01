@@ -7,6 +7,7 @@ import { CustomPageBannerComponent } from '../../../entities/custom-page-banner-
 import { CustomPageProductCarouselComponent } from '../../../entities/custom-page-product-carousel-component';
 import { CustomPageTabComponent } from '../../../entities/custom-page-tab-component';
 import { CustomPageTripleImageComponent } from '../../../entities/custom-page-triple-image-component';
+import { apiLocation } from '../../../utils/domain';
 import { transformLink } from '../../link/utils/transform-link';
 
 const resolvers: CustomPageModuleResolversType = {
@@ -67,8 +68,8 @@ const resolvers: CustomPageModuleResolversType = {
 									title: banner.title,
 									subtitle: banner.subtitle,
 									link: transformLink(banner.link) as any,
-									imagePath: banner.imagePath,
-									mobileImagePath: banner.mobileImagePath,
+									imagePath: apiLocation() + banner.imagePath,
+									mobileImagePath: apiLocation() + banner.mobileImagePath,
 									textColor: banner.textColor,
 								};
 							}
@@ -81,17 +82,14 @@ const resolvers: CustomPageModuleResolversType = {
 									throw new Error('Component link not found');
 								}
 
-								const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
-								const DOMAIN = 'api.' + String(process.env.DOMAIN);
-
 								return {
 									__typename: 'CustomPageTripleImage',
 									smallTitle: tripleImage.smallTitle,
 									bigTitle: tripleImage.bigTitle,
 									link: transformLink(tripleImage.link) as any,
-									firstImagePath: PROTOCOL + DOMAIN + tripleImage.firstImagePath,
-									secondImagePath: PROTOCOL + DOMAIN + tripleImage.secondImagePath,
-									thirdImagePath: PROTOCOL + DOMAIN + tripleImage.thirdImagePath,
+									firstImagePath: apiLocation() + tripleImage.firstImagePath,
+									secondImagePath: apiLocation() + tripleImage.secondImagePath,
+									thirdImagePath: apiLocation() + tripleImage.thirdImagePath,
 									color: tripleImage.color,
 								};
 							}
