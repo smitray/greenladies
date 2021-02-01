@@ -35,7 +35,7 @@ services:
       - ${BACKEND_STATIC_FILES_FOLDER}:/usr/src/app/packages/backend/static
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`${DOMAIN}`)&&PathPrefix(`/api`)
+      - traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)
       - traefik.http.routers.backend.entryPoints=https
       - traefik.http.routers.backend.tls=true
       - traefik.http.routers.backend.tls.certresolver=letsencrypt
