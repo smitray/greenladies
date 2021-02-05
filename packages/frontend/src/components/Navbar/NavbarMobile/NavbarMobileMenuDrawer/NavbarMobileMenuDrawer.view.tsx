@@ -182,21 +182,21 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 						Service
 					</div>
 					<OuterCategoryList>
-						<OuterCategoryListItem>
+						<OuterCategoryListItem onClick={onCloseRequest}>
 							<OuterCategoryListItemHeaderWrapper>
 								<Link href="/[...slug]?tab=om-green-ladies" as="/kundservice?tab=om-green-ladies" passHref>
 									<OuterCategoryListItemHeader>Om Green Ladies</OuterCategoryListItemHeader>
 								</Link>
 							</OuterCategoryListItemHeaderWrapper>
 						</OuterCategoryListItem>
-						<OuterCategoryListItem>
+						<OuterCategoryListItem onClick={onCloseRequest}>
 							<OuterCategoryListItemHeaderWrapper>
 								<Link href="/[[...slug]]?tab=frakt" as="/kundservice?tab=frakt" passHref>
 									<OuterCategoryListItemHeader>Klimatkompenserad frakt</OuterCategoryListItemHeader>
 								</Link>
 							</OuterCategoryListItemHeaderWrapper>
 						</OuterCategoryListItem>
-						<OuterCategoryListItem>
+						<OuterCategoryListItem onClick={onCloseRequest}>
 							<OuterCategoryListItemHeaderWrapper>
 								<Link href="/[[...slug]]?tab=betalning" as="/kundservice?tab=betalning" passHref>
 									<OuterCategoryListItemHeader>Trygg & säker betalning</OuterCategoryListItemHeader>
