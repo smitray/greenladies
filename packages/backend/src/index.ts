@@ -26,7 +26,7 @@ import {
 import { getRedisCache, getRedisCacheConnection } from './redis-connection';
 import typeormConfig from './typeorm-config';
 import { base64 } from './utils/base64';
-import { apiDomain } from './utils/domain';
+import { domain } from './utils/domain';
 
 const RedisSessionStore = RedisSession(session);
 
@@ -40,7 +40,7 @@ const sessionOptions: SessionOptions = {
 		path: '/',
 		sameSite: 'strict',
 		secure: false,
-		domain: apiDomain(),
+		domain: domain(),
 	},
 	store: new RedisSessionStore({ client: getRedisCacheConnection() }),
 };

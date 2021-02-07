@@ -4,6 +4,9 @@ export function apiLocation() {
 }
 
 export function apiDomain() {
-	const DOMAIN = String(process.env.DOMAIN);
-	return 'api.' + DOMAIN;
+	return 'api.' + domain();
+}
+
+export function domain() {
+	return String(process.env.DOMAIN);
 }
