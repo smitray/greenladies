@@ -90,6 +90,7 @@ const resolvers: CustomPageModuleResolversType = {
 									firstImagePath: apiLocation() + tripleImage.firstImagePath,
 									secondImagePath: apiLocation() + tripleImage.secondImagePath,
 									thirdImagePath: apiLocation() + tripleImage.thirdImagePath,
+									mobileImagePath: apiLocation() + tripleImage.mobileImagePath,
 									color: tripleImage.color,
 								};
 							}

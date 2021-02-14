@@ -25,5 +25,8 @@ export class CustomPageTripleImageComponent extends BaseEntity {
 	thirdImagePath: string;
 
 	@Column()
+	mobileImagePath: string;
+
+	@Column()
 	color: string;
 }

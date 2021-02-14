@@ -30,6 +30,7 @@ type CustomPageTripleImage {
 	firstImagePath: String!
 	secondImagePath: String!
 	thirdImagePath: String!
+	mobileImagePath: String!
 	color: String!
 }
 
