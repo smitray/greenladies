@@ -73,16 +73,25 @@ function colorCodeToSquare(code: string) {
 		case 'silver':
 			return <ColorSquare color="silver" />;
 		case 'white':
-			return <ColorSquare color="white" />;
+			return <ColorSquare color="white" style={{ border: '1px solid black' }} />;
 		case 'yellow':
 			return <ColorSquare color="yellow" />;
 		case 'transparent':
 			return (
-				<div style={{ width: '14px', height: '14px', marginRight: '4px', display: 'flex', flexWrap: 'wrap' }}>
-					<div style={{ width: '7px', height: '7px', background: 'red' }}></div>
-					<div style={{ width: '7px', height: '7px', background: 'green' }}></div>
-					<div style={{ width: '7px', height: '7px', background: 'blue' }}></div>
-					<div style={{ width: '7px', height: '7px', background: 'yellow' }}></div>
+				<div
+					style={{
+						width: '14px',
+						height: '14px',
+						marginRight: '4px',
+						display: 'flex',
+						flexWrap: 'wrap',
+						border: '1px solid black',
+					}}
+				>
+					<div style={{ width: '6px', height: '6px', background: 'white' }}></div>
+					<div style={{ width: '6px', height: '6px', background: 'lightgrey' }}></div>
+					<div style={{ width: '6px', height: '6px', background: 'lightgrey' }}></div>
+					<div style={{ width: '6px', height: '6px', background: 'white' }}></div>
 				</div>
 			);
 		default:
