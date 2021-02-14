@@ -42,6 +42,7 @@ const CategoryLink = styled.a`
 	cursor: pointer;
 	padding: 12px 18px;
 	flex-shrink: 0;
+	text-align: center;
 `;
 
 interface MobileCategoriesListViewProps {
