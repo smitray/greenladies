@@ -9,18 +9,20 @@ export const CUSTOM_PAGE_QUERY = graphql`
 			metaKeywords
 			metaDescription
 			sections {
-				__typename
-				... on CustomPageBanner {
-					...CustomPageBanner_banner
-				}
-				... on CustomPageProductCarousel {
-					...CustomPageProductCarousel_carousel
-				}
-				... on CustomPageTab {
-					...CustomPageTabs_tabs
-				}
-				... on CustomPageTripleImage {
-					...CustomPageTripleImage_tripleImage
+				section {
+					__typename
+					... on CustomPageBanner {
+						...CustomPageBanner_banner
+					}
+					... on CustomPageProductCarousel {
+						...CustomPageProductCarousel_carousel
+					}
+					... on CustomPageTab {
+						...CustomPageTabs_tabs
+					}
+					... on CustomPageTripleImage {
+						...CustomPageTripleImage_tripleImage
+					}
 				}
 			}
 		}

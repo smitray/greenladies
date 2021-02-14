@@ -1,111 +1,20 @@
-import { getRepository } from 'typeorm';
-
 import { CustomPageModuleResolversType } from '..';
-import { GQLCustomPageSection } from '../../../__generated__/types';
-import { CustomPage } from '../../../entities/custom-page';
-import { CustomPageBannerComponent } from '../../../entities/custom-page-banner-component';
-import { CustomPageProductCarouselComponent } from '../../../entities/custom-page-product-carousel-component';
-import { CustomPageTabComponent } from '../../../entities/custom-page-tab-component';
-import { CustomPageTripleImageComponent } from '../../../entities/custom-page-triple-image-component';
-import { apiLocation } from '../../../utils/domain';
-import { transformLink } from '../../link/utils/transform-link';
+import { CustomPageProvider } from '../custom-page.provider';
 
 const resolvers: CustomPageModuleResolversType = {
 	Query: {
-		customPage: async (_parent, { path }) => {
-			const customPageRepo = getRepository(CustomPage);
-			const page = await customPageRepo.findOne({
-				where: { path },
-				relations: ['sections'],
-			});
+		customPage: async (_parent, { path }, { injector }) => {
+			const page = await injector.get(CustomPageProvider).getCustomPage({ path });
 			if (!page) {
 				throw new Error('PAGE_NOT_FOUND');
 			}
 
-			const sections = await Promise.all(
-				page.sections
-					.sort((left, right) => left.position - right.position)
-					.map<Promise<GQLCustomPageSection>>(async section => {
-						switch (section.type) {
-							case 'tabs': {
-								const customPageTabComponentRepo = getRepository(CustomPageTabComponent);
-								const tab = await customPageTabComponentRepo.findOne({
-									where: { id: section.componentId },
-									relations: ['sections'],
-								});
-								if (!tab) {
-									throw new Error('Component link not found');
-								}
+			return { id: page.id };
+		},
+		customPages: async (_parent, _args, { injector }) => {
+			const pages = await injector.get(CustomPageProvider).getCustomPages();
 
-								return {
-									__typename: 'CustomPageTab',
-									tabs: tab.sections.sort((left, right) => left.position - right.position),
-								};
-							}
-							case 'product-carousel': {
-								const customPageProductCarouselRepo = getRepository(CustomPageProductCarouselComponent);
-								const carousel = await customPageProductCarouselRepo.findOne({ where: { id: section.componentId } });
-								if (!carousel) {
-									throw new Error('Component link not found');
-								}
-
-								return {
-									__typename: 'CustomPageProductCarousel',
-									title: carousel.title,
-									subtitle: carousel.subtitle,
-									category: { id: carousel.categoryId } as any,
-								};
-							}
-							case 'banner': {
-								const customPageBannerComponentRepo = getRepository(CustomPageBannerComponent);
-								const banner = await customPageBannerComponentRepo.findOne({ where: { id: section.componentId } });
-								if (!banner) {
-									throw new Error('Component link not found');
-								}
-
-								return {
-									__typename: 'CustomPageBanner',
-									title: banner.title,
-									subtitle: banner.subtitle,
-									link: transformLink(banner.link) as any,
-									imagePath: apiLocation() + banner.imagePath,
-									mobileImagePath: apiLocation() + banner.mobileImagePath,
-									textColor: banner.textColor,
-								};
-							}
-							case 'triple-image': {
-								const customPageTripleImageComponentRepo = getRepository(CustomPageTripleImageComponent);
-								const tripleImage = await customPageTripleImageComponentRepo.findOne({
-									where: { id: section.componentId },
-								});
-								if (!tripleImage) {
-									throw new Error('Component link not found');
-								}
-
-								return {
-									__typename: 'CustomPageTripleImage',
-									smallTitle: tripleImage.smallTitle,
-									bigTitle: tripleImage.bigTitle,
-									link: transformLink(tripleImage.link) as any,
-									firstImagePath: apiLocation() + tripleImage.firstImagePath,
-									secondImagePath: apiLocation() + tripleImage.secondImagePath,
-									thirdImagePath: apiLocation() + tripleImage.thirdImagePath,
-									mobileImagePath: apiLocation() + tripleImage.mobileImagePath,
-									color: tripleImage.color,
-								};
-							}
-							default:
-								throw new Error('Invalid section type: ' + section.type);
-						}
-					}),
-			);
-
-			return {
-				metaTitle: page.metaTitle,
-				metaKeywords: page.metaKeywords,
-				metaDescription: page.metaDescription,
-				sections,
-			};
+			return pages.map(({ id }) => ({ id }));
 		},
 	},
 };

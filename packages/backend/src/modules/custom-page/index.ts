@@ -8,13 +8,15 @@ import { CategoryModule } from '../category';
 import { LinkModule } from '../link';
 import { RelayModule } from '../relay';
 
+import { CustomPageProvider } from './custom-page.provider';
+
 export interface CustomPageModuleContext {}
 
 export type CustomPageModuleResolversType = GQLResolvers<ModuleContext<CustomPageModuleContext>>;
 
 export const CustomPageModule = new GraphQLModule<any, ApolloContext, CustomPageModuleContext>({
 	imports: [CategoryModule, LinkModule, RelayModule],
-	providers: [],
+	providers: [CustomPageProvider],
 	typeDefs: loadFiles(path.join(__dirname, 'schema', '*.{gql,ts,js}')),
 	resolvers: loadFiles<any>(path.join(__dirname, 'resolvers', '**/*.{ts,js}')),
 });

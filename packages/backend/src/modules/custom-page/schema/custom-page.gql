@@ -1,14 +1,17 @@
 type CustomPageTabSection {
+	id: ID!
 	key: String!
 	title: String!
 	body: String!
 }
 
 type CustomPageTab {
+	id: ID!
 	tabs: [CustomPageTabSection!]!
 }
 
 type CustomPageBanner {
+	id: ID!
 	title: String!
 	subtitle: String!
 	link: Link!
@@ -18,12 +21,14 @@ type CustomPageBanner {
 }
 
 type CustomPageProductCarousel {
+	id: ID!
 	title: String!
 	subtitle: String!
 	category: Category!
 }
 
 type CustomPageTripleImage {
+	id: ID!
 	smallTitle: String!
 	bigTitle: String!
 	link: Link!
@@ -34,9 +39,16 @@ type CustomPageTripleImage {
 	color: String!
 }
 
-union CustomPageSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel | CustomPageTripleImage
+union CustomPageSectionSection = CustomPageTab | CustomPageBanner | CustomPageProductCarousel | CustomPageTripleImage
+
+type CustomPageSection {
+	id: ID!
+	position: Int!
+	section: CustomPageSectionSection!
+}
 
 type CustomPage {
+	id: ID!
 	metaTitle: String!
 	metaKeywords: String!
 	metaDescription: String!

@@ -9,6 +9,14 @@ generates:
       mappers:
         Brand: ./../types#Node
         Category: ./../types#Node
+        CustomPage: ./../types#Node
+        CustomPageBanner: ./../types#Node
+        CustomPageProductCarousel: ./../types#Node
+        CustomPageSection: ./../types#Node
+        CustomPageSectionSections: ./../types#Node
+        CustomPageTab: ./../types#Node
+        CustomPageTabSection: ./../types#Node
+        CustomPageTripleImage: ./../types#Node
         Product: ./../types#Node
         ProductConfiguration: ./../types#Node
         ShoppingCart: ./../types#Node
