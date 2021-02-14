@@ -517,6 +517,10 @@ const ProductFiltersView = ({
 							position: 'relative',
 							zIndex: 1,
 							width: '100%',
+							maxWidth: '150px',
+							borderRadius: '0',
+							cursor: 'pointer',
+							display: 'block',
 						}}
 					>
 						<option value="created_DESC">Nyheter</option>
