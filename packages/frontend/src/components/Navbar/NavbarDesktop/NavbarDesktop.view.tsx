@@ -11,6 +11,7 @@ import styled from 'styled-components';
 
 import { useShoppingCartModal } from '../../../contexts/shopping-cart-model-context';
 import { useClickOutside } from '../../../hooks/use-click-outside';
+import { useWindowDimensions } from '../../../hooks/use-window-dimensions';
 import { CenterWrapper } from '../../../styles/center-wrapper';
 import { IconWrapper } from '../../../styles/icon-wrapper';
 import { Link } from '../../Link';
@@ -107,6 +108,7 @@ export const NavbarDesktopView = ({
 		open: openShoppingCartModal,
 		close: closeShoppingCartModal,
 	} = useShoppingCartModal();
+	const { width: windowWidth } = useWindowDimensions();
 	const relayEnvironment = useRelayEnvironment();
 	const cartModalWrapperRef = useRef(null);
 	const [shoppingCartModalButtonFocus, setShoppingCartModalButtonFocus] = useState(false);
@@ -318,7 +320,7 @@ export const NavbarDesktopView = ({
 													}}
 													ref={cartModalWrapperRef}
 												>
-													<Collapse isOpened={shoppingCartModalIsOpen}>
+													<Collapse isOpened={shoppingCartModalIsOpen && windowWidth >= 961}>
 														<div style={{ border: '2px solid black', background: 'white', zIndex: 20 }}>
 															<ShoppingCartModal cart={props.shoppingCart} />
 														</div>
