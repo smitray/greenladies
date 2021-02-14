@@ -37,7 +37,7 @@ const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerVi
 			width={windowWidth > NORMAL_TABLET_SIZE ? NORMAL_TABLET_SIZE + 'px' : '100%'}
 			onClose={requestClose}
 		>
-			<div style={{ padding: '24px' }}>
+			<div style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
 					<button
 						style={{ padding: '8px', border: 'none', outline: 'none', background: 'none', cursor: 'pointer' }}
@@ -82,6 +82,8 @@ const WishlistDrawerView = ({ wishlist, open, onCloseRequest }: WishlistDrawerVi
 							display: 'grid',
 							gridTemplateColumns: '1fr 1fr',
 							gap: '16px',
+							flexGrow: 1,
+							overflowY: 'auto',
 						}}
 					>
 						{wishlist.products.edges.map(({ node: product }) => (

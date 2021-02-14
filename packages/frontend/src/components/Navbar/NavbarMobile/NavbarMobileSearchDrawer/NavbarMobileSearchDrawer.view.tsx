@@ -56,35 +56,39 @@ export const NavbarMobileSearchDrawerView = ({
 				}
 			}}
 		>
-			<Header>
-				Sök
-				<CloseButton onClick={onCloseRequest}>
-					<IconWrapper size="1em">
-						<FaTimes size="1em" />
-					</IconWrapper>
-				</CloseButton>
-			</Header>
-			<div style={{ padding: '0.5em 1em' }}>
-				<input
-					autoFocus
-					ref={inputEl}
-					style={{
-						border: 'none',
-						borderBottom: '1px solid black',
-						padding: '0.5em 0',
-						fontSize: '1em',
-						lineHeight: '1em',
-						width: '100%',
-						outline: 'none',
-					}}
-					type="text"
-					placeholder="Sök efter produkter, kategorier och märken"
-					value={searchQuery}
-					onChange={e => onSearchQueryChange(e.target.value)}
-				/>
-			</div>
-			<div style={{ padding: '0.5em 1em' }}>
-				<SearchResults query={searchQuery} />
+			<div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+				<div>
+					<Header>
+						Sök
+						<CloseButton onClick={onCloseRequest}>
+							<IconWrapper size="1em">
+								<FaTimes size="1em" />
+							</IconWrapper>
+						</CloseButton>
+					</Header>
+					<div style={{ padding: '0.5em 1em' }}>
+						<input
+							autoFocus
+							ref={inputEl}
+							style={{
+								border: 'none',
+								borderBottom: '1px solid black',
+								padding: '0.5em 0',
+								fontSize: '1em',
+								lineHeight: '1em',
+								width: '100%',
+								outline: 'none',
+							}}
+							type="text"
+							placeholder="Sök efter produkter, kategorier och märken"
+							value={searchQuery}
+							onChange={e => onSearchQueryChange(e.target.value)}
+						/>
+					</div>
+				</div>
+				<div style={{ padding: '0.5em 1em', flexGrow: 1, overflowY: 'auto' }}>
+					<SearchResults query={searchQuery} />
+				</div>
 			</div>
 		</Drawer>
 	);

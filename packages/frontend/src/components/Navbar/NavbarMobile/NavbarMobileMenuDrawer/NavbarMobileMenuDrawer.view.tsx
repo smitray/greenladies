@@ -18,6 +18,7 @@ const Header = styled.div`
 	justify-content: center;
 	align-items: center;
 	height: 48px;
+	flex-shrink: 0;
 `;
 
 const CloseButton = styled.button`
@@ -115,7 +116,7 @@ const NavbarMobileMenuDrawerView = ({ query, open, onCloseRequest }: NavbarMobil
 						</IconWrapper>
 					</CloseButton>
 				</Header>
-				<div style={{ background: '#f2f2f2', flexGrow: 1 }}>
+				<div style={{ background: '#f2f2f2', flexGrow: 1, overflowY: 'auto' }}>
 					<div
 						style={{
 							textTransform: 'uppercase',
