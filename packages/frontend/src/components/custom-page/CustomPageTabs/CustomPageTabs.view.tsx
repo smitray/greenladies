@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import ReactMarkdown from 'react-markdown';
 import { createFragmentContainer, graphql } from 'react-relay';
 
+import { HideOnMinSize, ShowOnMinSize } from '../../../styles/responsive';
+
 import { CustomPageTabs_tabs } from './__generated__/CustomPageTabs_tabs.graphql';
 import {
 	TabComponentWrapper,
@@ -36,17 +38,34 @@ const CustomPageTabsView = ({ tabs }: CustomPageTabsViewProps) => {
 		<TabComponentWrapper>
 			<TabTitle>{currentTab.title}</TabTitle>
 			<TabLinksAndContentWrapper>
-				<TabLinksContainer>
-					{tabs.tabs.map(tab => (
-						<Link
-							key={tab.key}
-							href={{ pathname, query: { tab: tab.key } }}
-							as={{ pathname: asPath.split('?')[0], query: { tab: tab.key } }}
-						>
-							<TabLink active={query.tab === tab.key}>{tab.title}</TabLink>
-						</Link>
-					))}
-				</TabLinksContainer>
+				<HideOnMinSize size="l">
+					<p>Information om</p>
+					<ul>
+						{tabs.tabs.map(tab => (
+							<li key={tab.key}>
+								<Link
+									href={{ pathname, query: { tab: tab.key } }}
+									as={{ pathname: asPath.split('?')[0], query: { tab: tab.key } }}
+								>
+									<a style={{ color: 'black', textDecoration: 'none', lineHeight: '24px' }}>{tab.title}</a>
+								</Link>
+							</li>
+						))}
+					</ul>
+				</HideOnMinSize>
+				<ShowOnMinSize size="l">
+					<TabLinksContainer>
+						{tabs.tabs.map(tab => (
+							<Link
+								key={tab.key}
+								href={{ pathname, query: { tab: tab.key } }}
+								as={{ pathname: asPath.split('?')[0], query: { tab: tab.key } }}
+							>
+								<TabLink active={query.tab === tab.key}>{tab.title}</TabLink>
+							</Link>
+						))}
+					</TabLinksContainer>
+				</ShowOnMinSize>
 				<TabContentWrapper>
 					<ReactMarkdown source={currentTab.body} />
 				</TabContentWrapper>
