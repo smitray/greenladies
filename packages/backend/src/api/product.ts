@@ -567,7 +567,7 @@ export async function createProduct({
 			conditionValue,
 			sizeValue: configuration.sizeValue,
 			urlKey: urlKey + '-' + configuration.size,
-			enabled,
+			enabled: true,
 		});
 		await linkSimpleProductToConfigurableProduct(baseSku + '-CONF', baseSku + '-' + configuration.size);
 	}

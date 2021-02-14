@@ -45,9 +45,7 @@ const resolvers: ProductModuleResolversType = {
 
 				const colors = product.color.split(',').map(color => color.trim());
 				for (const color of colors) {
-					console.log('checking color', color);
 					if (!ALLOWED_COLORS.includes(color)) {
-						console.log('invalid color', color);
 						throw new ApolloError(color, 'INVALID_COLOR');
 					}
 				}
