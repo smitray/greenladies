@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import { IconWrapper } from '../../styles/icon-wrapper';
 import { colorCodeToDisplay } from '../../utils/products-filtering-and-ordering';
+import { sizeCompare } from '../../utils/size';
 import { FilterMultiSelect } from '../filter/FilterMultiSelect';
 import { FilterRangeSelect } from '../filter/FilterRangeSelect';
 import { FilterSingleSelect } from '../filter/FilterSingleSelect';
@@ -76,7 +77,14 @@ function colorCodeToSquare(code: string) {
 		case 'yellow':
 			return <ColorSquare color="yellow" />;
 		case 'transparent':
-			return <ColorSquare color="transparent" />;
+			return (
+				<div style={{ width: '14px', height: '14px', marginRight: '4px', display: 'flex', flexWrap: 'wrap' }}>
+					<div style={{ width: '7px', height: '7px', background: 'red' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'green' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'blue' }}></div>
+					<div style={{ width: '7px', height: '7px', background: 'yellow' }}></div>
+				</div>
+			);
 		default:
 			return <ColorSquare color="white" />;
 	}
@@ -371,7 +379,7 @@ const ProductFiltersView = ({
 								</CloseButton>
 							</Header>
 							<div style={{ flexGrow: 1, overflowY: 'auto' }}>
-								{products.availableFilters.brands.map(brand => {
+								{[...products.availableFilters.brands].sort().map(brand => {
 									const selected = selectedBrands.includes(brand);
 
 									return (
@@ -405,7 +413,7 @@ const ProductFiltersView = ({
 								</CloseButton>
 							</Header>
 							<div style={{ flexGrow: 1, overflowY: 'auto' }}>
-								{products.availableFilters.sizes.map(size => {
+								{[...products.availableFilters.sizes].sort(sizeCompare).map(size => {
 									const selected = selectedSizes.includes(size);
 
 									return (
@@ -439,7 +447,7 @@ const ProductFiltersView = ({
 								</CloseButton>
 							</Header>
 							<div style={{ flexGrow: 1, overflowY: 'auto' }}>
-								{products.availableFilters.colors.map(color => {
+								{[...products.availableFilters.colors].sort().map(color => {
 									const selected = selectedColors.includes(color);
 
 									return (
@@ -532,7 +540,7 @@ const ProductFiltersView = ({
 					/>
 					<FilterMultiSelect
 						title="Märke"
-						items={products.availableFilters.brands.map(brand => ({
+						items={[...products.availableFilters.brands].sort().map(brand => ({
 							id: brand,
 							node: <div>{brand}</div>,
 						}))}
@@ -545,7 +553,7 @@ const ProductFiltersView = ({
 					/>
 					<FilterMultiSelect
 						title="Storlek"
-						items={products.availableFilters.sizes.map(size => ({
+						items={[...products.availableFilters.sizes].sort(sizeCompare).map(size => ({
 							id: size,
 							node: <div>{size}</div>,
 						}))}
@@ -558,7 +566,7 @@ const ProductFiltersView = ({
 					/>
 					<FilterMultiSelect
 						title="Färg"
-						items={products.availableFilters.colors.map(color => ({
+						items={[...products.availableFilters.colors].sort().map(color => ({
 							id: color,
 							node: (
 								<div style={{ display: 'flex', alignItems: 'center' }}>

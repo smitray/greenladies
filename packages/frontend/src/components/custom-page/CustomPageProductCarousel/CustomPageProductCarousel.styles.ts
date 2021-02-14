@@ -43,6 +43,7 @@ export const ProductCarouselShopLink = styled.a`
 	text-decoration: none;
 	font-size: 20px;
 	margin-top: 24px;
+	cursor: pointer;
 `;
 
 export const ProductCarouselShopIconWrapper = styled(IconWrapper)`

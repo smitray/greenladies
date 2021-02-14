@@ -15,6 +15,7 @@ import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 import { useAddToCartMutation } from '../../mutations/shopping-cart';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../../mutations/wishlist';
 import { IconWrapper } from '../../styles/icon-wrapper';
+import { sizeCompare } from '../../utils/size';
 
 import { ProductDetails_product } from './__generated__/ProductDetails_product.graphql';
 
@@ -153,50 +154,52 @@ const ProductDetailsView = ({ product }: ProductDetailsViewProps) => {
 							}}
 						>
 							<ul style={{ padding: '8px 0', margin: '0' }}>
-								{product.productConfigurations.map(virtualProduct => {
-									const isSelected = virtualProduct.id === selectedConfiguration?.id;
-									const soldOut = virtualProduct.quantity === 0;
+								{[...product.productConfigurations]
+									.sort((a, b) => sizeCompare(a.size, b.size))
+									.map(virtualProduct => {
+										const isSelected = virtualProduct.id === selectedConfiguration?.id;
+										const soldOut = virtualProduct.quantity === 0;
 
-									return (
-										<li
-											key={virtualProduct.id}
-											style={{
-												padding: '16px',
-												display: 'flex',
-												justifyContent: 'space-between',
-												background: isSelected ? '#f5f5f5' : 'white',
-												textAlign: 'left',
-												fontSize: '15px',
-												cursor: soldOut ? 'not-allowed' : 'pointer',
-											}}
-											onClick={() => {
-												if (!soldOut) {
-													setSelectedConfiguration(virtualProduct);
-													setSelectSizeOpen(false);
-												}
-											}}
-										>
-											<span
+										return (
+											<li
+												key={virtualProduct.id}
 												style={{
-													fontWeight: 'bold',
-													flexGrow: 1,
-													color: soldOut ? '#ccc' : 'black',
+													padding: '16px',
+													display: 'flex',
+													justifyContent: 'space-between',
+													background: isSelected ? '#f5f5f5' : 'white',
+													textAlign: 'left',
+													fontSize: '15px',
+													cursor: soldOut ? 'not-allowed' : 'pointer',
+												}}
+												onClick={() => {
+													if (!soldOut) {
+														setSelectedConfiguration(virtualProduct);
+														setSelectSizeOpen(false);
+													}
 												}}
 											>
-												{virtualProduct.size}
-											</span>
-											{virtualProduct.quantity > 0 && virtualProduct.quantity < 3 && (
-												<span style={{ marginLeft: '24px', color: 'red' }}>Bara {virtualProduct.quantity} kvar</span>
-											)}
-											{!soldOut && (
-												<span style={{ marginLeft: '24px', color: 'red' }}>
-													{virtualProduct.specialPrice.toFixed(2)} kr
+												<span
+													style={{
+														fontWeight: 'bold',
+														flexGrow: 1,
+														color: soldOut ? '#ccc' : 'black',
+													}}
+												>
+													{virtualProduct.size}
 												</span>
-											)}
-											{soldOut && <span style={{ marginLeft: '24px', color: '#ccc' }}>Slutsåld</span>}
-										</li>
-									);
-								})}
+												{virtualProduct.quantity > 0 && virtualProduct.quantity < 3 && (
+													<span style={{ marginLeft: '24px', color: 'red' }}>Bara {virtualProduct.quantity} kvar</span>
+												)}
+												{!soldOut && (
+													<span style={{ marginLeft: '24px', color: 'red' }}>
+														{virtualProduct.specialPrice.toFixed(2)} kr
+													</span>
+												)}
+												{soldOut && <span style={{ marginLeft: '24px', color: '#ccc' }}>Slutsåld</span>}
+											</li>
+										);
+									})}
 							</ul>
 						</div>
 					)}
