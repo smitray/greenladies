@@ -20,12 +20,16 @@ interface CustomPageTabsViewProps {
 }
 
 const CustomPageTabsView = ({ tabs }: CustomPageTabsViewProps) => {
-	const { query, pathname, asPath } = useRouter();
+	const { query, pathname, asPath, replace } = useRouter();
 
 	const currentTab = tabs.tabs.find(tab => tab.key === query.tab);
 
 	if (!currentTab) {
-		return <div>404</div>;
+		if (typeof window !== 'undefined') {
+			replace(asPath.split('?')[0] + '?tab=' + tabs.tabs[0].key);
+		}
+
+		return null;
 	}
 
 	return (
