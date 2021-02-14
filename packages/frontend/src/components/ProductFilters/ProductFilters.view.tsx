@@ -521,6 +521,7 @@ const ProductFiltersView = ({
 							borderRadius: '0',
 							cursor: 'pointer',
 							display: 'block',
+							textAlign: 'center',
 						}}
 					>
 						<option value="created_DESC">Nyheter</option>
