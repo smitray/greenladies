@@ -51,9 +51,10 @@ const SEARCH_QUERY = graphql`
 `;
 interface SearchResultsViewProps {
 	query: string;
+	onResultSelected?: () => void;
 }
 
-const SearchResultsView = ({ query }: SearchResultsViewProps) => {
+const SearchResultsView = ({ query, onResultSelected }: SearchResultsViewProps) => {
 	const relayEnvironment = useRelayEnvironment();
 
 	return (
@@ -76,7 +77,9 @@ const SearchResultsView = ({ query }: SearchResultsViewProps) => {
 										{props.search.brands.map(brand => (
 											<li key={brand.id}>
 												<Link href={`/categories/all?brands=${brand.name}`} passHref>
-													<SectionItemLink>{brand.name}</SectionItemLink>
+													<SectionItemLink onClick={() => onResultSelected && onResultSelected()}>
+														{brand.name}
+													</SectionItemLink>
 												</Link>
 											</li>
 										))}
@@ -90,7 +93,9 @@ const SearchResultsView = ({ query }: SearchResultsViewProps) => {
 										{props.search.categories.map(category => (
 											<li key={category.id}>
 												<Link href="/categories/[key]" as={`/categories/${category.urlKey}`} passHref>
-													<SectionItemLink>{category.name}</SectionItemLink>
+													<SectionItemLink onClick={() => onResultSelected && onResultSelected()}>
+														{category.name}
+													</SectionItemLink>
 												</Link>
 											</li>
 										))}
@@ -104,7 +109,7 @@ const SearchResultsView = ({ query }: SearchResultsViewProps) => {
 										{props.search.products.map(product => (
 											<SectionProductWrapper key={product.id}>
 												<Link href="/products/[key]" as={`/products/${product.urlKey}`} passHref>
-													<SectionProductLink>
+													<SectionProductLink onClick={() => onResultSelected && onResultSelected()}>
 														<ProductImageStyleWrapper>
 															<ProductImagePositionWrapper>
 																<ProductImage src={product.image} />

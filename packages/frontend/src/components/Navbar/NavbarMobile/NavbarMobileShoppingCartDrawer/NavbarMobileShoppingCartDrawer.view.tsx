@@ -5,6 +5,7 @@ import { FaTimes } from 'react-icons/fa';
 import { createFragmentContainer, graphql } from 'react-relay';
 import styled from 'styled-components';
 
+import { useShoppingCartModal } from '../../../../contexts/shopping-cart-model-context';
 import { useWindowDimensions } from '../../../../hooks/use-window-dimensions';
 import { IconWrapper } from '../../../../styles/icon-wrapper';
 import { NORMAL_TABLET_SIZE } from '../../../../utils/device-size';
@@ -35,11 +36,12 @@ const CloseButton = styled.button`
 interface NavbarMobileShoppingCartDrawerViewProps {
 	cart: NavbarMobileShoppingCartDrawer_cart;
 	open: boolean;
-	onCloseRequest: () => void;
 }
 
-const NavbarMobileShoppingCartModalView = ({ cart, open, onCloseRequest }: NavbarMobileShoppingCartDrawerViewProps) => {
+const NavbarMobileShoppingCartModalView = ({ cart, open }: NavbarMobileShoppingCartDrawerViewProps) => {
 	const { width: windowWidth } = useWindowDimensions();
+
+	const { close } = useShoppingCartModal();
 
 	return (
 		<Drawer
@@ -48,12 +50,12 @@ const NavbarMobileShoppingCartModalView = ({ cart, open, onCloseRequest }: Navba
 			placement="right"
 			handler={null}
 			width={windowWidth > NORMAL_TABLET_SIZE ? NORMAL_TABLET_SIZE + 'px' : '100%'}
-			onClose={onCloseRequest}
+			onClose={close}
 		>
 			<div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 				<Header>
 					Varukorg
-					<CloseButton onClick={onCloseRequest}>
+					<CloseButton onClick={close}>
 						<IconWrapper size="1em">
 							<FaTimes size="1em" />
 						</IconWrapper>

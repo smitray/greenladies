@@ -87,7 +87,7 @@ export const NavbarMobileSearchDrawerView = ({
 					</div>
 				</div>
 				<div style={{ padding: '0.5em 1em', flexGrow: 1, overflowY: 'auto' }}>
-					<SearchResults query={searchQuery} />
+					<SearchResults query={searchQuery} onResultSelected={() => onCloseRequest()} />
 				</div>
 			</div>
 		</Drawer>

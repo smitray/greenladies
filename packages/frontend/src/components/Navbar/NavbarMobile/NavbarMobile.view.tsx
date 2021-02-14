@@ -8,6 +8,7 @@ import { HiOutlineSearch } from 'react-icons/hi';
 import { createFragmentContainer, graphql, QueryRenderer } from 'react-relay';
 import { useRelayEnvironment } from 'react-relay/hooks';
 
+import { useShoppingCartModal } from '../../../contexts/shopping-cart-model-context';
 import { IconWrapper } from '../../../styles/icon-wrapper';
 import { WishlistDrawer } from '../../WishlistDrawer';
 
@@ -37,7 +38,7 @@ const NavbarMobileView = ({ searchQuery, onSearchQueryChange, query }: NavbarMob
 	const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
 	const [searchDrawerOpen, setSearchDrawerOpen] = useState(false);
 	const [wishlistDrawerOpen, setWishlistDrawerOpen] = useState(false);
-	const [shoppingCartDrawerOpen, setShoppingCartDrawerOpen] = useState(false);
+	const { open: openShoppingCart, isOpen: shoppingCartOpen } = useShoppingCartModal();
 
 	const relayEnvironment = useRelayEnvironment();
 
@@ -110,6 +111,13 @@ const NavbarMobileView = ({ searchQuery, onSearchQueryChange, query }: NavbarMob
 						query={graphql`
 							query NavbarMobileShoppingCartQuery {
 								shoppingCart {
+									items(first: 10000) @connection(key: "ShoppingCart_items") {
+										edges {
+											node {
+												amount
+											}
+										}
+									}
 									...NavbarMobileShoppingCartDrawer_cart
 								}
 							}
@@ -121,18 +129,34 @@ const NavbarMobileView = ({ searchQuery, onSearchQueryChange, query }: NavbarMob
 							}
 
 							if (props) {
+								const total = props.shoppingCart.items.edges.reduce((prev, current) => prev + current.node.amount, 0);
+
 								return (
 									<React.Fragment>
-										<li onClick={() => setShoppingCartDrawerOpen(true)}>
-											<IconWrapper size="24px">
+										<li onClick={() => openShoppingCart()}>
+											<IconWrapper size="24px" style={{ position: 'relative' }}>
 												<BiShoppingBag size="24" />
+												<div
+													style={{
+														position: 'absolute',
+														background: 'black',
+														color: 'white',
+														borderRadius: '100%',
+														fontSize: '10px',
+														lineHeight: '16px',
+														textAlign: 'center',
+														top: '-2px',
+														right: '-6px',
+														width: '16px',
+														height: '16px',
+														fontWeight: 'bold',
+													}}
+												>
+													{total}
+												</div>
 											</IconWrapper>
 										</li>
-										<NavbarMobileShoppingCartDrawer
-											cart={props.shoppingCart}
-											open={shoppingCartDrawerOpen}
-											onCloseRequest={() => setShoppingCartDrawerOpen(false)}
-										/>
+										<NavbarMobileShoppingCartDrawer cart={props.shoppingCart} open={shoppingCartOpen} />
 									</React.Fragment>
 								);
 							}
