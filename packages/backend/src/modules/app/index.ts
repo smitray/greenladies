@@ -4,6 +4,7 @@ import { AuthModule } from '../auth';
 import { BrandModule } from '../brand';
 import { CategoryModule } from '../category';
 import { CustomPageModule } from '../custom-page';
+import { FileModule } from '../file';
 import { MailchimpModule } from '../mailchimp';
 import { MegamenuModule } from '../megamenu';
 import { OrderModule } from '../order';
@@ -20,6 +21,7 @@ export const AppModule = new GraphQLModule({
 		BrandModule,
 		CategoryModule,
 		CustomPageModule,
+		FileModule,
 		MailchimpModule,
 		MegamenuModule,
 		OrderModule,

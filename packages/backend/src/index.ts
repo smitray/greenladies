@@ -2,9 +2,12 @@ import 'reflect-metadata';
 
 import axios from 'axios';
 import RedisSession from 'connect-redis';
+import cors from 'cors';
 import crypto from 'crypto';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 import session, { SessionOptions } from 'express-session';
+import fs from 'fs';
 import { gql, GraphQLClient } from 'graphql-request';
 import moment from 'moment';
 import cron from 'node-cron';
@@ -27,6 +30,9 @@ import { getRedisCache, getRedisCacheConnection } from './redis-connection';
 import typeormConfig from './typeorm-config';
 import { base64 } from './utils/base64';
 import { domain } from './utils/domain';
+
+const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+const DOMAIN = String(process.env.DOMAIN);
 
 const RedisSessionStore = RedisSession(session);
 
@@ -75,6 +81,62 @@ const sessionOptions: SessionOptions = {
 	}
 
 	app.use(session(sessionOptions));
+
+	app.use(
+		fileUpload({
+			limits: { fileSize: 50 * 1024 * 1024 },
+		}),
+	);
+
+	app.use(
+		cors({
+			credentials: true,
+			origin: `${PROTOCOL}${DOMAIN}`,
+		}),
+	);
+
+	app.post('/upload-image', (req, res) => {
+		if (!req.session) {
+			throw new Error('No session');
+		}
+
+		if (!req.session.auth) {
+			throw new Error('Must be logged in to perform action');
+		}
+
+		if (!req.files?.image) {
+			throw new Error('Image must be provided');
+		}
+
+		const image = req.files.image;
+		if (Array.isArray(image)) {
+			throw new Error('Can only upload one image at a time');
+		}
+
+		if (image.mimetype !== 'image/jpeg' && image.mimetype !== 'image/png') {
+			throw new Error('Only supports jpeg and png for now');
+		}
+
+		try {
+			const files = fs.readdirSync(path.join(__dirname, '../static/images'));
+			let filename = image.name;
+			if (files.includes(image.name)) {
+				const name = image.name.slice(0, image.name.lastIndexOf('.'));
+				const ext = image.name.slice(image.name.lastIndexOf('.') + 1);
+				let i = 0;
+				while (files.includes(`${name}_${i}.${ext}`)) {
+					i++;
+				}
+				filename = `${name}_${i}.${ext}`;
+			}
+
+			fs.writeFileSync(path.join(__dirname, '../static/images', filename), image.data);
+
+			res.send('Uploaded image successfully');
+		} catch (e) {
+			res.status(400).send('Something went wrong');
+		}
+	});
 
 	app.get('/sync-magento', async (_req, res) => {
 		try {
@@ -317,8 +379,6 @@ const sessionOptions: SessionOptions = {
 		asyncRun();
 	});
 
-	const PROTOCOL = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
-	const DOMAIN = String(process.env.DOMAIN);
 	const server = await createApolloServer();
 	server.applyMiddleware({
 		app,

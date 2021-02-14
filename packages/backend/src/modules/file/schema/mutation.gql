@@ -1,0 +1,13 @@
+scalar Upload
+
+input UploadImageInput {
+	file: Upload!
+}
+
+type UploadImagePayload {
+	success: Boolean!
+}
+
+type Mutation {
+	uploadImage(input: UploadImageInput!): UploadImagePayload!
+}
