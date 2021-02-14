@@ -17,6 +17,10 @@ const resolvers: CustomPageModuleResolversType = {
 			const page = await injector.get(CustomPageProvider).getCustomPage({ id });
 			return page.metaTitle;
 		},
+		path: async ({ id }, _args, { injector }) => {
+			const page = await injector.get(CustomPageProvider).getCustomPage({ id });
+			return page.path;
+		},
 		sections: async ({ id }, _args, { injector }) => {
 			const sections = await injector.get(CustomPageProvider).getCustomPageSectionsByPage(id);
 			return sections.map(({ id }) => ({ id }));

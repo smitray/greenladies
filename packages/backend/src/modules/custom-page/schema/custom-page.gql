@@ -49,6 +49,7 @@ type CustomPageSection {
 
 type CustomPage {
 	id: ID!
+	path: String!
 	metaTitle: String!
 	metaKeywords: String!
 	metaDescription: String!

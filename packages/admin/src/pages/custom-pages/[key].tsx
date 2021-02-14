@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Typography } from 'antd';
 import { useRouter } from 'next/router';
 
 import { Template } from '../../components/Template';
@@ -16,7 +17,11 @@ const EditCustomPage: MyNextPage = () => {
 		return null;
 	}
 
-	return <Template>Ändra</Template>;
+	return (
+		<Template>
+			<Typography.Title>Ändra sida</Typography.Title>
+		</Template>
+	);
 };
 
 export default EditCustomPage;

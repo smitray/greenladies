@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Typography } from 'antd';
 import { useRouter } from 'next/router';
 
 import { Template } from '../../components/Template';
@@ -16,7 +17,11 @@ const CreateCustomPage: MyNextPage = () => {
 		return null;
 	}
 
-	return <Template>Skapa</Template>;
+	return (
+		<Template>
+			<Typography.Title>Ny sida</Typography.Title>
+		</Template>
+	);
 };
 
 export default CreateCustomPage;
