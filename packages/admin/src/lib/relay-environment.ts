@@ -51,7 +51,7 @@ async function fetchQueryClient(operation: RequestParameters, variables: Variabl
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		credentials: process.env.NODE_ENV === 'development' ? 'include' : 'same-origin',
+		credentials: 'include',
 		body: JSON.stringify({
 			query: operation.text,
 			variables,
