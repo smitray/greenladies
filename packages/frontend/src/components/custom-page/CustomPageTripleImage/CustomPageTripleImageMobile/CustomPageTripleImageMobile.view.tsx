@@ -24,7 +24,7 @@ const CustomPageTripleImageMobileView = ({ tripleImage }: CustomPageTripleImageM
 		<TripleImageMobileWrapper background={tripleImage.color}>
 			<Link link={tripleImage.link}>
 				<TripleImageMobileImageWrapper>
-					<TripleImageMobileImage src={tripleImage.firstImagePath} />
+					<TripleImageMobileImage src={tripleImage.mobileImagePath} />
 					<TripleImageMobileImageOverlay background={tripleImage.color}>
 						<TripleImageMobileSmallTitle>{tripleImage.smallTitle}</TripleImageMobileSmallTitle>
 						<TripleImageMobileBigTitle> {tripleImage.bigTitle}</TripleImageMobileBigTitle>
@@ -44,7 +44,7 @@ export default createFragmentContainer(CustomPageTripleImageMobileView, {
 			link {
 				...Link_link
 			}
-			firstImagePath
+			mobileImagePath
 			color
 		}
 	`,
