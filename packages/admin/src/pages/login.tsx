@@ -24,7 +24,7 @@ const Login: MyNextPage = () => {
 
 	return (
 		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-			<Card title="Default size card" style={{ width: 360 }}>
+			<Card title="Logga in" style={{ width: 360 }}>
 				<Form form={form} name="login" labelCol={{ span: 10 }} wrapperCol={{ span: 16 }} onFinish={handleSubmit}>
 					<Form.Item
 						label="Användarnamn"

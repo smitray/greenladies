@@ -46,7 +46,7 @@ const NavbarMobileShoppingCartModalView = ({ cart, open }: NavbarMobileShoppingC
 	return (
 		<Drawer
 			level={null}
-			open={open}
+			open={open && windowWidth < 961}
 			placement="right"
 			handler={null}
 			width={windowWidth > NORMAL_TABLET_SIZE ? NORMAL_TABLET_SIZE + 'px' : '100%'}
