@@ -332,7 +332,7 @@ const ProductImport: MyNextPage = () => {
 									}}
 									showUploadList={false}
 								>
-									<Button icon={<UploadOutlined />}>Click to Upload</Button>
+									<Button icon={<UploadOutlined />}>Välj .csv att importera från</Button>
 								</Upload>
 							</HorizontalAndVerticalCenterWrapper>
 						);

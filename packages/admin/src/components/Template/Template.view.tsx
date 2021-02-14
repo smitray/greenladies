@@ -1,33 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { FileOutlined, ImportOutlined, UploadOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const { Content, Sider } = Layout;
-const { SubMenu } = Menu;
 
 export const TemplateView = ({ children }: React.PropsWithChildren<any>) => {
+	const router = useRouter();
+	const [selectedKey, setSelectedKey] = useState(router.pathname.split('/')[1]);
+	useEffect(() => {
+		setSelectedKey(router.pathname.split('/')[1]);
+	}, [router.pathname]);
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Sider>
-				<Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-					<Menu.Item key="1" icon={<PieChartOutlined />}>
-						Option 1
+				<Menu theme="dark" selectedKeys={[selectedKey]} mode="inline">
+					<Menu.Item key="product-import" icon={<ImportOutlined />}>
+						<Link href="/product-import">
+							<a>Importera produkter</a>
+						</Link>
 					</Menu.Item>
-					<Menu.Item key="2" icon={<DesktopOutlined />}>
-						Option 2
+					<Menu.Item key="image-upload" icon={<UploadOutlined />}>
+						<Link href="/image-upload">
+							<a>Ladda upp bilder</a>
+						</Link>
 					</Menu.Item>
-					<SubMenu key="sub1" icon={<UserOutlined />} title="User">
-						<Menu.Item key="3">Tom</Menu.Item>
-						<Menu.Item key="4">Bill</Menu.Item>
-						<Menu.Item key="5">Alex</Menu.Item>
-					</SubMenu>
-					<SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-						<Menu.Item key="6">Team 1</Menu.Item>
-						<Menu.Item key="8">Team 2</Menu.Item>
-					</SubMenu>
-					<Menu.Item key="9" icon={<FileOutlined />}>
-						Files
+					<Menu.Item key="custom-pages" icon={<FileOutlined />}>
+						<Link href="/custom-pages">
+							<a>Hantera sidor</a>
+						</Link>
 					</Menu.Item>
 				</Menu>
 			</Sider>

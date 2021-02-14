@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Collapse, message, Spin, Table, Upload } from 'antd';
-import { RcFile, UploadFile } from 'antd/lib/upload/interface';
+import { Button, Upload } from 'antd';
 import { useRouter } from 'next/router';
-import Papa from 'papaparse';
-import { fetchQuery, QueryRenderer } from 'react-relay';
-import { useRelayEnvironment } from 'react-relay/hooks';
-import { UploadableMap } from 'relay-runtime';
 
 import { Template } from '../components/Template';
 import { useAuth } from '../contexts/auth-context';
 import { MyNextPage } from '../lib/types';
-import { useCreateProductsMutation } from '../mutations/create-products';
 
 const HorizontalAndVerticalCenterWrapper = ({ children }: React.PropsWithChildren<any>) => {
 	return (
@@ -32,8 +26,6 @@ const HorizontalAndVerticalCenterWrapper = ({ children }: React.PropsWithChildre
 
 const ImageUpload: MyNextPage = () => {
 	const { isAuthenticated } = useAuth();
-
-	const relayEnvironment = useRelayEnvironment();
 
 	const router = useRouter();
 
@@ -59,7 +51,7 @@ const ImageUpload: MyNextPage = () => {
 						return false;
 					}}
 				>
-					<Button icon={<UploadOutlined />}>Click to Upload</Button>
+					<Button icon={<UploadOutlined />}>Välj bilder att ladda upp</Button>
 				</Upload>
 			</HorizontalAndVerticalCenterWrapper>
 		</Template>
